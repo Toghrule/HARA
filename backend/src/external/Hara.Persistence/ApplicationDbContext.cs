@@ -1,7 +1,7 @@
 using Hara.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hara.Infrastructure.Persistence;
+namespace Hara.Persistence;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
