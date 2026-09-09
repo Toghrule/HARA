@@ -447,6 +447,11 @@ desktop.ini
 *.sln.iml
 
 ##
+## HARA backend local file storage (uploaded images)
+##
+backend/src/ui/Hara.Api/App_Data/
+
+##
 ## Flutter / Dart (mobile/)
 ## Get latest from https://github.com/github/gitignore/blob/main/Dart.gitignore and Flutter's own template
 ##
