@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Hara.Application\Hara.Application.csproj" />
+    <ProjectReference Include="..\..\external\Hara.Infrastructure\Hara.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
