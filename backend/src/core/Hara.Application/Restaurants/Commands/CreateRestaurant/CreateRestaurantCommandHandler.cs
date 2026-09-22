@@ -13,6 +13,8 @@ public class CreateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             Name = request.Name,
             Description = request.Description,
             Address = request.Address,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
             PhoneNumber = request.PhoneNumber,
             ImageUrl = request.ImageUrl
         };

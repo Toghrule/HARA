@@ -6,11 +6,15 @@ namespace Hara.Application.Restaurants.Commands.CreateRestaurant;
 /// <param name="Name">Display name.</param>
 /// <param name="Description">Optional free-text description.</param>
 /// <param name="Address">Physical address.</param>
+/// <param name="Latitude">Latitude of the restaurant's exact location, in decimal degrees.</param>
+/// <param name="Longitude">Longitude of the restaurant's exact location, in decimal degrees.</param>
 /// <param name="PhoneNumber">Optional public-facing phone number.</param>
 /// <param name="ImageUrl">Optional cover image URL, from a prior upload.</param>
 public sealed record CreateRestaurantCommand(
     string Name,
     string? Description,
     string Address,
+    double Latitude,
+    double Longitude,
     string? PhoneNumber,
     string? ImageUrl) : IRequest<RestaurantDto>;

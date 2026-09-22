@@ -5,6 +5,8 @@ namespace Hara.Application.Restaurants;
 /// <param name="Name">Display name.</param>
 /// <param name="Description">Free-text description, if any.</param>
 /// <param name="Address">Physical address.</param>
+/// <param name="Latitude">Latitude of the restaurant's exact location, in decimal degrees.</param>
+/// <param name="Longitude">Longitude of the restaurant's exact location, in decimal degrees.</param>
 /// <param name="PhoneNumber">Public-facing phone number, if any.</param>
 /// <param name="ImageUrl">Relative URL of the cover image, if one has been uploaded.</param>
 /// <param name="IsActive">Whether the restaurant is currently visible to mobile app users.</param>
@@ -15,6 +17,8 @@ public sealed record RestaurantDto(
     string Name,
     string? Description,
     string Address,
+    double Latitude,
+    double Longitude,
     string? PhoneNumber,
     string? ImageUrl,
     bool IsActive,
@@ -26,6 +30,8 @@ public sealed record RestaurantDto(
         restaurant.Name,
         restaurant.Description,
         restaurant.Address,
+        restaurant.Latitude,
+        restaurant.Longitude,
         restaurant.PhoneNumber,
         restaurant.ImageUrl,
         restaurant.IsActive,

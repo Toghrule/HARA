@@ -8,6 +8,8 @@ public class CreateRestaurantCommandValidator : AbstractValidator<CreateRestaura
     {
         RuleFor(c => c.Name).NotEmpty().MaximumLength(200);
         RuleFor(c => c.Address).NotEmpty().MaximumLength(400);
+        RuleFor(c => c.Latitude).InclusiveBetween(-90, 90);
+        RuleFor(c => c.Longitude).InclusiveBetween(-180, 180);
         RuleFor(c => c.PhoneNumber).MaximumLength(50);
         RuleFor(c => c.Description).MaximumLength(4000);
         RuleFor(c => c.ImageUrl).MaximumLength(1000);

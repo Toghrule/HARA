@@ -18,6 +18,8 @@ const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(200),
   description: z.string().trim().max(4000).optional(),
   address: z.string().trim().min(1, "Address is required").max(400),
+  latitude: z.coerce.number({ invalid_type_error: "Latitude is required" }).min(-90, "Must be between -90 and 90").max(90, "Must be between -90 and 90"),
+  longitude: z.coerce.number({ invalid_type_error: "Longitude is required" }).min(-180, "Must be between -180 and 180").max(180, "Must be between -180 and 180"),
   phoneNumber: z.string().trim().max(50).optional(),
   imageUrl: z.string().trim().max(1000).optional(),
   isActive: z.boolean(),
@@ -29,6 +31,8 @@ const emptyValues: FormValues = {
   name: "",
   description: "",
   address: "",
+  latitude: 0,
+  longitude: 0,
   phoneNumber: "",
   imageUrl: "",
   isActive: true,
@@ -63,6 +67,8 @@ export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFo
             name: restaurant.name,
             description: restaurant.description ?? "",
             address: restaurant.address,
+            latitude: restaurant.latitude,
+            longitude: restaurant.longitude,
             phoneNumber: restaurant.phoneNumber ?? "",
             imageUrl: restaurant.imageUrl ?? "",
             isActive: restaurant.isActive,
@@ -72,12 +78,17 @@ export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFo
   }, [open, restaurant, reset]);
 
   const imageUrl = watch("imageUrl");
+  const latitude = watch("latitude");
+  const longitude = watch("longitude");
+  const hasValidCoordinates = !Number.isNaN(latitude) && !Number.isNaN(longitude) && !(latitude === 0 && longitude === 0);
 
   const onSubmit = async (values: FormValues) => {
     const payload = {
       name: values.name,
       description: values.description || null,
       address: values.address,
+      latitude: values.latitude,
+      longitude: values.longitude,
       phoneNumber: values.phoneNumber || null,
       imageUrl: values.imageUrl || null,
     };
@@ -104,6 +115,36 @@ export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFo
         <FormField label="Address" htmlFor="address" error={errors.address?.message}>
           <Input id="address" {...register("address")} />
         </FormField>
+        <div className="grid grid-cols-2 gap-3">
+          <FormField label="Latitude" htmlFor="latitude" error={errors.latitude?.message}>
+            <Input
+              id="latitude"
+              type="number"
+              step="any"
+              {...register("latitude")}
+              onFocus={(e) => e.currentTarget.select()}
+            />
+          </FormField>
+          <FormField label="Longitude" htmlFor="longitude" error={errors.longitude?.message}>
+            <Input
+              id="longitude"
+              type="number"
+              step="any"
+              {...register("longitude")}
+              onFocus={(e) => e.currentTarget.select()}
+            />
+          </FormField>
+        </div>
+        {hasValidCoordinates && (
+          <a
+            href={`https://www.google.com/maps?q=${latitude},${longitude}`}
+            target="_blank"
+            rel="noreferrer"
+            className="-mt-2 inline-block text-sm text-blue-600 hover:underline"
+          >
+            Open in Google Maps to verify
+          </a>
+        )}
         <FormField label="Phone number" htmlFor="phoneNumber" error={errors.phoneNumber?.message}>
           <Input id="phoneNumber" {...register("phoneNumber")} />
         </FormField>

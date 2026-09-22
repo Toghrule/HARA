@@ -8,6 +8,8 @@ public sealed record UpdateRestaurantCommand(
     string Name,
     string? Description,
     string Address,
+    double Latitude,
+    double Longitude,
     string? PhoneNumber,
     string? ImageUrl,
     bool IsActive) : IRequest<RestaurantDto>;

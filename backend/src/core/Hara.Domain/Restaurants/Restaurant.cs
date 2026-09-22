@@ -17,6 +17,12 @@ public class Restaurant : BaseAuditableEntity
     /// <summary>Physical address of the restaurant.</summary>
     public string Address { get; set; } = string.Empty;
 
+    /// <summary>Latitude of the restaurant's exact location, in decimal degrees.</summary>
+    public double Latitude { get; set; }
+
+    /// <summary>Longitude of the restaurant's exact location, in decimal degrees.</summary>
+    public double Longitude { get; set; }
+
     /// <summary>Public-facing phone number, if the restaurant has one.</summary>
     public string? PhoneNumber { get; set; }
 

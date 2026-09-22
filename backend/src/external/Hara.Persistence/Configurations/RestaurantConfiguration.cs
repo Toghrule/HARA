@@ -10,6 +10,8 @@ public class RestaurantConfiguration : IEntityTypeConfiguration<Restaurant>
     {
         builder.Property(r => r.Name).IsRequired().HasMaxLength(200);
         builder.Property(r => r.Address).IsRequired().HasMaxLength(400);
+        builder.Property(r => r.Latitude).HasPrecision(9, 6);
+        builder.Property(r => r.Longitude).HasPrecision(9, 6);
         builder.Property(r => r.PhoneNumber).HasMaxLength(50);
         builder.Property(r => r.ImageUrl).HasMaxLength(1000);
         builder.Property(r => r.Description).HasMaxLength(4000);

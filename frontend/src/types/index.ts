@@ -36,6 +36,8 @@ export interface RestaurantDto {
   name: string;
   description: string | null;
   address: string;
+  latitude: number;
+  longitude: number;
   phoneNumber: string | null;
   imageUrl: string | null;
   isActive: boolean;
@@ -47,6 +49,8 @@ export interface CreateRestaurantBody {
   name: string;
   description?: string | null;
   address: string;
+  latitude: number;
+  longitude: number;
   phoneNumber?: string | null;
   imageUrl?: string | null;
 }
