@@ -74,48 +74,15 @@ if errorlevel 1 (
 )
 echo   [OK] Docker daemon is reachable.
 
-echo   -^> Looking for a Postgres container ^(any image name containing "postgres"^)...
-set "CONTAINER_ID="
-set "CONTAINER_NAME="
-set "CONTAINER_STATUS="
-set "MATCH_COUNT=0"
-
-for /f "tokens=1,2,3,4 delims=|" %%A in ('docker ps -a --format "{{.ID}}|{{.Names}}|{{.Image}}|{{.Status}}" 2^>nul ^| findstr /I "postgres"') do (
-    set /a MATCH_COUNT+=1
-    if not defined CONTAINER_ID (
-        set "CONTAINER_ID=%%A"
-        set "CONTAINER_NAME=%%B"
-        set "CONTAINER_STATUS=%%D"
-    )
-)
-
-if not defined CONTAINER_ID (
-    echo   [X] No Postgres container found ^("docker ps -a" has none matching "postgres"^).
-    echo       Create the DB container first, then re-run this script.
-    goto :eof
-)
-
-if !MATCH_COUNT! GTR 1 (
-    echo   [WARN] Found !MATCH_COUNT! matching containers, using the first: !CONTAINER_NAME!
-) else (
-    echo   [OK] Found container "!CONTAINER_NAME!" ^(id !CONTAINER_ID!^) - status: !CONTAINER_STATUS!
-)
-
-echo !CONTAINER_STATUS! | findstr /B /I "Up" >nul
-if not errorlevel 1 (
-    echo   -^> Container is running, restarting it...
-    docker restart !CONTAINER_ID! >nul 2>&1
-) else (
-    echo   -^> Container is stopped, starting it...
-    docker start !CONTAINER_ID! >nul 2>&1
-)
-
+echo   -^> Starting Postgres via docker compose ^(creates the container on first run^)...
+docker compose -f "%ROOT%\docker-compose.yml" up -d >nul 2>&1
 if errorlevel 1 (
-    echo   [X] "docker start/restart" failed for container !CONTAINER_NAME!.
+    echo   [X] "docker compose up -d" failed. Run it manually to see details:
+    echo       docker compose -f "%ROOT%\docker-compose.yml" up -d
     goto :eof
 )
 
-echo   [OK] Database container is starting.
+echo   [OK] Database container ^(hara-postgres^) is starting.
 call :WaitForPort %DB_PORT% "Postgres DB" 30
 set "DB_OK=1"
 goto :eof
