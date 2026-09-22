@@ -11,8 +11,11 @@ public static class RestaurantsEndpoints
 {
     public static IEndpointRouteBuilder MapRestaurantsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/restaurants", async (ISender sender, CancellationToken cancellationToken) =>
-                Results.Ok(await sender.Send(new GetRestaurantsQuery(OnlyActive: true), cancellationToken)))
+        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, ISender sender, CancellationToken cancellationToken) =>
+            {
+                var sortBy = ParseSortBy(sort);
+                return Results.Ok(await sender.Send(new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng), cancellationToken));
+            })
             .WithTags("Restaurants")
             .WithName("GetActiveRestaurants")
             .AllowAnonymous();
@@ -60,4 +63,12 @@ public static class RestaurantsEndpoints
     }
 
     private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, bool IsActive);
+
+    /// <summary>Maps the <c>sort</c> query string ("name_asc" | "name_desc" | "nearest") to <see cref="RestaurantSortBy"/>, defaulting to <see cref="RestaurantSortBy.NameAsc"/> for anything else.</summary>
+    private static RestaurantSortBy ParseSortBy(string? sort) => sort?.ToLowerInvariant() switch
+    {
+        "name_desc" => RestaurantSortBy.NameDesc,
+        "nearest" => RestaurantSortBy.Nearest,
+        _ => RestaurantSortBy.NameAsc,
+    };
 }

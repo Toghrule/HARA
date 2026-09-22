@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowDownAZ, ArrowUpZA, Pencil, Plus, Trash2 } from "lucide-react";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { Button } from "../../components/ui/Button";
 import { Badge } from "../../components/ui/Badge";
@@ -21,6 +21,13 @@ export function RestaurantsPage() {
     restaurant: null,
   });
   const [pendingDelete, setPendingDelete] = useState<RestaurantDto | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const sorted = useMemo(() => {
+    if (!data) return data;
+    const copy = [...data].sort((a, b) => a.name.localeCompare(b.name));
+    return sortDirection === "asc" ? copy : copy.reverse();
+  }, [data, sortDirection]);
 
   const handleDelete = async () => {
     if (!pendingDelete) return;
@@ -40,16 +47,27 @@ export function RestaurantsPage() {
         title="Restaurants"
         description="Venues shown to mobile app users."
         action={
-          <Button onClick={() => setFormState({ open: true, restaurant: null })}>
-            <Plus className="h-4 w-4" />
-            Add restaurant
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setSortDirection((d) => (d === "asc" ? "desc" : "asc"))}
+              title={sortDirection === "asc" ? "Sorted A to Z" : "Sorted Z to A"}
+            >
+              {sortDirection === "asc" ? <ArrowDownAZ className="h-4 w-4" /> : <ArrowUpZA className="h-4 w-4" />}
+              Name
+            </Button>
+            <Button onClick={() => setFormState({ open: true, restaurant: null })}>
+              <Plus className="h-4 w-4" />
+              Add restaurant
+            </Button>
+          </div>
         }
       />
 
       {isLoading ? (
         <Spinner />
-      ) : !data?.length ? (
+      ) : !sorted?.length ? (
         <EmptyState message="No restaurants yet." />
       ) : (
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
@@ -64,7 +82,7 @@ export function RestaurantsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {data.map((restaurant) => (
+              {sorted.map((restaurant) => (
                 <tr key={restaurant.id}>
                   <td className="px-4 py-3 font-medium text-slate-900">{restaurant.name}</td>
                   <td className="px-4 py-3 text-slate-600">{restaurant.address}</td>
