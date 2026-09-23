@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/counter/presentation/screens/counter_screen.dart';
+import '../../features/restaurants/presentation/screens/restaurants_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -9,7 +9,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const CounterScreen(),
+        builder: (context, state) => const RestaurantsScreen(),
       ),
     ],
   );

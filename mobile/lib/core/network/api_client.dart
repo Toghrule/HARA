@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/app_constants.dart';
 
@@ -7,3 +8,5 @@ class ApiClient {
 
   final Dio dio;
 }
+
+final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
