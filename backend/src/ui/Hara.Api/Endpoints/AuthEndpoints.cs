@@ -1,4 +1,5 @@
-﻿using Hara.Application.Auth.Commands.Login;
+﻿using Hara.Api.RateLimiting;
+using Hara.Application.Auth.Commands.Login;
 using MediatR;
 
 namespace Hara.Api.Endpoints;
@@ -14,7 +15,8 @@ public static class AuthEndpoints
             })
             .WithTags("Auth")
             .WithName("Login")
-            .AllowAnonymous();
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.Login);
 
         return app;
     }

@@ -1,4 +1,5 @@
 using Hara.Api.RateLimiting;
+using Hara.Application.Reservations.Commands.CancelReservation;
 using Hara.Application.Reservations.Commands.CreateReservation;
 using Hara.Application.Reservations.Commands.RedeemReservation;
 using Hara.Application.Reservations.Queries.GetReservations;
@@ -20,6 +21,13 @@ public static class ReservationsEndpoints
             .WithName("CreateReservation")
             .AllowAnonymous()
             .RequireRateLimiting(RateLimitPolicies.Reservations);
+
+        app.MapPost("/api/reservations/{code}/cancel", async (string code, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new CancelReservationCommand(code), cancellationToken)))
+            .WithTags("Reservations")
+            .WithName("CancelReservation")
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.ReservationCancels);
 
         var admin = app.MapGroup("/api/admin/reservations")
             .WithTags("Admin.Reservations")

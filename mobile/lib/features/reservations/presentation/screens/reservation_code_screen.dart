@@ -1,25 +1,30 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/network/api_error.dart';
 import '../../data/reservation.dart';
+import '../../data/reservations_repository.dart';
 
 /// Shows the customer their reservation code to present at the venue, with a
-/// live countdown until the reservation window ends.
-class ReservationCodeScreen extends StatefulWidget {
+/// live countdown until the reservation window ends, and lets them cancel it.
+class ReservationCodeScreen extends ConsumerStatefulWidget {
   const ReservationCodeScreen({required this.reservation, super.key});
 
   final Reservation reservation;
 
   @override
-  State<ReservationCodeScreen> createState() => _ReservationCodeScreenState();
+  ConsumerState<ReservationCodeScreen> createState() => _ReservationCodeScreenState();
 }
 
-class _ReservationCodeScreenState extends State<ReservationCodeScreen> {
+class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
   Timer? _timer;
   late Duration _remaining;
+  bool _cancelling = false;
 
   @override
   void initState() {
@@ -50,6 +55,45 @@ class _ReservationCodeScreenState extends State<ReservationCodeScreen> {
   String get _validUntilLabel {
     final local = widget.reservation.expiresAt.toLocal();
     return '${_two(local.hour)}:${_two(local.minute)}';
+  }
+
+  Future<void> _cancel() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Cancel reservation?'),
+        content: const Text(
+          'Your code will stop working and the table will be released. '
+          'You can make a new reservation afterwards.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Keep it'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Cancel reservation'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _cancelling = true);
+    try {
+      await ref.read(reservationsRepositoryProvider).cancel(widget.reservation.code);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Reservation cancelled')));
+      context.go('/');
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _cancelling = false);
+      final notFound = error is DioException && error.response?.statusCode == 404;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(notFound ? 'We couldn\'t find this reservation.' : apiErrorMessage(error))),
+      );
+    }
   }
 
   @override
@@ -137,9 +181,23 @@ class _ReservationCodeScreenState extends State<ReservationCodeScreen> {
                   ),
                   const SizedBox(height: 32),
                   FilledButton(
-                    onPressed: () => context.go('/'),
+                    onPressed: _cancelling ? null : () => context.go('/'),
                     child: const Text('Done'),
                   ),
+                  if (!expired) ...[
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: _cancelling ? null : _cancel,
+                      style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
+                      child: _cancelling
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Cancel reservation'),
+                    ),
+                  ],
                 ],
               ),
             ),

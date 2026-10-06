@@ -9,6 +9,8 @@ public static class RateLimitPolicies
 {
     public const string Reservations = "Reservations";
     public const string Submissions = "Submissions";
+    public const string ReservationCancels = "ReservationCancels";
+    public const string Login = "Login";
 }
 
 public sealed class RateLimitPolicyOptions
@@ -21,8 +23,9 @@ public sealed class RateLimitPolicyOptions
 public static class RateLimitingExtensions
 {
     /// <summary>
-    /// Limits how often one client IP can call the anonymous "create" endpoints, so a script can't
-    /// flood the venues' reservations or the admin's submission queue. Limits come from the
+    /// Limits how often one client IP can call the anonymous endpoints that create data or check
+    /// credentials, so a script can't flood the venues' reservations or the admin's submission queue,
+    /// guess reservation codes, or guess the admin password. Limits come from the
     /// <c>RateLimiting:{Policy}</c> configuration section (permits per window, in minutes).
     /// </summary>
     /// <remarks>
@@ -37,15 +40,17 @@ public static class RateLimitingExtensions
             options.OnRejected = WriteTooManyRequestsAsync;
 
             AddPerIpPolicy(options, configuration, RateLimitPolicies.Reservations, defaultPermitLimit: 5);
+            AddPerIpPolicy(options, configuration, RateLimitPolicies.ReservationCancels, defaultPermitLimit: 10);
             AddPerIpPolicy(options, configuration, RateLimitPolicies.Submissions, defaultPermitLimit: 3);
+            AddPerIpPolicy(options, configuration, RateLimitPolicies.Login, defaultPermitLimit: 10, defaultWindowMinutes: 10);
         });
 
         return services;
     }
 
-    private static void AddPerIpPolicy(RateLimiterOptions options, IConfiguration configuration, string policyName, int defaultPermitLimit)
+    private static void AddPerIpPolicy(RateLimiterOptions options, IConfiguration configuration, string policyName, int defaultPermitLimit, int defaultWindowMinutes = 60)
     {
-        var settings = new RateLimitPolicyOptions { PermitLimit = defaultPermitLimit, WindowMinutes = 60 };
+        var settings = new RateLimitPolicyOptions { PermitLimit = defaultPermitLimit, WindowMinutes = defaultWindowMinutes };
         configuration.GetSection($"RateLimiting:{policyName}").Bind(settings);
 
         options.AddPolicy(policyName, httpContext => RateLimitPartition.GetFixedWindowLimiter(

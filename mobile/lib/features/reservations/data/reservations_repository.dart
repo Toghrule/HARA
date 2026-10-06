@@ -24,6 +24,11 @@ class ReservationsRepository {
 
     return Reservation.fromJson(response.data!);
   }
+
+  /// Gives up a reservation before it's used, which lets the same phone book again.
+  Future<void> cancel(String code) async {
+    await _apiClient.dio.post<void>('/api/reservations/$code/cancel');
+  }
 }
 
 final reservationsRepositoryProvider = Provider<ReservationsRepository>((ref) {

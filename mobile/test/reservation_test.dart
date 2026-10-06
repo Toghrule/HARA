@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/reservations/data/reservation.dart';
 import 'package:hara/features/reservations/data/reservations_repository.dart';
@@ -10,10 +11,18 @@ import 'package:hara/features/reservations/presentation/widgets/reserve_sheet.da
 import 'package:hara/features/restaurants/data/restaurant.dart';
 
 class _FakeReservationsRepository extends ReservationsRepository {
-  _FakeReservationsRepository({this.error}) : super(ApiClient());
+  _FakeReservationsRepository({this.error, this.cancelError}) : super(ApiClient());
 
   final Object? error;
+  final Object? cancelError;
   final List<({String restaurantId, String phoneNumber, int durationMinutes})> calls = [];
+  final List<String> cancelled = [];
+
+  @override
+  Future<void> cancel(String code) async {
+    if (cancelError != null) throw cancelError!;
+    cancelled.add(code);
+  }
 
   @override
   Future<Reservation> create({
@@ -67,27 +76,121 @@ void main() {
     expect(reservation.expiresAt.toUtc(), DateTime.utc(2026, 10, 6, 9, 31, 29, 187, 213));
   });
 
-  testWidgets('code screen shows the code, restaurant, discount and a countdown', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: ReservationCodeScreen(reservation: _reservation(expiresIn: const Duration(minutes: 29, seconds: 30))),
-      ),
-    );
+  group('ReservationCodeScreen', () {
+    Future<_FakeReservationsRepository> pumpCodeScreen(
+      WidgetTester tester,
+      Reservation reservation, {
+      Object? cancelError,
+    }) async {
+      final repository = _FakeReservationsRepository(cancelError: cancelError);
+      final router = GoRouter(
+        initialLocation: '/reservation',
+        initialExtra: reservation,
+        routes: [
+          GoRoute(path: '/', builder: (context, state) => const Scaffold(body: Text('HOME'))),
+          GoRoute(
+            path: '/reservation',
+            builder: (context, state) => ReservationCodeScreen(reservation: state.extra! as Reservation),
+          ),
+        ],
+      );
 
-    expect(find.text('S68NRG'), findsOneWidget);
-    expect(find.text('Test Restoran'), findsOneWidget);
-    expect(find.textContaining('15% off'), findsOneWidget);
-    expect(find.textContaining('Valid for 29:'), findsOneWidget);
-  });
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [reservationsRepositoryProvider.overrideWithValue(repository)],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+      await tester.pumpAndSettle();
 
-  testWidgets('code screen shows an expired state once the window has elapsed', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: ReservationCodeScreen(reservation: _reservation(expiresIn: const Duration(minutes: -1))),
-      ),
-    );
+      return repository;
+    }
 
-    expect(find.text('This reservation has expired'), findsOneWidget);
+    Future<void> tapCancelAndConfirm(WidgetTester tester) async {
+      await tester.tap(find.widgetWithText(TextButton, 'Cancel reservation'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(FilledButton, 'Cancel reservation'));
+      await tester.pumpAndSettle();
+    }
+
+    DioException serverError(int status, Object data) {
+      final options = RequestOptions(path: '/api/reservations/S68NRG/cancel');
+
+      return DioException(
+        requestOptions: options,
+        response: Response(requestOptions: options, statusCode: status, data: data),
+      );
+    }
+
+    testWidgets('shows the code, restaurant, discount and a countdown', (tester) async {
+      await pumpCodeScreen(tester, _reservation(expiresIn: const Duration(minutes: 29, seconds: 30)));
+
+      expect(find.text('S68NRG'), findsOneWidget);
+      expect(find.text('Test Restoran'), findsOneWidget);
+      expect(find.textContaining('15% off'), findsOneWidget);
+      expect(find.textContaining('Valid for 29:'), findsOneWidget);
+    });
+
+    testWidgets('shows an expired state, without a cancel option, once the window has elapsed', (tester) async {
+      await pumpCodeScreen(tester, _reservation(expiresIn: const Duration(minutes: -1)));
+
+      expect(find.text('This reservation has expired'), findsOneWidget);
+      expect(find.widgetWithText(TextButton, 'Cancel reservation'), findsNothing);
+    });
+
+    testWidgets('cancelling asks first, then cancels the code and goes home', (tester) async {
+      final repository = await pumpCodeScreen(tester, _reservation(expiresIn: const Duration(minutes: 20)));
+
+      await tapCancelAndConfirm(tester);
+
+      expect(repository.cancelled, ['S68NRG']);
+      expect(find.text('HOME'), findsOneWidget);
+      expect(find.text('Reservation cancelled'), findsOneWidget);
+    });
+
+    testWidgets('"Keep it" leaves the reservation untouched', (tester) async {
+      final repository = await pumpCodeScreen(tester, _reservation(expiresIn: const Duration(minutes: 20)));
+
+      await tester.tap(find.widgetWithText(TextButton, 'Cancel reservation'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(TextButton, 'Keep it'));
+      await tester.pumpAndSettle();
+
+      expect(repository.cancelled, isEmpty);
+      expect(find.text('S68NRG'), findsOneWidget);
+      expect(find.text('HOME'), findsNothing);
+    });
+
+    testWidgets('shows the server\'s reason when cancelling fails, and stays on the code', (tester) async {
+      await pumpCodeScreen(
+        tester,
+        _reservation(expiresIn: const Duration(minutes: 20)),
+        cancelError: serverError(400, {
+          'title': 'Validation failed',
+          'errors': {
+            'code': ['This reservation has already been used.'],
+          },
+        }),
+      );
+
+      await tapCancelAndConfirm(tester);
+
+      expect(find.text('This reservation has already been used.'), findsOneWidget);
+      expect(find.text('S68NRG'), findsOneWidget);
+      expect(tester.widget<TextButton>(find.widgetWithText(TextButton, 'Cancel reservation')).onPressed, isNotNull);
+    });
+
+    testWidgets('explains an unknown code in plain words', (tester) async {
+      await pumpCodeScreen(
+        tester,
+        _reservation(expiresIn: const Duration(minutes: 20)),
+        cancelError: serverError(404, {'title': 'Entity "Reservation" (S68NRG) was not found.', 'status': 404}),
+      );
+
+      await tapCancelAndConfirm(tester);
+
+      expect(find.text('We couldn\'t find this reservation.'), findsOneWidget);
+    });
   });
 
   group('ReserveSheet', () {

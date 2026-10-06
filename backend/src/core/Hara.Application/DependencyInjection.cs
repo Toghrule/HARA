@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using FluentValidation;
 using Hara.Application.Common.Behaviours;
@@ -12,6 +13,10 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         var assembly = Assembly.GetExecutingAssembly();
+
+        // FluentValidation otherwise picks the server OS's language, so validation messages would
+        // come out in e.g. Russian on a ru-RU machine while every client UI is in English.
+        ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
         services.AddValidatorsFromAssembly(assembly);
