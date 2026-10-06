@@ -21,6 +21,11 @@ class RestaurantsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('HARA'),
         actions: [
+          IconButton(
+            tooltip: 'About us, contact and FAQ',
+            icon: const Icon(Icons.info_outline),
+            onPressed: () => context.push('/about'),
+          ),
           TextButton.icon(
             onPressed: () => ref.read(restaurantSortProvider.notifier).toggle(),
             icon: const Icon(Icons.swap_vert),

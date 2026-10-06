@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/company_info/presentation/screens/about_screen.dart';
+import '../../features/company_info/presentation/screens/contact_screen.dart';
+import '../../features/faq/presentation/screens/faq_screen.dart';
 import '../../features/reservations/data/reservation.dart';
 import '../../features/reservations/presentation/screens/reservation_code_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurant_detail_screen.dart';
@@ -20,6 +23,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => RestaurantDetailScreen(
           restaurantId: state.pathParameters['id']!,
         ),
+      ),
+      GoRoute(
+        path: '/about',
+        builder: (context, state) => const AboutScreen(),
+      ),
+      GoRoute(
+        path: '/contact',
+        builder: (context, state) => const ContactScreen(),
+      ),
+      GoRoute(
+        path: '/faq',
+        builder: (context, state) => const FaqScreen(),
       ),
       GoRoute(
         path: '/submit-restaurant',
