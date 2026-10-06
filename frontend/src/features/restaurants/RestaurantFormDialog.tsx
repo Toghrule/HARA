@@ -22,6 +22,11 @@ const schema = z.object({
   longitude: z.coerce.number({ invalid_type_error: "Longitude is required" }).min(-180, "Must be between -180 and 180").max(180, "Must be between -180 and 180"),
   phoneNumber: z.string().trim().max(50).optional(),
   imageUrl: z.string().trim().max(1000).optional(),
+  discountPercent: z.coerce
+    .number({ invalid_type_error: "Discount is required" })
+    .int("Must be a whole number")
+    .min(0, "Must be between 0 and 100")
+    .max(100, "Must be between 0 and 100"),
   isActive: z.boolean(),
 });
 
@@ -35,6 +40,7 @@ const emptyValues: FormValues = {
   longitude: 0,
   phoneNumber: "",
   imageUrl: "",
+  discountPercent: 0,
   isActive: true,
 };
 
@@ -71,6 +77,7 @@ export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFo
             longitude: restaurant.longitude,
             phoneNumber: restaurant.phoneNumber ?? "",
             imageUrl: restaurant.imageUrl ?? "",
+            discountPercent: restaurant.discountPercent,
             isActive: restaurant.isActive,
           }
         : emptyValues
@@ -91,6 +98,7 @@ export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFo
       longitude: values.longitude,
       phoneNumber: values.phoneNumber || null,
       imageUrl: values.imageUrl || null,
+      discountPercent: values.discountPercent,
     };
     try {
       if (isEdit && restaurant) {
@@ -147,6 +155,21 @@ export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFo
         )}
         <FormField label="Phone number" htmlFor="phoneNumber" error={errors.phoneNumber?.message}>
           <Input id="phoneNumber" {...register("phoneNumber")} />
+        </FormField>
+        <FormField
+          label="Discount for reservation-code holders (%)"
+          htmlFor="discountPercent"
+          error={errors.discountPercent?.message}
+        >
+          <Input
+            id="discountPercent"
+            type="number"
+            min={0}
+            max={100}
+            step={1}
+            {...register("discountPercent")}
+            onFocus={(e) => e.currentTarget.select()}
+          />
         </FormField>
         <FormField label="Description" htmlFor="description" error={errors.description?.message}>
           <Textarea id="description" rows={3} {...register("description")} />

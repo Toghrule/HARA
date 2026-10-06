@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   Building2,
+  CalendarCheck,
   HelpCircle,
   Image,
   Inbox,
@@ -16,6 +17,7 @@ import { cn } from "../../lib/utils";
 const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/restaurants", label: "Restaurants", icon: UtensilsCrossed, end: false },
+  { to: "/reservations", label: "Reservations", icon: CalendarCheck, end: false },
   { to: "/submissions", label: "Submissions", icon: Inbox, end: false },
   { to: "/advertisements", label: "Advertisements", icon: Image, end: false },
   { to: "/faq", label: "FAQ", icon: HelpCircle, end: false },

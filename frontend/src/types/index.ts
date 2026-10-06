@@ -6,6 +6,13 @@ export enum SubmissionStatus {
   Rejected = 2,
 }
 
+export enum ReservationStatus {
+  Active = 0,
+  Redeemed = 1,
+  Cancelled = 2,
+  Expired = 3,
+}
+
 export enum ContactType {
   Phone = 0,
   Email = 1,
@@ -40,6 +47,7 @@ export interface RestaurantDto {
   longitude: number;
   phoneNumber: string | null;
   imageUrl: string | null;
+  discountPercent: number;
   isActive: boolean;
   createdAt: string;
   lastModifiedAt: string | null;
@@ -53,6 +61,23 @@ export interface CreateRestaurantBody {
   longitude: number;
   phoneNumber?: string | null;
   imageUrl?: string | null;
+  discountPercent: number;
+}
+
+// Reservations
+
+export interface ReservationDto {
+  id: string;
+  restaurantId: string;
+  restaurantName: string;
+  discountPercent: number;
+  phoneNumber: string;
+  code: string;
+  durationMinutes: number;
+  createdAt: string;
+  expiresAt: string;
+  status: ReservationStatus;
+  redeemedAt: string | null;
 }
 
 export interface UpdateRestaurantBody extends CreateRestaurantBody {

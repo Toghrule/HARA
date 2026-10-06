@@ -33,6 +33,12 @@ public class Restaurant : BaseAuditableEntity
     public string? ImageUrl { get; set; }
 
     /// <summary>
+    /// Percentage (0–100) the restaurant takes off the table bill when a customer
+    /// presents a valid reservation code. <c>0</c> means the restaurant offers no discount.
+    /// </summary>
+    public int DiscountPercent { get; set; }
+
+    /// <summary>
     /// Whether the restaurant is visible to mobile app users. Admins can
     /// deactivate a restaurant without deleting it (e.g. temporarily closed).
     /// </summary>

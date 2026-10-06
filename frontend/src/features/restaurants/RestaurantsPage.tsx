@@ -77,6 +77,7 @@ export function RestaurantsPage() {
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Address</th>
                 <th className="px-4 py-3">Phone</th>
+                <th className="px-4 py-3">Discount</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
@@ -87,6 +88,9 @@ export function RestaurantsPage() {
                   <td className="px-4 py-3 font-medium text-slate-900">{restaurant.name}</td>
                   <td className="px-4 py-3 text-slate-600">{restaurant.address}</td>
                   <td className="px-4 py-3 text-slate-600">{restaurant.phoneNumber ?? "—"}</td>
+                  <td className="px-4 py-3 text-slate-600">
+                    {restaurant.discountPercent > 0 ? `${restaurant.discountPercent}%` : "—"}
+                  </td>
                   <td className="px-4 py-3">
                     <Badge variant={restaurant.isActive ? "success" : "neutral"}>
                       {restaurant.isActive ? "Active" : "Inactive"}

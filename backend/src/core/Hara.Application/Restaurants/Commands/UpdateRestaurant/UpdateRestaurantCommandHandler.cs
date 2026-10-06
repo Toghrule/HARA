@@ -20,6 +20,7 @@ public class UpdateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         restaurant.Longitude = request.Longitude;
         restaurant.PhoneNumber = request.PhoneNumber;
         restaurant.ImageUrl = request.ImageUrl;
+        restaurant.DiscountPercent = request.DiscountPercent;
         restaurant.IsActive = request.IsActive;
 
         repository.Update(restaurant);

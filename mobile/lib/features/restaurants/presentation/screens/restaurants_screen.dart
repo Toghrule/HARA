@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../reservations/data/reservation.dart';
+import '../../../reservations/presentation/widgets/reserve_sheet.dart';
 import '../../data/restaurant.dart';
 import '../providers/restaurant_sort_provider.dart';
 import '../providers/restaurants_provider.dart';
@@ -67,12 +70,43 @@ class _RestaurantList extends StatelessWidget {
         final restaurant = restaurants[index];
         return ListTile(
           title: Text(restaurant.name),
-          subtitle: Text(restaurant.address),
-          trailing: const Icon(Icons.map_outlined),
+          subtitle: Text(
+            restaurant.discountPercent > 0
+                ? '${restaurant.address}\n${restaurant.discountPercent}% off with a reservation code'
+                : restaurant.address,
+          ),
+          isThreeLine: restaurant.discountPercent > 0,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                tooltip: 'Open in Google Maps',
+                icon: const Icon(Icons.map_outlined),
+                onPressed: () => _openInGoogleMaps(restaurant),
+              ),
+              FilledButton.tonal(
+                onPressed: () => _reserve(context, restaurant),
+                child: const Text('Reserve'),
+              ),
+            ],
+          ),
           onTap: () => _openInGoogleMaps(restaurant),
         );
       },
     );
+  }
+
+  Future<void> _reserve(BuildContext context, Restaurant restaurant) async {
+    final reservation = await showModalBottomSheet<Reservation>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => ReserveSheet(restaurant: restaurant),
+    );
+
+    if (reservation != null && context.mounted) {
+      await context.push('/reservation', extra: reservation);
+    }
   }
 
   Future<void> _openInGoogleMaps(Restaurant restaurant) async {

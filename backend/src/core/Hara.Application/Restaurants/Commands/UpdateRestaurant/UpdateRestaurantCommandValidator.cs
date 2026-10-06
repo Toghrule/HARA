@@ -14,5 +14,6 @@ public class UpdateRestaurantCommandValidator : AbstractValidator<UpdateRestaura
         RuleFor(c => c.PhoneNumber).MaximumLength(50);
         RuleFor(c => c.Description).MaximumLength(4000);
         RuleFor(c => c.ImageUrl).MaximumLength(1000);
+        RuleFor(c => c.DiscountPercent).InclusiveBetween(0, 100);
     }
 }

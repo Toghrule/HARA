@@ -10,6 +10,7 @@ namespace Hara.Application.Restaurants.Commands.CreateRestaurant;
 /// <param name="Longitude">Longitude of the restaurant's exact location, in decimal degrees.</param>
 /// <param name="PhoneNumber">Optional public-facing phone number.</param>
 /// <param name="ImageUrl">Optional cover image URL, from a prior upload.</param>
+/// <param name="DiscountPercent">Percentage (0–100) off the table bill for customers with a valid reservation code.</param>
 public sealed record CreateRestaurantCommand(
     string Name,
     string? Description,
@@ -17,4 +18,5 @@ public sealed record CreateRestaurantCommand(
     double Latitude,
     double Longitude,
     string? PhoneNumber,
-    string? ImageUrl) : IRequest<RestaurantDto>;
+    string? ImageUrl,
+    int DiscountPercent) : IRequest<RestaurantDto>;

@@ -3,6 +3,7 @@ using Hara.Domain.Advertisements;
 using Hara.Domain.CompanyInfo;
 using Hara.Domain.Common;
 using Hara.Domain.Faq;
+using Hara.Domain.Reservations;
 using Hara.Domain.Restaurants;
 using Hara.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Restaurant> Restaurants => Set<Restaurant>();
 
     public DbSet<RestaurantSubmission> RestaurantSubmissions => Set<RestaurantSubmission>();
+
+    public DbSet<Reservation> Reservations => Set<Reservation>();
 
     public DbSet<Advertisement> Advertisements => Set<Advertisement>();
 

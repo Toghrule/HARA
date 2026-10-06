@@ -12,4 +12,5 @@ public sealed record UpdateRestaurantCommand(
     double Longitude,
     string? PhoneNumber,
     string? ImageUrl,
+    int DiscountPercent,
     bool IsActive) : IRequest<RestaurantDto>;

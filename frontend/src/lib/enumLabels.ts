@@ -1,4 +1,18 @@
-import { ContactType, SocialMediaPlatform, SubmissionStatus } from "../types";
+import { ContactType, ReservationStatus, SocialMediaPlatform, SubmissionStatus } from "../types";
+
+export const reservationStatusLabels: Record<ReservationStatus, string> = {
+  [ReservationStatus.Active]: "Active",
+  [ReservationStatus.Redeemed]: "Redeemed",
+  [ReservationStatus.Cancelled]: "Cancelled",
+  [ReservationStatus.Expired]: "Expired",
+};
+
+export const reservationStatusBadgeVariant: Record<ReservationStatus, "success" | "neutral" | "warning" | "danger"> = {
+  [ReservationStatus.Active]: "warning",
+  [ReservationStatus.Redeemed]: "success",
+  [ReservationStatus.Cancelled]: "neutral",
+  [ReservationStatus.Expired]: "danger",
+};
 
 export const contactTypeLabels: Record<ContactType, string> = {
   [ContactType.Phone]: "Phone",

@@ -47,7 +47,7 @@ public static class RestaurantsEndpoints
 
         admin.MapPut("/{id:guid}", async (Guid id, UpdateRestaurantBody body, ISender sender, CancellationToken cancellationToken) =>
             {
-                var command = new UpdateRestaurantCommand(id, body.Name, body.Description, body.Address, body.Latitude, body.Longitude, body.PhoneNumber, body.ImageUrl, body.IsActive);
+                var command = new UpdateRestaurantCommand(id, body.Name, body.Description, body.Address, body.Latitude, body.Longitude, body.PhoneNumber, body.ImageUrl, body.DiscountPercent, body.IsActive);
                 return Results.Ok(await sender.Send(command, cancellationToken));
             })
             .WithName("AdminUpdateRestaurant");
@@ -62,7 +62,7 @@ public static class RestaurantsEndpoints
         return app;
     }
 
-    private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, bool IsActive);
+    private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive);
 
     /// <summary>Maps the <c>sort</c> query string ("name_asc" | "name_desc" | "nearest") to <see cref="RestaurantSortBy"/>, defaulting to <see cref="RestaurantSortBy.NameAsc"/> for anything else.</summary>
     private static RestaurantSortBy ParseSortBy(string? sort) => sort?.ToLowerInvariant() switch

@@ -5,6 +5,7 @@ class Restaurant {
     required this.address,
     required this.latitude,
     required this.longitude,
+    this.discountPercent = 0,
     this.description,
     this.phoneNumber,
     this.imageUrl,
@@ -16,6 +17,7 @@ class Restaurant {
         address: json['address'] as String,
         latitude: (json['latitude'] as num).toDouble(),
         longitude: (json['longitude'] as num).toDouble(),
+        discountPercent: (json['discountPercent'] as num?)?.toInt() ?? 0,
         description: json['description'] as String?,
         phoneNumber: json['phoneNumber'] as String?,
         imageUrl: json['imageUrl'] as String?,
@@ -26,6 +28,7 @@ class Restaurant {
   final String address;
   final double latitude;
   final double longitude;
+  final int discountPercent;
   final String? description;
   final String? phoneNumber;
   final String? imageUrl;

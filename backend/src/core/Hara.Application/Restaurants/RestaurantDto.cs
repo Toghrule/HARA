@@ -9,6 +9,7 @@ namespace Hara.Application.Restaurants;
 /// <param name="Longitude">Longitude of the restaurant's exact location, in decimal degrees.</param>
 /// <param name="PhoneNumber">Public-facing phone number, if any.</param>
 /// <param name="ImageUrl">Relative URL of the cover image, if one has been uploaded.</param>
+/// <param name="DiscountPercent">Percentage (0–100) off the table bill when a customer presents a valid reservation code.</param>
 /// <param name="IsActive">Whether the restaurant is currently visible to mobile app users.</param>
 /// <param name="CreatedAt">When the restaurant was created.</param>
 /// <param name="LastModifiedAt">When the restaurant was last updated, if ever.</param>
@@ -21,6 +22,7 @@ public sealed record RestaurantDto(
     double Longitude,
     string? PhoneNumber,
     string? ImageUrl,
+    int DiscountPercent,
     bool IsActive,
     DateTimeOffset CreatedAt,
     DateTimeOffset? LastModifiedAt)
@@ -34,6 +36,7 @@ public sealed record RestaurantDto(
         restaurant.Longitude,
         restaurant.PhoneNumber,
         restaurant.ImageUrl,
+        restaurant.DiscountPercent,
         restaurant.IsActive,
         restaurant.CreatedAt,
         restaurant.LastModifiedAt);
