@@ -5,6 +5,7 @@ import '../../features/reservations/data/reservation.dart';
 import '../../features/reservations/presentation/screens/reservation_code_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurant_detail_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurants_screen.dart';
+import '../../features/submissions/presentation/screens/submit_restaurant_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -19,6 +20,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => RestaurantDetailScreen(
           restaurantId: state.pathParameters['id']!,
         ),
+      ),
+      GoRoute(
+        path: '/submit-restaurant',
+        builder: (context, state) => const SubmitRestaurantScreen(),
       ),
       GoRoute(
         path: '/reservation',

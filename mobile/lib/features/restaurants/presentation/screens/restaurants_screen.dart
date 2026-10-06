@@ -56,7 +56,19 @@ class _RestaurantList extends StatelessWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           child: SizedBox(
             height: constraints.maxHeight,
-            child: const Center(child: Text('No restaurants yet.')),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('No restaurants yet.'),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => context.push('/submit-restaurant'),
+                    child: const Text('Own a restaurant? Add it to HARA'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       );
@@ -64,9 +76,19 @@ class _RestaurantList extends StatelessWidget {
 
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: restaurants.length,
+      itemCount: restaurants.length + 1,
       separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
+        if (index == restaurants.length) {
+          return ListTile(
+            leading: const Icon(Icons.add_business_outlined),
+            title: const Text('Own a restaurant?'),
+            subtitle: const Text('Add it to HARA'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/submit-restaurant'),
+          );
+        }
+
         final restaurant = restaurants[index];
         return ListTile(
           title: Text(restaurant.name),
