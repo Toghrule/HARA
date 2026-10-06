@@ -1,6 +1,7 @@
 using System.Text;
 using Hara.Api.Endpoints;
 using Hara.Api.Middleware;
+using Hara.Api.RateLimiting;
 using Hara.Application;
 using Hara.Infrastructure;
 using Hara.Persistence;
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration, builder.Environment);
+builder.Services.AddHaraRateLimiting(builder.Configuration);
 
 var jwtSection = builder.Configuration.GetSection(JwtOptions.SectionName);
 var jwtOptions = jwtSection.Get<JwtOptions>() ?? new JwtOptions();
@@ -90,6 +92,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseCors();
+// After CORS so a 429 still carries the CORS headers a browser client needs to read it.
+app.UseRateLimiter();
 
 var fileStorageBasePath = builder.Configuration["FileStorage:BasePath"] ?? "App_Data/uploads";
 var fileStoragePublicUrl = builder.Configuration["FileStorage:PublicBaseUrl"] ?? "/uploads";

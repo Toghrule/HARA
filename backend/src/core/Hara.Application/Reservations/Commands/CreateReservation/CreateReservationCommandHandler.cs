@@ -1,3 +1,4 @@
+using Hara.Application.Common;
 using Hara.Application.Common.Exceptions;
 using Hara.Application.Common.Interfaces;
 using Hara.Domain.Reservations;
@@ -11,6 +12,9 @@ public class CreateReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
 {
     private const int MaxCodeAttempts = 5;
 
+    /// <summary>Caps how many reservations one phone number can make in a rolling 24 hours, whatever their state.</summary>
+    private const int MaxReservationsPerPhonePerDay = 5;
+
     public async Task<ReservationDto> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
     {
         var restaurant = await unitOfWork.Repository<Restaurant>().GetByIdAsync(request.RestaurantId, cancellationToken);
@@ -21,16 +25,18 @@ public class CreateReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
         }
 
         var repository = unitOfWork.Repository<Reservation>();
-        var code = await GenerateUniqueCodeAsync(repository, cancellationToken);
+        var phoneNumber = PhoneNumber.Normalize(request.PhoneNumber);
         var now = DateTimeOffset.UtcNow;
+
+        await EnsurePhoneMayReserveAsync(repository, phoneNumber, now, cancellationToken);
 
         var reservation = new Reservation
         {
             RestaurantId = restaurant.Id,
             Restaurant = restaurant,
-            PhoneNumber = request.PhoneNumber.Trim(),
+            PhoneNumber = phoneNumber,
             DurationMinutes = request.DurationMinutes,
-            Code = code,
+            Code = await GenerateUniqueCodeAsync(repository, cancellationToken),
             ExpiresAt = now.AddMinutes(request.DurationMinutes)
         };
 
@@ -38,6 +44,40 @@ public class CreateReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ReservationDto.FromEntity(reservation, now);
+    }
+
+    /// <summary>
+    /// Phone numbers aren't verified, so these rules only blunt casual abuse (a script holding a venue's tables
+    /// with phantom reservations); SMS verification is what would stop a determined attacker.
+    /// </summary>
+    private static async Task EnsurePhoneMayReserveAsync(
+        IRepository<Reservation> repository,
+        string phoneNumber,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        var hasLiveReservation = await repository.Query().AnyAsync(
+            r => r.PhoneNumber == phoneNumber && r.Status == ReservationStatus.Active && r.ExpiresAt > now,
+            cancellationToken);
+
+        if (hasLiveReservation)
+        {
+            throw new ValidationException(
+                "PhoneNumber",
+                "This phone number already has an active reservation. Use its code, or wait until it expires to book another.");
+        }
+
+        var since = now.AddHours(-24);
+        var recentCount = await repository.Query().CountAsync(
+            r => r.PhoneNumber == phoneNumber && r.CreatedAt > since,
+            cancellationToken);
+
+        if (recentCount >= MaxReservationsPerPhonePerDay)
+        {
+            throw new ValidationException(
+                "PhoneNumber",
+                "This phone number has reached today's reservation limit. Please try again tomorrow.");
+        }
     }
 
     private static async Task<string> GenerateUniqueCodeAsync(IRepository<Reservation> repository, CancellationToken cancellationToken)

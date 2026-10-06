@@ -1,4 +1,5 @@
-﻿using Hara.Application.Restaurants.Submissions.Commands.CreateSubmission;
+﻿using Hara.Api.RateLimiting;
+using Hara.Application.Restaurants.Submissions.Commands.CreateSubmission;
 using Hara.Application.Restaurants.Submissions.Commands.DeleteSubmission;
 using Hara.Application.Restaurants.Submissions.Commands.ReviewSubmission;
 using Hara.Application.Restaurants.Submissions.Queries.GetSubmissionById;
@@ -19,7 +20,8 @@ public static class SubmissionsEndpoints
             })
             .WithTags("Submissions")
             .WithName("CreateSubmission")
-            .AllowAnonymous();
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.Submissions);
 
         var admin = app.MapGroup("/api/admin/submissions")
             .WithTags("Admin.Submissions")

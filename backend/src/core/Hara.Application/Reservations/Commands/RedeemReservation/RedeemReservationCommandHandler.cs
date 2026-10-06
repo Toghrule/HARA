@@ -28,9 +28,7 @@ public class RedeemReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
 
         if (problem is not null)
         {
-            var exception = new ValidationException();
-            exception.Errors["code"] = [problem];
-            throw exception;
+            throw new ValidationException("code", problem);
         }
 
         reservation.Status = ReservationStatus.Redeemed;

@@ -1,3 +1,4 @@
+using Hara.Api.RateLimiting;
 using Hara.Application.Reservations.Commands.CreateReservation;
 using Hara.Application.Reservations.Commands.RedeemReservation;
 using Hara.Application.Reservations.Queries.GetReservations;
@@ -17,7 +18,8 @@ public static class ReservationsEndpoints
             })
             .WithTags("Reservations")
             .WithName("CreateReservation")
-            .AllowAnonymous();
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.Reservations);
 
         var admin = app.MapGroup("/api/admin/reservations")
             .WithTags("Admin.Reservations")

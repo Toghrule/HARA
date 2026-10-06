@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,8 +10,9 @@ import 'package:hara/features/reservations/presentation/widgets/reserve_sheet.da
 import 'package:hara/features/restaurants/data/restaurant.dart';
 
 class _FakeReservationsRepository extends ReservationsRepository {
-  _FakeReservationsRepository() : super(ApiClient());
+  _FakeReservationsRepository({this.error}) : super(ApiClient());
 
+  final Object? error;
   final List<({String restaurantId, String phoneNumber, int durationMinutes})> calls = [];
 
   @override
@@ -19,6 +21,7 @@ class _FakeReservationsRepository extends ReservationsRepository {
     required String phoneNumber,
     required int durationMinutes,
   }) async {
+    if (error != null) throw error!;
     calls.add((restaurantId: restaurantId, phoneNumber: phoneNumber, durationMinutes: durationMinutes));
     return _reservation(expiresIn: Duration(minutes: durationMinutes));
   }
@@ -91,8 +94,8 @@ void main() {
     late _FakeReservationsRepository repository;
     Reservation? result;
 
-    Future<void> openSheet(WidgetTester tester) async {
-      repository = _FakeReservationsRepository();
+    Future<void> openSheet(WidgetTester tester, {Object? error}) async {
+      repository = _FakeReservationsRepository(error: error);
       result = null;
 
       await tester.pumpWidget(
@@ -149,6 +152,34 @@ void main() {
       expect(repository.calls.single.phoneNumber, '+994 50 123 45 67');
       expect(repository.calls.single.durationMinutes, 60);
       expect(result?.code, 'S68NRG');
+    });
+
+    testWidgets('shows the server\'s reason when the reservation is refused and lets the user retry', (tester) async {
+      final options = RequestOptions(path: '/api/reservations');
+      await openSheet(
+        tester,
+        error: DioException(
+          requestOptions: options,
+          response: Response(
+            requestOptions: options,
+            statusCode: 400,
+            data: {
+              'title': 'Validation failed',
+              'errors': {
+                'PhoneNumber': ['This phone number already has an active reservation.'],
+              },
+            },
+          ),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextField), '+994 50 123 45 67');
+      await tester.tap(find.widgetWithText(FilledButton, 'Reserve'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('This phone number already has an active reservation.'), findsOneWidget);
+      expect(result, isNull);
+      expect(tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Reserve')).onPressed, isNotNull);
     });
   });
 }

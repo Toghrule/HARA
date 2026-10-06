@@ -23,6 +23,13 @@ public class ValidationException : Exception
             .ToDictionary(g => g.Key, g => g.ToArray());
     }
 
+    /// <summary>Creates a single-error exception for a business rule a handler enforces (as opposed to a validator).</summary>
+    public ValidationException(string propertyName, string message)
+        : this()
+    {
+        Errors[propertyName] = [message];
+    }
+
     /// <summary>Validation errors, keyed by the property name that failed.</summary>
     public IDictionary<string, string[]> Errors { get; }
 }
