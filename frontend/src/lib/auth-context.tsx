@@ -18,7 +18,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       isAuthenticated,
       login: async (email: string, password: string) => {
-        const result = await api.post<LoginResult>("/api/auth/login", { email, password });
+        const result = await api.post<LoginResult>("/api/auth/login", { email, password }, { anonymous: true });
         setSession(result.token, result.expiresAtUtc);
         setIsAuthenticated(true);
       },

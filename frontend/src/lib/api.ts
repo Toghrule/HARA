@@ -14,21 +14,35 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+interface RequestConfig {
+  /**
+   * For calls made before signing in (the login itself): don't send the stored token, and don't
+   * read a 401 as "your session expired" — there is no session yet, it just means wrong credentials.
+   */
+  anonymous?: boolean;
+}
+
+async function request<T>(path: string, options: RequestInit = {}, config: RequestConfig = {}): Promise<T> {
+  const anonymous = config.anonymous ?? false;
   const headers = new Headers(options.headers);
   const isFormData = options.body instanceof FormData;
   if (options.body && !isFormData) {
     headers.set("Content-Type", "application/json");
   }
 
-  const token = getToken();
+  const token = anonymous ? null : getToken();
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
+  } catch {
+    throw new ApiError(0, "Can't reach the server. Make sure the backend is running, then try again.");
+  }
 
-  if (response.status === 401) {
+  if (response.status === 401 && !anonymous) {
     clearSession();
     if (window.location.pathname !== "/login") {
       window.location.assign("/login");
@@ -59,8 +73,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const api = {
   get: <T>(path: string) => request<T>(path),
-  post: <T>(path: string, body?: unknown) =>
-    request<T>(path, { method: "POST", body: body === undefined ? undefined : JSON.stringify(body) }),
+  post: <T>(path: string, body?: unknown, config?: RequestConfig) =>
+    request<T>(path, { method: "POST", body: body === undefined ? undefined : JSON.stringify(body) }, config),
   put: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: "PUT", body: body === undefined ? undefined : JSON.stringify(body) }),
   patch: <T>(path: string, body?: unknown) =>
