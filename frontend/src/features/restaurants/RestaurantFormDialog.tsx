@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type ClipboardEvent } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +11,7 @@ import { FormField } from "../../components/ui/FormField";
 import { ImageUploader } from "../../components/ui/ImageUploader";
 import { useToast } from "../../components/ui/Toast";
 import { ApiError } from "../../lib/api";
+import { parseCoordinatePair } from "../../lib/coordinates";
 import { useCreateRestaurant, useUpdateRestaurant } from "./api";
 import type { RestaurantDto } from "../../types";
 
@@ -105,6 +106,17 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: Res
   const longitude = watch("longitude");
   const hasValidCoordinates = !Number.isNaN(latitude) && !Number.isNaN(longitude) && !(latitude === 0 && longitude === 0);
 
+  // A number input drops everything but digits, so a pasted "40°23'29.1"N 49°57'12.7"E" or
+  // "40.4093, 49.8671" would turn into garbage. Recognise those and fill both fields instead.
+  const handleCoordinatePaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    const pair = parseCoordinatePair(event.clipboardData.getData("text"));
+    if (!pair) return;
+
+    event.preventDefault();
+    setValue("latitude", pair.latitude, { shouldDirty: true, shouldValidate: true });
+    setValue("longitude", pair.longitude, { shouldDirty: true, shouldValidate: true });
+  };
+
   const onSubmit = async (values: FormValues) => {
     const payload = {
       name: values.name,
@@ -153,6 +165,7 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: Res
               step="any"
               {...register("latitude")}
               onFocus={(e) => e.currentTarget.select()}
+              onPaste={handleCoordinatePaste}
             />
           </FormField>
           <FormField label="Longitude" htmlFor="longitude" error={errors.longitude?.message}>
@@ -162,9 +175,14 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: Res
               step="any"
               {...register("longitude")}
               onFocus={(e) => e.currentTarget.select()}
+              onPaste={handleCoordinatePaste}
             />
           </FormField>
         </div>
+        <p className="-mt-2 text-xs text-slate-500">
+          Tip: copy the coordinates from Google Maps (right-click the place) and paste them into either box; both boxes
+          fill in.
+        </p>
         {hasValidCoordinates && (
           <a
             href={`https://www.google.com/maps?q=${latitude},${longitude}`}
