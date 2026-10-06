@@ -44,13 +44,23 @@ const emptyValues: FormValues = {
   isActive: true,
 };
 
+/** Starting values for a new restaurant, e.g. taken from an approved submission. */
+export interface RestaurantPrefill {
+  name?: string;
+  address?: string;
+  phoneNumber?: string;
+  description?: string;
+}
+
 interface RestaurantFormDialogProps {
   open: boolean;
   onClose: () => void;
   restaurant?: RestaurantDto | null;
+  /** Only used when creating. Keep the object stable between renders or the form resets while typing. */
+  prefill?: RestaurantPrefill | null;
 }
 
-export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFormDialogProps) {
+export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: RestaurantFormDialogProps) {
   const isEdit = Boolean(restaurant);
   const { push } = useToast();
   const createMutation = useCreateRestaurant();
@@ -80,9 +90,15 @@ export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFo
             discountPercent: restaurant.discountPercent,
             isActive: restaurant.isActive,
           }
-        : emptyValues
+        : {
+            ...emptyValues,
+            name: prefill?.name ?? "",
+            address: prefill?.address ?? "",
+            phoneNumber: prefill?.phoneNumber ?? "",
+            description: prefill?.description ?? "",
+          }
     );
-  }, [open, restaurant, reset]);
+  }, [open, restaurant, prefill, reset]);
 
   const imageUrl = watch("imageUrl");
   const latitude = watch("latitude");
@@ -117,6 +133,12 @@ export function RestaurantFormDialog({ open, onClose, restaurant }: RestaurantFo
   return (
     <Dialog open={open} onClose={onClose} title={isEdit ? "Edit restaurant" : "Add restaurant"}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {!isEdit && prefill && (
+          <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            Filled in from the submission. Add the exact coordinates (and a cover image and discount, if you have them)
+            before saving.
+          </p>
+        )}
         <FormField label="Name" htmlFor="name" error={errors.name?.message}>
           <Input id="name" {...register("name")} />
         </FormField>

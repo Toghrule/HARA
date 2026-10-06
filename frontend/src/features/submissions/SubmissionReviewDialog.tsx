@@ -44,7 +44,7 @@ export function SubmissionReviewDialog({ submission, decision, onClose }: Submis
       <div className="space-y-4">
         <p className="text-sm text-slate-600">
           {isApprove
-            ? `Mark "${submission?.restaurantName}" as approved. You'll still need to create the restaurant separately.`
+            ? `Mark "${submission?.restaurantName}" as approved. This does not publish it yet: afterwards, use "Create restaurant" on the submission to add it with these details filled in.`
             : `Mark "${submission?.restaurantName}" as rejected.`}
         </p>
         <FormField label="Admin note (optional)">

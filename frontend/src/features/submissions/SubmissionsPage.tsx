@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Check, Trash2, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Check, Plus, Trash2, X } from "lucide-react";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { Button } from "../../components/ui/Button";
 import { Badge } from "../../components/ui/Badge";
@@ -12,6 +12,7 @@ import { cn, formatDate } from "../../lib/utils";
 import { submissionStatusBadgeVariant, submissionStatusLabels } from "../../lib/enumLabels";
 import { useDeleteSubmission, useSubmissions } from "./api";
 import { SubmissionReviewDialog } from "./SubmissionReviewDialog";
+import { RestaurantFormDialog } from "../restaurants/RestaurantFormDialog";
 import { SubmissionStatus } from "../../types";
 import type { RestaurantSubmissionDto } from "../../types";
 
@@ -33,6 +34,20 @@ export function SubmissionsPage() {
     decision: SubmissionStatus.Approved | SubmissionStatus.Rejected;
   } | null>(null);
   const [pendingDelete, setPendingDelete] = useState<RestaurantSubmissionDto | null>(null);
+  const [createFrom, setCreateFrom] = useState<RestaurantSubmissionDto | null>(null);
+
+  const prefill = useMemo(
+    () =>
+      createFrom
+        ? {
+            name: createFrom.restaurantName,
+            address: createFrom.address ?? undefined,
+            phoneNumber: createFrom.phoneNumber ?? undefined,
+            description: createFrom.description ?? undefined,
+          }
+        : null,
+    [createFrom]
+  );
 
   const handleDelete = async () => {
     if (!pendingDelete) return;
@@ -128,6 +143,18 @@ export function SubmissionsPage() {
                           </Button>
                         </>
                       )}
+                      {submission.status === SubmissionStatus.Approved && (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="whitespace-nowrap"
+                          onClick={() => setCreateFrom(submission)}
+                        >
+                          <Plus className="h-4 w-4" />
+                          Create restaurant
+                        </Button>
+                      )}
                       <Button type="button" variant="ghost" size="sm" onClick={() => setPendingDelete(submission)}>
                         <Trash2 className="h-4 w-4 text-red-600" />
                       </Button>
@@ -145,6 +172,7 @@ export function SubmissionsPage() {
         decision={reviewTarget?.decision ?? null}
         onClose={() => setReviewTarget(null)}
       />
+      <RestaurantFormDialog open={createFrom !== null} onClose={() => setCreateFrom(null)} prefill={prefill} />
       <ConfirmDialog
         open={pendingDelete !== null}
         title="Delete submission"
