@@ -19,6 +19,12 @@ class RestaurantsRepository {
         .map((json) => Restaurant.fromJson(json as Map<String, dynamic>))
         .toList();
   }
+
+  Future<Restaurant> getRestaurant(String id) async {
+    final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/restaurants/$id');
+
+    return Restaurant.fromJson(response.data!);
+  }
 }
 
 final restaurantsRepositoryProvider = Provider<RestaurantsRepository>((ref) {

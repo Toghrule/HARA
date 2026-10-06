@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../../../reservations/data/reservation.dart';
-import '../../../reservations/presentation/widgets/reserve_sheet.dart';
+import '../../../../core/network/api_error.dart';
+import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
+import '../maps_launcher.dart';
 import '../providers/restaurant_sort_provider.dart';
 import '../providers/restaurants_provider.dart';
 
@@ -34,7 +34,7 @@ class RestaurantsScreen extends ConsumerWidget {
           data: (restaurants) => _RestaurantList(restaurants: restaurants),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stackTrace) => _ErrorView(
-            message: '$error',
+            message: apiErrorMessage(error),
             onRetry: () => ref.invalidate(restaurantsProvider),
           ),
         ),
@@ -82,38 +82,18 @@ class _RestaurantList extends StatelessWidget {
               IconButton(
                 tooltip: 'Open in Google Maps',
                 icon: const Icon(Icons.map_outlined),
-                onPressed: () => _openInGoogleMaps(restaurant),
+                onPressed: () => openInGoogleMaps(restaurant),
               ),
               FilledButton.tonal(
-                onPressed: () => _reserve(context, restaurant),
+                onPressed: () => startReservation(context, restaurant),
                 child: const Text('Reserve'),
               ),
             ],
           ),
-          onTap: () => _openInGoogleMaps(restaurant),
+          onTap: () => context.push('/restaurants/${restaurant.id}'),
         );
       },
     );
-  }
-
-  Future<void> _reserve(BuildContext context, Restaurant restaurant) async {
-    final reservation = await showModalBottomSheet<Reservation>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (_) => ReserveSheet(restaurant: restaurant),
-    );
-
-    if (reservation != null && context.mounted) {
-      await context.push('/reservation', extra: reservation);
-    }
-  }
-
-  Future<void> _openInGoogleMaps(Restaurant restaurant) async {
-    final uri = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=${restaurant.latitude},${restaurant.longitude}',
-    );
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }
 

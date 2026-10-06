@@ -1,3 +1,5 @@
+import '../../../core/constants/app_constants.dart';
+
 class Restaurant {
   const Restaurant({
     required this.id,
@@ -32,4 +34,10 @@ class Restaurant {
   final String? description;
   final String? phoneNumber;
   final String? imageUrl;
+
+  /// Full URL of the cover image, or `null` if none was uploaded.
+  Uri? get imageUri => imageUrl == null ? null : AppConstants.resolveApiUrl(imageUrl!);
+
+  /// Admins start new restaurants at 0,0 ("null island"), which means "not set yet".
+  bool get hasCoordinates => !(latitude == 0 && longitude == 0);
 }
