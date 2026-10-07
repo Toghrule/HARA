@@ -3,7 +3,8 @@ setlocal enabledelayedexpansion
 
 rem =====================================================================
 rem  HARA dev environment restart
-rem  Restarts: 1) Postgres DB (docker), 2) Backend API, 3) Frontend admin
+rem  Restarts: 1) Postgres DB (docker), 2) Backend API, 3) Frontend admin,
+rem            4) Mobile app (Flutter, served to the browser)
 rem  Portable: paths are resolved relative to this script's own location,
 rem  so it works from any drive/user/machine as long as the repo layout
 rem  (backend/, frontend/) is intact next to this file.
@@ -13,13 +14,17 @@ set "ROOT=%~dp0"
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
 
 set "FRONTEND_DIR=%ROOT%\frontend"
+set "MOBILE_DIR=%ROOT%\mobile"
 set "BACKEND_PORT=5080"
 set "FRONTEND_PORT=5173"
+rem  5174 is fixed on purpose: the backend only allows browser calls from this port (CORS).
+set "MOBILE_PORT=5174"
 set "DB_PORT=5432"
 
 set "DB_OK=0"
 set "BACKEND_OK=0"
 set "FRONTEND_OK=0"
+set "MOBILE_OK=0"
 
 rem --- locate the backend .csproj dynamically (don't hardcode the path) ---
 set "BACKEND_CSPROJ="
@@ -37,6 +42,7 @@ echo.
 call :RestartDatabase
 call :RestartBackend
 call :RestartFrontend
+call :RestartMobile
 
 echo.
 echo ============================================================
@@ -45,8 +51,10 @@ echo ============================================================
 if "%DB_OK%"=="1"       (echo   [OK] Database  - up on port %DB_PORT%)       else (echo   [X]  Database  - FAILED, see log above)
 if "%BACKEND_OK%"=="1"  (echo   [OK] Backend   - up on http://localhost:%BACKEND_PORT%) else (echo   [X]  Backend   - FAILED, see log above)
 if "%FRONTEND_OK%"=="1" (echo   [OK] Frontend  - up on http://localhost:%FRONTEND_PORT%) else (echo   [X]  Frontend  - FAILED, see log above)
+if "%MOBILE_OK%"=="1"   (echo   [OK] Mobile    - open http://localhost:%MOBILE_PORT% in your browser) else (echo   [X]  Mobile    - FAILED, see log above)
 echo.
-echo Done. Backend and frontend are running in their own windows.
+echo Done. Backend, admin panel and mobile app are running in their own windows.
+echo The mobile app compiles on first start: if its page is blank, wait a minute and refresh.
 pause
 exit /b 0
 
@@ -56,7 +64,7 @@ rem  Step 1: Database (docker CLI only - never touches Docker Desktop UI)
 rem =====================================================================
 :RestartDatabase
 echo ============================================================
-echo  Step 1/3: Database (Postgres in Docker)
+echo  Step 1/4: Database (Postgres in Docker)
 echo ============================================================
 
 where docker >nul 2>&1
@@ -94,7 +102,7 @@ rem =====================================================================
 :RestartBackend
 echo.
 echo ============================================================
-echo  Step 2/3: Backend API
+echo  Step 2/4: Backend API
 echo ============================================================
 
 where dotnet >nul 2>&1
@@ -125,7 +133,7 @@ rem =====================================================================
 :RestartFrontend
 echo.
 echo ============================================================
-echo  Step 3/3: Frontend Admin App
+echo  Step 3/4: Frontend Admin App
 echo ============================================================
 
 where npm >nul 2>&1
@@ -150,6 +158,43 @@ start "HARA Frontend Admin" /D "%FRONTEND_DIR%" cmd /k npm run dev
 
 call :WaitForPort %FRONTEND_PORT% "Frontend Admin App" 45
 set "FRONTEND_OK=1"
+goto :eof
+
+
+rem =====================================================================
+rem  Step 4: Mobile app (flutter run, served to the browser)
+rem =====================================================================
+:RestartMobile
+echo.
+echo ============================================================
+echo  Step 4/4: Mobile app ^(Flutter, in the browser^)
+echo ============================================================
+
+set "FLUTTER_BAT="
+for /f "delims=" %%F in ('where flutter.bat 2^>nul') do (
+    if not defined FLUTTER_BAT set "FLUTTER_BAT=%%F"
+)
+if not defined FLUTTER_BAT if exist "%USERPROFILE%\Desktop\flutter\bin\flutter.bat" set "FLUTTER_BAT=%USERPROFILE%\Desktop\flutter\bin\flutter.bat"
+if not defined FLUTTER_BAT (
+    echo   [X] Flutter was not found. Add its "bin" folder to PATH, or install it in %USERPROFILE%\Desktop\flutter
+    goto :eof
+)
+echo   [OK] Flutter: !FLUTTER_BAT!
+
+if not exist "%MOBILE_DIR%\pubspec.yaml" (
+    echo   [X] Mobile project not found: %MOBILE_DIR%
+    goto :eof
+)
+
+call :KillPort %MOBILE_PORT% "Mobile app"
+
+echo   -^> Starting the mobile app ^(flutter run, web^) in a new window...
+echo       The first start compiles the app and can take 1-2 minutes.
+start "HARA Mobile (Flutter web)" /D "%MOBILE_DIR%" cmd /k ""!FLUTTER_BAT!" run -d web-server --web-port %MOBILE_PORT%"
+
+call :WaitForPort %MOBILE_PORT% "Mobile app" 240
+netstat -ano | findstr /R /C:":%MOBILE_PORT% .*LISTENING" >nul
+if not errorlevel 1 set "MOBILE_OK=1"
 goto :eof
 
 
