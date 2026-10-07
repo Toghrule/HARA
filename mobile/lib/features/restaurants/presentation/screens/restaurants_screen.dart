@@ -1,19 +1,62 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/error_view.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
 import '../maps_launcher.dart';
+import '../providers/restaurant_search_provider.dart';
 import '../providers/restaurant_sort_provider.dart';
 import '../providers/restaurants_provider.dart';
 
-class RestaurantsScreen extends ConsumerWidget {
+class RestaurantsScreen extends ConsumerStatefulWidget {
   const RestaurantsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RestaurantsScreen> createState() => _RestaurantsScreenState();
+}
+
+class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
+  static const _searchDelay = Duration(milliseconds: 400);
+
+  late final TextEditingController _searchController;
+  Timer? _searchDebounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(text: ref.read(restaurantSearchProvider));
+  }
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  // Wait for a pause in typing so each keystroke doesn't trigger a request.
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(_searchDelay, () => ref.read(restaurantSearchProvider.notifier).set(value));
+  }
+
+  void _searchNow(String value) {
+    _searchDebounce?.cancel();
+    ref.read(restaurantSearchProvider.notifier).set(value);
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    _searchNow('');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final restaurantsAsync = ref.watch(restaurantsProvider);
     final sort = ref.watch(restaurantSortProvider);
 
@@ -33,45 +76,87 @@ class RestaurantsScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => ref.refresh(restaurantsProvider.future),
-        child: restaurantsAsync.when(
-          data: (restaurants) => _RestaurantList(restaurants: restaurants),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) => _ErrorView(
-            message: apiErrorMessage(error),
-            onRetry: () => ref.invalidate(restaurantsProvider),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _searchController,
+              builder: (context, value, _) => TextField(
+                controller: _searchController,
+                onChanged: _onSearchChanged,
+                onSubmitted: _searchNow,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  hintText: 'Search by name or address',
+                  isDense: true,
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: value.text.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: 'Clear search',
+                          icon: const Icon(Icons.close),
+                          onPressed: _clearSearch,
+                        ),
+                  border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(28))),
+                ),
+              ),
+            ),
           ),
-        ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () => ref.refresh(restaurantsProvider.future),
+              child: restaurantsAsync.when(
+                data: (state) => _RestaurantList(state: state, onClearSearch: _clearSearch),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) => ErrorView(
+                  message: 'Couldn\'t load restaurants.\n${apiErrorMessage(error)}',
+                  onRetry: () => ref.invalidate(restaurantsProvider),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _RestaurantList extends StatelessWidget {
-  const _RestaurantList({required this.restaurants});
+class _RestaurantList extends ConsumerWidget {
+  const _RestaurantList({required this.state, required this.onClearSearch});
 
-  final List<Restaurant> restaurants;
+  final RestaurantsState state;
+  final VoidCallback onClearSearch;
 
   @override
-  Widget build(BuildContext context) {
-    if (restaurants.isEmpty) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final search = ref.watch(restaurantSearchProvider);
+
+    if (state.items.isEmpty) {
       return LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: SizedBox(
             height: constraints.maxHeight,
             child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('No restaurants yet.'),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () => context.push('/submit-restaurant'),
-                    child: const Text('Own a restaurant? Add it to HARA'),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      search.isEmpty ? 'No restaurants yet.' : 'No restaurants match "$search".',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    if (search.isNotEmpty)
+                      TextButton(onPressed: onClearSearch, child: const Text('Clear search')),
+                    TextButton(
+                      onPressed: () => context.push('/submit-restaurant'),
+                      child: const Text('Own a restaurant? Add it to HARA'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -81,72 +166,100 @@ class _RestaurantList extends StatelessWidget {
 
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: restaurants.length + 1,
+      itemCount: state.items.length + 1,
       separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
-        if (index == restaurants.length) {
-          return ListTile(
-            leading: const Icon(Icons.add_business_outlined),
-            title: const Text('Own a restaurant?'),
-            subtitle: const Text('Add it to HARA'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/submit-restaurant'),
-          );
-        }
+        if (index == state.items.length) return _ListFooter(state: state);
 
-        final restaurant = restaurants[index];
-        return ListTile(
-          title: Text(restaurant.name),
-          subtitle: Text(
-            restaurant.discountPercent > 0
-                ? '${restaurant.address}\n${restaurant.discountPercent}% off with a reservation code'
-                : restaurant.address,
-          ),
-          isThreeLine: restaurant.discountPercent > 0,
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                tooltip: 'Open in Google Maps',
-                icon: const Icon(Icons.map_outlined),
-                onPressed: () => openInGoogleMaps(restaurant),
-              ),
-              FilledButton.tonal(
-                onPressed: () => startReservation(context, restaurant),
-                child: const Text('Reserve'),
-              ),
-            ],
-          ),
-          onTap: () => context.push('/restaurants/${restaurant.id}'),
-        );
+        return _RestaurantTile(restaurant: state.items[index]);
       },
     );
   }
 }
 
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry});
+class _RestaurantTile extends StatelessWidget {
+  const _RestaurantTile({required this.restaurant});
 
-  final String message;
-  final VoidCallback onRetry;
+  final Restaurant restaurant;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+    return ListTile(
+      title: Text(restaurant.name),
+      subtitle: Text(
+        restaurant.discountPercent > 0
+            ? '${restaurant.address}\n${restaurant.discountPercent}% off with a reservation code'
+            : restaurant.address,
+      ),
+      isThreeLine: restaurant.discountPercent > 0,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            tooltip: 'Open in Google Maps',
+            icon: const Icon(Icons.map_outlined),
+            onPressed: () => openInGoogleMaps(restaurant),
+          ),
+          FilledButton.tonal(
+            onPressed: () => startReservation(context, restaurant),
+            child: const Text('Reserve'),
+          ),
+        ],
+      ),
+      onTap: () => context.push('/restaurants/${restaurant.id}'),
+    );
+  }
+}
+
+/// The last row: the next page loading in (the list asks for it as soon as this row scrolls into
+/// view), a retry if that failed, or, once everything is loaded, the "add your restaurant" entry.
+class _ListFooter extends ConsumerWidget {
+  const _ListFooter({required this.state});
+
+  final RestaurantsState state;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (state.hasMore && state.loadMoreError != null) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Couldn\'t load restaurants.\n$message',
+              'Couldn\'t load more restaurants.\n${apiErrorMessage(state.loadMoreError!)}',
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
-            FilledButton(onPressed: onRetry, child: const Text('Retry')),
+            const SizedBox(height: 8),
+            FilledButton(
+              onPressed: () => ref.read(restaurantsProvider.notifier).retryLoadMore(),
+              child: const Text('Retry'),
+            ),
           ],
         ),
-      ),
+      );
+    }
+
+    if (state.hasMore) {
+      if (!state.isLoadingMore) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ref.read(restaurantsProvider.notifier).loadMore();
+        });
+      }
+
+      return const Padding(
+        padding: EdgeInsets.all(24),
+        child: Center(
+          child: SizedBox(height: 24, width: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+        ),
+      );
+    }
+
+    return ListTile(
+      leading: const Icon(Icons.add_business_outlined),
+      title: const Text('Own a restaurant?'),
+      subtitle: const Text('Add it to HARA'),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => context.push('/submit-restaurant'),
     );
   }
 }

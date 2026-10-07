@@ -41,6 +41,13 @@ class AboutScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/faq'),
             ),
+            ListTile(
+              leading: const Icon(Icons.add_business_outlined),
+              title: const Text('Own a restaurant?'),
+              subtitle: const Text('Add it to HARA'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/submit-restaurant'),
+            ),
           ],
         ),
       ),

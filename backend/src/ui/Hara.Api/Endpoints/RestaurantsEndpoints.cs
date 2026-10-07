@@ -11,10 +11,11 @@ public static class RestaurantsEndpoints
 {
     public static IEndpointRouteBuilder MapRestaurantsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, ISender sender, CancellationToken cancellationToken) =>
+        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, string? search, int? pageSize, int? page, ISender sender, CancellationToken cancellationToken) =>
             {
                 var sortBy = ParseSortBy(sort);
-                return Results.Ok(await sender.Send(new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng), cancellationToken));
+                var query = new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng, search, pageSize, page);
+                return Results.Ok(await sender.Send(query, cancellationToken));
             })
             .WithTags("Restaurants")
             .WithName("GetActiveRestaurants")

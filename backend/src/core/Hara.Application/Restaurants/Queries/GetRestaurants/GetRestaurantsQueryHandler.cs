@@ -1,3 +1,4 @@
+using Hara.Application.Common;
 using Hara.Application.Common.Interfaces;
 using Hara.Domain.Restaurants;
 using MediatR;
@@ -20,6 +21,16 @@ public class GetRestaurantsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
 
         var restaurants = await query.ToListAsync(cancellationToken);
 
+        // Filtered in memory, like the sorting below, so matching can ignore Azerbaijani diacritics
+        // consistently instead of depending on the database's collation.
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var term = SearchText.Fold(request.Search);
+            restaurants = restaurants
+                .Where(r => SearchText.Fold(r.Name).Contains(term) || SearchText.Fold(r.Address).Contains(term))
+                .ToList();
+        }
+
         var sortBy = request.SortBy == RestaurantSortBy.Nearest && (request.Latitude is null || request.Longitude is null)
             ? RestaurantSortBy.NameAsc
             : request.SortBy;
@@ -30,6 +41,11 @@ public class GetRestaurantsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
             RestaurantSortBy.Nearest => restaurants.OrderBy(r => DistanceKm(request.Latitude!.Value, request.Longitude!.Value, r.Latitude, r.Longitude)),
             _ => restaurants.OrderBy(r => r.Name, StringComparer.OrdinalIgnoreCase),
         };
+
+        if (request.PageSize is { } pageSize)
+        {
+            sorted = sorted.Skip(((request.Page ?? 1) - 1) * pageSize).Take(pageSize);
+        }
 
         return sorted.Select(RestaurantDto.FromEntity).ToList();
     }

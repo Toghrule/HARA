@@ -43,7 +43,13 @@ class _FakeRestaurantsRepository extends RestaurantsRepository {
   _FakeRestaurantsRepository() : super(ApiClient());
 
   @override
-  Future<List<Restaurant>> getRestaurants(RestaurantSort sort) async => const [
+  Future<List<Restaurant>> getRestaurants({
+    RestaurantSort sort = RestaurantSort.nameAsc,
+    String search = '',
+    int page = 1,
+    int pageSize = 20,
+  }) async =>
+      const [
         Restaurant(id: 'r1', name: 'Only One', address: 'Somewhere 1', latitude: 1, longitude: 1),
       ];
 }
