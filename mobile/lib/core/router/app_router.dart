@@ -14,6 +14,8 @@ import '../../features/reservations/data/reservation.dart';
 import '../../features/reservations/presentation/screens/reservation_code_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurant_detail_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurants_screen.dart';
+import '../../features/venue/data/venue_me.dart';
+import '../../features/venue/presentation/screens/change_request_screen.dart';
 import '../../features/venue/presentation/screens/venue_home_screen.dart';
 import '../auth/auth_controller.dart';
 
@@ -67,6 +69,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/venue',
         builder: (context, state) => const VenueHomeScreen(),
+      ),
+      GoRoute(
+        path: '/venue/change-request',
+        // The restaurant travels as route `extra`; after a browser refresh it is gone, so go back to the venue home.
+        redirect: (context, state) => state.extra is VenueRestaurant ? null : '/venue',
+        builder: (context, state) => ChangeRequestScreen(restaurant: state.extra! as VenueRestaurant),
       ),
       GoRoute(
         path: '/restaurants/:id',

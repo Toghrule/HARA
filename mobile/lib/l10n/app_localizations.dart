@@ -747,6 +747,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Browse restaurants'**
   String get browseAsCustomer;
+
+  /// No description provided for @tabConfirmCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm code'**
+  String get tabConfirmCode;
+
+  /// No description provided for @tabReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations'**
+  String get tabReservations;
+
+  /// No description provided for @tabTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get tabTeam;
+
+  /// No description provided for @tabRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant'**
+  String get tabRestaurant;
+
+  /// No description provided for @codeInputLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer\'s code'**
+  String get codeInputLabel;
+
+  /// No description provided for @checkCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the code'**
+  String get checkCode;
+
+  /// No description provided for @codeNotFoundHere.
+  ///
+  /// In en, this message translates to:
+  /// **'This code was not found at your restaurant.'**
+  String get codeNotFoundHere;
+
+  /// No description provided for @giveDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Give {percent}% off the bill.'**
+  String giveDiscount(int percent);
+
+  /// No description provided for @noDiscountHere.
+  ///
+  /// In en, this message translates to:
+  /// **'This restaurant has no discount.'**
+  String get noDiscountHere;
+
+  /// No description provided for @customerPhoneLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer\'s phone: {phone}'**
+  String customerPhoneLine(String phone);
+
+  /// No description provided for @validUntilLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until {time}'**
+  String validUntilLine(String time);
+
+  /// No description provided for @confirmCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm the code'**
+  String get confirmCode;
+
+  /// No description provided for @confirmCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm this code?'**
+  String get confirmCodeTitle;
+
+  /// No description provided for @confirmCodeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The customer is here and gets the discount. A confirmed code cannot be used again.'**
+  String get confirmCodeBody;
+
+  /// No description provided for @codeConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Code confirmed'**
+  String get codeConfirmed;
+
+  /// No description provided for @codeConfirmedDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply the discount to the customer\'s bill.'**
+  String get codeConfirmedDetail;
+
+  /// No description provided for @reservationStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid'**
+  String get reservationStatusActive;
+
+  /// No description provided for @reservationStatusRedeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'Already used'**
+  String get reservationStatusRedeemed;
+
+  /// No description provided for @reservationStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled by the customer'**
+  String get reservationStatusCancelled;
+
+  /// No description provided for @reservationStatusExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get reservationStatusExpired;
+
+  /// No description provided for @filterActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get filterActive;
+
+  /// No description provided for @filterUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get filterUsed;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @noReservationsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'No reservations here.'**
+  String get noReservationsHere;
+
+  /// No description provided for @timeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{countdown} left'**
+  String timeLeft(String countdown);
+
+  /// No description provided for @waitingForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your approval'**
+  String get waitingForYou;
+
+  /// No description provided for @teamMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get teamMembers;
+
+  /// No description provided for @roleOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get roleOwner;
+
+  /// No description provided for @roleStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiter'**
+  String get roleStaff;
+
+  /// No description provided for @approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approve;
+
+  /// No description provided for @decline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get decline;
+
+  /// No description provided for @removeStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeStaff;
+
+  /// No description provided for @removeStaffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String removeStaffTitle(String name);
+
+  /// No description provided for @removeStaffBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They will no longer be able to sign in.'**
+  String get removeStaffBody;
+
+  /// No description provided for @declinedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get declinedLabel;
+
+  /// No description provided for @noStaffYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No waiters yet. They can register in the app and pick your restaurant.'**
+  String get noStaffYet;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @discountLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount: {percent}%'**
+  String discountLine(int percent);
+
+  /// No description provided for @changeRequestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your change requests'**
+  String get changeRequestsTitle;
+
+  /// No description provided for @requestAChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a change'**
+  String get requestAChange;
+
+  /// No description provided for @noChangeRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests yet.'**
+  String get noChangeRequests;
+
+  /// No description provided for @changeRequestPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for review'**
+  String get changeRequestPending;
+
+  /// No description provided for @changeRequestApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get changeRequestApproved;
+
+  /// No description provided for @changeRequestRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get changeRequestRejected;
+
+  /// No description provided for @adminReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply: {note}'**
+  String adminReply(String note);
+
+  /// No description provided for @changeRequestIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t edit your restaurant directly. Fill in only what you want changed; HARA reviews the request and applies it.'**
+  String get changeRequestIntro;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameLabel;
+
+  /// No description provided for @discountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount (%)'**
+  String get discountLabel;
+
+  /// No description provided for @descriptionAzLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (Azerbaijani)'**
+  String get descriptionAzLabel;
+
+  /// No description provided for @descriptionRuLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (Russian)'**
+  String get descriptionRuLabel;
+
+  /// No description provided for @descriptionEnLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (English)'**
+  String get descriptionEnLabel;
+
+  /// No description provided for @noteForHara.
+  ///
+  /// In en, this message translates to:
+  /// **'Note for HARA (optional)'**
+  String get noteForHara;
+
+  /// No description provided for @currentValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Now: {value}'**
+  String currentValue(String value);
+
+  /// No description provided for @sendRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get sendRequest;
+
+  /// No description provided for @requestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent. HARA will review it.'**
+  String get requestSent;
+
+  /// No description provided for @askForOneChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in at least one field.'**
+  String get askForOneChange;
+
+  /// No description provided for @discountRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number from 0 to 100.'**
+  String get discountRange;
 }
 
 class _AppLocalizationsDelegate

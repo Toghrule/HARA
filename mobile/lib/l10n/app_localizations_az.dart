@@ -367,4 +367,194 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get browseAsCustomer => 'Restoranlara bax';
+
+  @override
+  String get tabConfirmCode => 'Kodu təsdiqlə';
+
+  @override
+  String get tabReservations => 'Rezervlər';
+
+  @override
+  String get tabTeam => 'Komanda';
+
+  @override
+  String get tabRestaurant => 'Restoran';
+
+  @override
+  String get codeInputLabel => 'Müştərinin kodu';
+
+  @override
+  String get checkCode => 'Kodu yoxla';
+
+  @override
+  String get codeNotFoundHere => 'Bu kod sizin restoranda tapılmadı.';
+
+  @override
+  String giveDiscount(int percent) {
+    return 'Hesabdan $percent% endirim edin.';
+  }
+
+  @override
+  String get noDiscountHere => 'Bu restoranda endirim yoxdur.';
+
+  @override
+  String customerPhoneLine(String phone) {
+    return 'Müştərinin telefonu: $phone';
+  }
+
+  @override
+  String validUntilLine(String time) {
+    return 'Saat $time-dək keçərlidir';
+  }
+
+  @override
+  String get confirmCode => 'Kodu təsdiqlə';
+
+  @override
+  String get confirmCodeTitle => 'Bu kod təsdiqlənsin?';
+
+  @override
+  String get confirmCodeBody =>
+      'Müştəri gəlib və endirim alır. Təsdiqlənmiş koddan yenidən istifadə etmək olmaz.';
+
+  @override
+  String get codeConfirmed => 'Kod təsdiqləndi';
+
+  @override
+  String get codeConfirmedDetail => 'Endirimi müştərinin hesabına tətbiq edin.';
+
+  @override
+  String get reservationStatusActive => 'Keçərlidir';
+
+  @override
+  String get reservationStatusRedeemed => 'Artıq istifadə olunub';
+
+  @override
+  String get reservationStatusCancelled => 'Müştəri ləğv edib';
+
+  @override
+  String get reservationStatusExpired => 'Vaxtı bitib';
+
+  @override
+  String get filterActive => 'Aktiv';
+
+  @override
+  String get filterUsed => 'İstifadə olunub';
+
+  @override
+  String get filterAll => 'Hamısı';
+
+  @override
+  String get noReservationsHere => 'Burada rezerv yoxdur.';
+
+  @override
+  String timeLeft(String countdown) {
+    return 'Qalıb: $countdown';
+  }
+
+  @override
+  String get waitingForYou => 'Sizin təsdiqinizi gözləyir';
+
+  @override
+  String get teamMembers => 'Komanda';
+
+  @override
+  String get roleOwner => 'Sahibkar';
+
+  @override
+  String get roleStaff => 'Ofisiant';
+
+  @override
+  String get approve => 'Təsdiq et';
+
+  @override
+  String get decline => 'Rədd et';
+
+  @override
+  String get removeStaff => 'Sil';
+
+  @override
+  String removeStaffTitle(String name) {
+    return '$name silinsin?';
+  }
+
+  @override
+  String get removeStaffBody => 'O artıq hesabına daxil ola bilməyəcək.';
+
+  @override
+  String get declinedLabel => 'Rədd edilib';
+
+  @override
+  String get noStaffYet =>
+      'Hələ ofisiant yoxdur. Onlar tətbiqdə qeydiyyatdan keçib sizin restoranı seçə bilər.';
+
+  @override
+  String get cancel => 'Ləğv et';
+
+  @override
+  String discountLine(int percent) {
+    return 'Endirim: $percent%';
+  }
+
+  @override
+  String get changeRequestsTitle => 'Dəyişiklik sorğularınız';
+
+  @override
+  String get requestAChange => 'Dəyişiklik sorğusu göndər';
+
+  @override
+  String get noChangeRequests => 'Hələ sorğu yoxdur.';
+
+  @override
+  String get changeRequestPending => 'Baxılmağı gözləyir';
+
+  @override
+  String get changeRequestApproved => 'Təsdiqlənib';
+
+  @override
+  String get changeRequestRejected => 'Rədd edilib';
+
+  @override
+  String adminReply(String note) {
+    return 'Cavab: $note';
+  }
+
+  @override
+  String get changeRequestIntro =>
+      'Restoranınızı birbaşa dəyişə bilməzsiniz. Yalnız dəyişmək istədiyiniz xanaları doldurun; HARA sorğuya baxıb tətbiq edəcək.';
+
+  @override
+  String get nameLabel => 'Ad';
+
+  @override
+  String get discountLabel => 'Endirim (%)';
+
+  @override
+  String get descriptionAzLabel => 'Təsvir (Azərbaycanca)';
+
+  @override
+  String get descriptionRuLabel => 'Təsvir (rusca)';
+
+  @override
+  String get descriptionEnLabel => 'Təsvir (ingiliscə)';
+
+  @override
+  String get noteForHara => 'HARA üçün qeyd (məcburi deyil)';
+
+  @override
+  String currentValue(String value) {
+    return 'İndi: $value';
+  }
+
+  @override
+  String get sendRequest => 'Sorğunu göndər';
+
+  @override
+  String get requestSent => 'Sorğu göndərildi. HARA ona baxacaq.';
+
+  @override
+  String get askForOneChange => 'Ən azı bir xananı doldurun.';
+
+  @override
+  String get discountRange => '0-dan 100-ə qədər rəqəm yazın.';
 }

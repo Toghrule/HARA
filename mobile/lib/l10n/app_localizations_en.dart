@@ -367,4 +367,195 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get browseAsCustomer => 'Browse restaurants';
+
+  @override
+  String get tabConfirmCode => 'Confirm code';
+
+  @override
+  String get tabReservations => 'Reservations';
+
+  @override
+  String get tabTeam => 'Team';
+
+  @override
+  String get tabRestaurant => 'Restaurant';
+
+  @override
+  String get codeInputLabel => 'Customer\'s code';
+
+  @override
+  String get checkCode => 'Check the code';
+
+  @override
+  String get codeNotFoundHere => 'This code was not found at your restaurant.';
+
+  @override
+  String giveDiscount(int percent) {
+    return 'Give $percent% off the bill.';
+  }
+
+  @override
+  String get noDiscountHere => 'This restaurant has no discount.';
+
+  @override
+  String customerPhoneLine(String phone) {
+    return 'Customer\'s phone: $phone';
+  }
+
+  @override
+  String validUntilLine(String time) {
+    return 'Valid until $time';
+  }
+
+  @override
+  String get confirmCode => 'Confirm the code';
+
+  @override
+  String get confirmCodeTitle => 'Confirm this code?';
+
+  @override
+  String get confirmCodeBody =>
+      'The customer is here and gets the discount. A confirmed code cannot be used again.';
+
+  @override
+  String get codeConfirmed => 'Code confirmed';
+
+  @override
+  String get codeConfirmedDetail =>
+      'Apply the discount to the customer\'s bill.';
+
+  @override
+  String get reservationStatusActive => 'Valid';
+
+  @override
+  String get reservationStatusRedeemed => 'Already used';
+
+  @override
+  String get reservationStatusCancelled => 'Cancelled by the customer';
+
+  @override
+  String get reservationStatusExpired => 'Expired';
+
+  @override
+  String get filterActive => 'Active';
+
+  @override
+  String get filterUsed => 'Used';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get noReservationsHere => 'No reservations here.';
+
+  @override
+  String timeLeft(String countdown) {
+    return '$countdown left';
+  }
+
+  @override
+  String get waitingForYou => 'Waiting for your approval';
+
+  @override
+  String get teamMembers => 'Team';
+
+  @override
+  String get roleOwner => 'Owner';
+
+  @override
+  String get roleStaff => 'Waiter';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get decline => 'Decline';
+
+  @override
+  String get removeStaff => 'Remove';
+
+  @override
+  String removeStaffTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get removeStaffBody => 'They will no longer be able to sign in.';
+
+  @override
+  String get declinedLabel => 'Declined';
+
+  @override
+  String get noStaffYet =>
+      'No waiters yet. They can register in the app and pick your restaurant.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String discountLine(int percent) {
+    return 'Discount: $percent%';
+  }
+
+  @override
+  String get changeRequestsTitle => 'Your change requests';
+
+  @override
+  String get requestAChange => 'Request a change';
+
+  @override
+  String get noChangeRequests => 'No requests yet.';
+
+  @override
+  String get changeRequestPending => 'Waiting for review';
+
+  @override
+  String get changeRequestApproved => 'Approved';
+
+  @override
+  String get changeRequestRejected => 'Declined';
+
+  @override
+  String adminReply(String note) {
+    return 'Reply: $note';
+  }
+
+  @override
+  String get changeRequestIntro =>
+      'You can\'t edit your restaurant directly. Fill in only what you want changed; HARA reviews the request and applies it.';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get discountLabel => 'Discount (%)';
+
+  @override
+  String get descriptionAzLabel => 'Description (Azerbaijani)';
+
+  @override
+  String get descriptionRuLabel => 'Description (Russian)';
+
+  @override
+  String get descriptionEnLabel => 'Description (English)';
+
+  @override
+  String get noteForHara => 'Note for HARA (optional)';
+
+  @override
+  String currentValue(String value) {
+    return 'Now: $value';
+  }
+
+  @override
+  String get sendRequest => 'Send request';
+
+  @override
+  String get requestSent => 'Request sent. HARA will review it.';
+
+  @override
+  String get askForOneChange => 'Fill in at least one field.';
+
+  @override
+  String get discountRange => 'Enter a number from 0 to 100.';
 }

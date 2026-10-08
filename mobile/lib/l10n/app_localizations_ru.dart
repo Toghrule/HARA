@@ -366,4 +366,194 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get browseAsCustomer => 'Смотреть рестораны';
+
+  @override
+  String get tabConfirmCode => 'Подтвердить код';
+
+  @override
+  String get tabReservations => 'Брони';
+
+  @override
+  String get tabTeam => 'Команда';
+
+  @override
+  String get tabRestaurant => 'Ресторан';
+
+  @override
+  String get codeInputLabel => 'Код клиента';
+
+  @override
+  String get checkCode => 'Проверить код';
+
+  @override
+  String get codeNotFoundHere => 'Такой код в вашем ресторане не найден.';
+
+  @override
+  String giveDiscount(int percent) {
+    return 'Сделайте скидку $percent% на счёт.';
+  }
+
+  @override
+  String get noDiscountHere => 'В этом ресторане нет скидки.';
+
+  @override
+  String customerPhoneLine(String phone) {
+    return 'Телефон клиента: $phone';
+  }
+
+  @override
+  String validUntilLine(String time) {
+    return 'Действует до $time';
+  }
+
+  @override
+  String get confirmCode => 'Подтвердить код';
+
+  @override
+  String get confirmCodeTitle => 'Подтвердить этот код?';
+
+  @override
+  String get confirmCodeBody =>
+      'Клиент пришёл и получает скидку. Подтверждённый код нельзя использовать повторно.';
+
+  @override
+  String get codeConfirmed => 'Код подтверждён';
+
+  @override
+  String get codeConfirmedDetail => 'Примените скидку к счёту клиента.';
+
+  @override
+  String get reservationStatusActive => 'Действует';
+
+  @override
+  String get reservationStatusRedeemed => 'Уже использован';
+
+  @override
+  String get reservationStatusCancelled => 'Отменён клиентом';
+
+  @override
+  String get reservationStatusExpired => 'Срок истёк';
+
+  @override
+  String get filterActive => 'Активные';
+
+  @override
+  String get filterUsed => 'Использованные';
+
+  @override
+  String get filterAll => 'Все';
+
+  @override
+  String get noReservationsHere => 'Здесь нет броней.';
+
+  @override
+  String timeLeft(String countdown) {
+    return 'Осталось: $countdown';
+  }
+
+  @override
+  String get waitingForYou => 'Ждут вашего подтверждения';
+
+  @override
+  String get teamMembers => 'Команда';
+
+  @override
+  String get roleOwner => 'Владелец';
+
+  @override
+  String get roleStaff => 'Официант';
+
+  @override
+  String get approve => 'Подтвердить';
+
+  @override
+  String get decline => 'Отклонить';
+
+  @override
+  String get removeStaff => 'Удалить';
+
+  @override
+  String removeStaffTitle(String name) {
+    return 'Удалить $name?';
+  }
+
+  @override
+  String get removeStaffBody => 'Он больше не сможет войти в аккаунт.';
+
+  @override
+  String get declinedLabel => 'Отклонено';
+
+  @override
+  String get noStaffYet =>
+      'Официантов пока нет. Они могут зарегистрироваться в приложении и выбрать ваш ресторан.';
+
+  @override
+  String get cancel => 'Отмена';
+
+  @override
+  String discountLine(int percent) {
+    return 'Скидка: $percent%';
+  }
+
+  @override
+  String get changeRequestsTitle => 'Ваши заявки на изменения';
+
+  @override
+  String get requestAChange => 'Заявка на изменение';
+
+  @override
+  String get noChangeRequests => 'Заявок пока нет.';
+
+  @override
+  String get changeRequestPending => 'Ждёт проверки';
+
+  @override
+  String get changeRequestApproved => 'Подтверждено';
+
+  @override
+  String get changeRequestRejected => 'Отклонено';
+
+  @override
+  String adminReply(String note) {
+    return 'Ответ: $note';
+  }
+
+  @override
+  String get changeRequestIntro =>
+      'Вы не можете менять ресторан напрямую. Заполните только то, что хотите изменить; HARA проверит заявку и применит её.';
+
+  @override
+  String get nameLabel => 'Название';
+
+  @override
+  String get discountLabel => 'Скидка (%)';
+
+  @override
+  String get descriptionAzLabel => 'Описание (азербайджанский)';
+
+  @override
+  String get descriptionRuLabel => 'Описание (русский)';
+
+  @override
+  String get descriptionEnLabel => 'Описание (английский)';
+
+  @override
+  String get noteForHara => 'Сообщение для HARA (необязательно)';
+
+  @override
+  String currentValue(String value) {
+    return 'Сейчас: $value';
+  }
+
+  @override
+  String get sendRequest => 'Отправить заявку';
+
+  @override
+  String get requestSent => 'Заявка отправлена. HARA её проверит.';
+
+  @override
+  String get askForOneChange => 'Заполните хотя бы одно поле.';
+
+  @override
+  String get discountRange => 'Введите число от 0 до 100.';
 }
