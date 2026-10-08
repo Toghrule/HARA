@@ -169,13 +169,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reservationNotFound => 'We couldn\'t find this reservation.';
 
   @override
-  String get addYourRestaurant => 'Add your restaurant';
-
-  @override
-  String get submitIntro =>
-      'Tell us about your restaurant. We review every request before it appears in HARA.';
-
-  @override
   String get sectionRestaurant => 'Restaurant';
 
   @override
@@ -191,38 +184,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get descriptionLabel => 'Description';
 
   @override
-  String get sectionAboutYou => 'About you';
-
-  @override
   String get yourNameLabel => 'Your name *';
 
   @override
-  String get yourEmailLabel => 'Your email';
-
-  @override
   String get yourPhoneLabel => 'Your phone';
-
-  @override
-  String get contactHint =>
-      'Email or phone — at least one, so we can follow up.';
-
-  @override
-  String get contactRequired =>
-      'Add an email or a phone number so we can reach you.';
-
-  @override
-  String get sendRequest => 'Send request';
-
-  @override
-  String get thankYou => 'Thank you!';
-
-  @override
-  String requestReceived(String name) {
-    return 'We received your request for \"$name\". Our team will review it and get in touch using the contact details you gave us.';
-  }
-
-  @override
-  String get backToRestaurants => 'Back to restaurants';
 
   @override
   String get fieldRequired => 'This field is required';
@@ -270,4 +235,136 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get socialOther => 'Link';
+
+  @override
+  String get accountTooltip => 'Owner or waiter account';
+
+  @override
+  String get welcomeTitle => 'Welcome to HARA';
+
+  @override
+  String get welcomeSubtitle => 'Choose how you want to use the app.';
+
+  @override
+  String get customerSectionTitle => 'Customer';
+
+  @override
+  String get customerSectionText =>
+      'Find a place, reserve a table and get a discount. No account needed.';
+
+  @override
+  String get continueAsCustomer => 'Continue as a customer';
+
+  @override
+  String get ownerSectionTitle => 'Restaurant owner or waiter';
+
+  @override
+  String get ownerSectionText =>
+      'Confirm customers\' codes and look after your restaurant.';
+
+  @override
+  String get signIn => 'Sign in';
+
+  @override
+  String get registerAsOwner => 'Register as a restaurant owner';
+
+  @override
+  String get registerAsStaff => 'Register as a waiter';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get confirmPasswordLabel => 'Repeat the password';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
+  String get wrongCredentials => 'Wrong email or password.';
+
+  @override
+  String get noAccountYet => 'No account yet?';
+
+  @override
+  String get registerOwnerTitle => 'Register your restaurant';
+
+  @override
+  String get registerOwnerIntro =>
+      'Create your account and tell us about your restaurant. We review every registration before the restaurant appears in HARA.';
+
+  @override
+  String get sectionAccount => 'Your account';
+
+  @override
+  String get createAccount => 'Create account';
+
+  @override
+  String get passwordRules =>
+      'At least 8 characters, with a letter and a digit.';
+
+  @override
+  String get passwordsDontMatch => 'The passwords don\'t match.';
+
+  @override
+  String get emailTaken => 'This email is already registered.';
+
+  @override
+  String get tooManyAttempts => 'Too many attempts. Please try again later.';
+
+  @override
+  String get registerStaffTitle => 'Register as a waiter';
+
+  @override
+  String get registerStaffIntro =>
+      'Pick the restaurant you work at. Its owner has to approve you before you can confirm codes.';
+
+  @override
+  String get yourRestaurantSection => 'Your restaurant';
+
+  @override
+  String get selectRestaurantRequired => 'Pick your restaurant first.';
+
+  @override
+  String get venueTitle => 'Your restaurant';
+
+  @override
+  String get pendingOwnerTitle => 'Waiting for approval';
+
+  @override
+  String get pendingOwnerText =>
+      'We are reviewing your registration. You will be able to confirm customers\' codes as soon as it is approved.';
+
+  @override
+  String get pendingStaffText =>
+      'The restaurant\'s owner has to approve you. Ask them to open the app and accept your request.';
+
+  @override
+  String get rejectedTitle => 'Not approved';
+
+  @override
+  String get rejectedText => 'Your request was not approved.';
+
+  @override
+  String rejectedReason(String note) {
+    return 'Reason: $note';
+  }
+
+  @override
+  String get noVenueText => 'This account is not linked to a restaurant.';
+
+  @override
+  String get checkAgain => 'Check again';
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get browseAsCustomer => 'Browse restaurants';
 }

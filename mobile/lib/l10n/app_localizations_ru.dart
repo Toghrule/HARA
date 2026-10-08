@@ -168,13 +168,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reservationNotFound => 'Мы не нашли эту бронь.';
 
   @override
-  String get addYourRestaurant => 'Добавьте свой ресторан';
-
-  @override
-  String get submitIntro =>
-      'Расскажите о своём ресторане. Мы проверяем каждую заявку, прежде чем она появится в HARA.';
-
-  @override
   String get sectionRestaurant => 'Ресторан';
 
   @override
@@ -190,38 +183,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get descriptionLabel => 'Описание';
 
   @override
-  String get sectionAboutYou => 'О вас';
-
-  @override
   String get yourNameLabel => 'Ваше имя *';
 
   @override
-  String get yourEmailLabel => 'Ваш e-mail';
-
-  @override
   String get yourPhoneLabel => 'Ваш телефон';
-
-  @override
-  String get contactHint =>
-      'E-mail или телефон — хотя бы одно, чтобы мы могли связаться.';
-
-  @override
-  String get contactRequired =>
-      'Добавьте e-mail или номер телефона, чтобы мы могли с вами связаться.';
-
-  @override
-  String get sendRequest => 'Отправить заявку';
-
-  @override
-  String get thankYou => 'Спасибо!';
-
-  @override
-  String requestReceived(String name) {
-    return 'Мы получили вашу заявку на «$name». Наша команда рассмотрит её и свяжется с вами по указанным контактам.';
-  }
-
-  @override
-  String get backToRestaurants => 'Назад к ресторанам';
 
   @override
   String get fieldRequired => 'Это поле обязательно';
@@ -269,4 +234,136 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get socialOther => 'Ссылка';
+
+  @override
+  String get accountTooltip => 'Аккаунт владельца или официанта';
+
+  @override
+  String get welcomeTitle => 'Добро пожаловать в HARA';
+
+  @override
+  String get welcomeSubtitle =>
+      'Выберите, как вы хотите пользоваться приложением.';
+
+  @override
+  String get customerSectionTitle => 'Клиент';
+
+  @override
+  String get customerSectionText =>
+      'Найдите место, забронируйте столик и получите скидку. Аккаунт не нужен.';
+
+  @override
+  String get continueAsCustomer => 'Продолжить как клиент';
+
+  @override
+  String get ownerSectionTitle => 'Владелец ресторана или официант';
+
+  @override
+  String get ownerSectionText =>
+      'Подтверждайте коды клиентов и следите за своим рестораном.';
+
+  @override
+  String get signIn => 'Войти';
+
+  @override
+  String get registerAsOwner => 'Регистрация владельца ресторана';
+
+  @override
+  String get registerAsStaff => 'Регистрация официанта';
+
+  @override
+  String get emailLabel => 'E-mail';
+
+  @override
+  String get passwordLabel => 'Пароль';
+
+  @override
+  String get confirmPasswordLabel => 'Повторите пароль';
+
+  @override
+  String get showPassword => 'Показать пароль';
+
+  @override
+  String get hidePassword => 'Скрыть пароль';
+
+  @override
+  String get wrongCredentials => 'Неверный e-mail или пароль.';
+
+  @override
+  String get noAccountYet => 'Нет аккаунта?';
+
+  @override
+  String get registerOwnerTitle => 'Регистрация ресторана';
+
+  @override
+  String get registerOwnerIntro =>
+      'Создайте аккаунт и расскажите о своём ресторане. Мы проверяем каждую регистрацию, прежде чем ресторан появится в HARA.';
+
+  @override
+  String get sectionAccount => 'Ваш аккаунт';
+
+  @override
+  String get createAccount => 'Создать аккаунт';
+
+  @override
+  String get passwordRules => 'Не менее 8 символов, с буквой и цифрой.';
+
+  @override
+  String get passwordsDontMatch => 'Пароли не совпадают.';
+
+  @override
+  String get emailTaken => 'Этот e-mail уже зарегистрирован.';
+
+  @override
+  String get tooManyAttempts => 'Слишком много попыток. Попробуйте позже.';
+
+  @override
+  String get registerStaffTitle => 'Регистрация официанта';
+
+  @override
+  String get registerStaffIntro =>
+      'Выберите ресторан, в котором вы работаете. Его владелец должен подтвердить вас, прежде чем вы сможете подтверждать коды.';
+
+  @override
+  String get yourRestaurantSection => 'Ваш ресторан';
+
+  @override
+  String get selectRestaurantRequired => 'Сначала выберите ресторан.';
+
+  @override
+  String get venueTitle => 'Ваш ресторан';
+
+  @override
+  String get pendingOwnerTitle => 'Ожидает подтверждения';
+
+  @override
+  String get pendingOwnerText =>
+      'Мы проверяем вашу регистрацию. Как только её подтвердят, вы сможете подтверждать коды клиентов.';
+
+  @override
+  String get pendingStaffText =>
+      'Владелец ресторана должен вас подтвердить. Попросите его открыть приложение и принять вашу заявку.';
+
+  @override
+  String get rejectedTitle => 'Не подтверждено';
+
+  @override
+  String get rejectedText => 'Вашу заявку не подтвердили.';
+
+  @override
+  String rejectedReason(String note) {
+    return 'Причина: $note';
+  }
+
+  @override
+  String get noVenueText => 'Этот аккаунт не привязан к ресторану.';
+
+  @override
+  String get checkAgain => 'Проверить снова';
+
+  @override
+  String get signOut => 'Выйти';
+
+  @override
+  String get browseAsCustomer => 'Смотреть рестораны';
 }

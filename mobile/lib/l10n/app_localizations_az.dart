@@ -168,13 +168,6 @@ class AppLocalizationsAz extends AppLocalizations {
   String get reservationNotFound => 'Bu rezerv tapılmadı.';
 
   @override
-  String get addYourRestaurant => 'Restoranınızı əlavə edin';
-
-  @override
-  String get submitIntro =>
-      'Restoranınız haqqında bizə məlumat verin. Hər sorğu HARA-da görünməzdən əvvəl nəzərdən keçirilir.';
-
-  @override
   String get sectionRestaurant => 'Restoran';
 
   @override
@@ -190,38 +183,10 @@ class AppLocalizationsAz extends AppLocalizations {
   String get descriptionLabel => 'Təsvir';
 
   @override
-  String get sectionAboutYou => 'Sizin haqqınızda';
-
-  @override
   String get yourNameLabel => 'Adınız *';
 
   @override
-  String get yourEmailLabel => 'E-poçtunuz';
-
-  @override
   String get yourPhoneLabel => 'Telefonunuz';
-
-  @override
-  String get contactHint =>
-      'E-poçt və ya telefon — ən azı biri, sizinlə əlaqə saxlaya bilək.';
-
-  @override
-  String get contactRequired =>
-      'Sizinlə əlaqə saxlaya bilməyimiz üçün e-poçt və ya telefon nömrəsi əlavə edin.';
-
-  @override
-  String get sendRequest => 'Sorğunu göndər';
-
-  @override
-  String get thankYou => 'Təşəkkür edirik!';
-
-  @override
-  String requestReceived(String name) {
-    return '\"$name\" üçün sorğunuzu aldıq. Komandamız onu nəzərdən keçirəcək və verdiyiniz əlaqə məlumatları ilə sizinlə əlaqə saxlayacaq.';
-  }
-
-  @override
-  String get backToRestaurants => 'Restoranlara qayıt';
 
   @override
   String get fieldRequired => 'Bu xana məcburidir';
@@ -270,4 +235,136 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get socialOther => 'Keçid';
+
+  @override
+  String get accountTooltip => 'Sahibkar və ya ofisiant hesabı';
+
+  @override
+  String get welcomeTitle => 'HARA-ya xoş gəlmisiniz';
+
+  @override
+  String get welcomeSubtitle => 'Tətbiqdən necə istifadə edəcəyinizi seçin.';
+
+  @override
+  String get customerSectionTitle => 'Müştəri';
+
+  @override
+  String get customerSectionText =>
+      'Məkan tapın, masa rezerv edin və endirim qazanın. Hesab lazım deyil.';
+
+  @override
+  String get continueAsCustomer => 'Müştəri kimi davam et';
+
+  @override
+  String get ownerSectionTitle => 'Restoran sahibi və ya ofisiant';
+
+  @override
+  String get ownerSectionText =>
+      'Müştərilərin kodlarını təsdiqləyin və restoranınıza baxın.';
+
+  @override
+  String get signIn => 'Daxil ol';
+
+  @override
+  String get registerAsOwner => 'Restoran sahibi kimi qeydiyyat';
+
+  @override
+  String get registerAsStaff => 'Ofisiant kimi qeydiyyat';
+
+  @override
+  String get emailLabel => 'E-poçt';
+
+  @override
+  String get passwordLabel => 'Parol';
+
+  @override
+  String get confirmPasswordLabel => 'Parolu təkrar yazın';
+
+  @override
+  String get showPassword => 'Parolu göstər';
+
+  @override
+  String get hidePassword => 'Parolu gizlət';
+
+  @override
+  String get wrongCredentials => 'E-poçt və ya parol yanlışdır.';
+
+  @override
+  String get noAccountYet => 'Hesabınız yoxdur?';
+
+  @override
+  String get registerOwnerTitle => 'Restoranınızı qeydiyyatdan keçirin';
+
+  @override
+  String get registerOwnerIntro =>
+      'Hesab yaradın və restoranınız haqqında məlumat verin. Hər qeydiyyat restoran HARA-da görünməzdən əvvəl nəzərdən keçirilir.';
+
+  @override
+  String get sectionAccount => 'Hesabınız';
+
+  @override
+  String get createAccount => 'Hesab yarat';
+
+  @override
+  String get passwordRules => 'Ən azı 8 simvol, hərf və rəqəm olmalıdır.';
+
+  @override
+  String get passwordsDontMatch => 'Parollar eyni deyil.';
+
+  @override
+  String get emailTaken => 'Bu e-poçt artıq qeydiyyatdan keçib.';
+
+  @override
+  String get tooManyAttempts =>
+      'Çox cəhd edildi. Bir az sonra yenidən yoxlayın.';
+
+  @override
+  String get registerStaffTitle => 'Ofisiant kimi qeydiyyat';
+
+  @override
+  String get registerStaffIntro =>
+      'İşlədiyiniz restoranı seçin. Kodları təsdiqləyə bilməniz üçün restoranın sahibi sizi təsdiq etməlidir.';
+
+  @override
+  String get yourRestaurantSection => 'Restoranınız';
+
+  @override
+  String get selectRestaurantRequired => 'Əvvəl restoranınızı seçin.';
+
+  @override
+  String get venueTitle => 'Restoranınız';
+
+  @override
+  String get pendingOwnerTitle => 'Təsdiq gözlənilir';
+
+  @override
+  String get pendingOwnerText =>
+      'Qeydiyyatınızı nəzərdən keçiririk. Təsdiqlənən kimi müştərilərin kodlarını təsdiqləyə biləcəksiniz.';
+
+  @override
+  String get pendingStaffText =>
+      'Restoranın sahibi sizi təsdiq etməlidir. Ondan tətbiqi açıb sorğunuzu qəbul etməsini xahiş edin.';
+
+  @override
+  String get rejectedTitle => 'Təsdiqlənmədi';
+
+  @override
+  String get rejectedText => 'Sorğunuz təsdiqlənmədi.';
+
+  @override
+  String rejectedReason(String note) {
+    return 'Səbəb: $note';
+  }
+
+  @override
+  String get noVenueText => 'Bu hesab heç bir restorana bağlı deyil.';
+
+  @override
+  String get checkAgain => 'Yenidən yoxla';
+
+  @override
+  String get signOut => 'Çıxış';
+
+  @override
+  String get browseAsCustomer => 'Restoranlara bax';
 }

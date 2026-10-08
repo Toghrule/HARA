@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/features/auth/data/customer_choice.dart';
 import 'package:hara/core/l10n/locale_provider.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
@@ -28,6 +29,7 @@ void main() {
         overrides: [
           restaurantsRepositoryProvider.overrideWithValue(_FakeRestaurantsRepository()),
           localeProvider.overrideWith((ref) => LocaleController(const Locale('en'))),
+          customerChoiceProvider.overrideWith((ref) => CustomerChoice(true)),
         ],
         child: const HaraApp(),
       ),

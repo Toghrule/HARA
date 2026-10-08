@@ -50,7 +50,7 @@ class AboutScreen extends ConsumerWidget {
               title: Text(l10n.ownRestaurant),
               subtitle: Text(l10n.addItToHara),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/submit-restaurant'),
+              onTap: () => context.push('/register-owner'),
             ),
           ],
         ),

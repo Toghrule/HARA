@@ -370,18 +370,6 @@ abstract class AppLocalizations {
   /// **'We couldn\'t find this reservation.'**
   String get reservationNotFound;
 
-  /// No description provided for @addYourRestaurant.
-  ///
-  /// In en, this message translates to:
-  /// **'Add your restaurant'**
-  String get addYourRestaurant;
-
-  /// No description provided for @submitIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'Tell us about your restaurant. We review every request before it appears in HARA.'**
-  String get submitIntro;
-
   /// No description provided for @sectionRestaurant.
   ///
   /// In en, this message translates to:
@@ -412,65 +400,17 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get descriptionLabel;
 
-  /// No description provided for @sectionAboutYou.
-  ///
-  /// In en, this message translates to:
-  /// **'About you'**
-  String get sectionAboutYou;
-
   /// No description provided for @yourNameLabel.
   ///
   /// In en, this message translates to:
   /// **'Your name *'**
   String get yourNameLabel;
 
-  /// No description provided for @yourEmailLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Your email'**
-  String get yourEmailLabel;
-
   /// No description provided for @yourPhoneLabel.
   ///
   /// In en, this message translates to:
   /// **'Your phone'**
   String get yourPhoneLabel;
-
-  /// No description provided for @contactHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Email or phone — at least one, so we can follow up.'**
-  String get contactHint;
-
-  /// No description provided for @contactRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Add an email or a phone number so we can reach you.'**
-  String get contactRequired;
-
-  /// No description provided for @sendRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Send request'**
-  String get sendRequest;
-
-  /// No description provided for @thankYou.
-  ///
-  /// In en, this message translates to:
-  /// **'Thank you!'**
-  String get thankYou;
-
-  /// No description provided for @requestReceived.
-  ///
-  /// In en, this message translates to:
-  /// **'We received your request for \"{name}\". Our team will review it and get in touch using the contact details you gave us.'**
-  String requestReceived(String name);
-
-  /// No description provided for @backToRestaurants.
-  ///
-  /// In en, this message translates to:
-  /// **'Back to restaurants'**
-  String get backToRestaurants;
 
   /// No description provided for @fieldRequired.
   ///
@@ -561,6 +501,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Link'**
   String get socialOther;
+
+  /// No description provided for @accountTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner or waiter account'**
+  String get accountTooltip;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to HARA'**
+  String get welcomeTitle;
+
+  /// No description provided for @welcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you want to use the app.'**
+  String get welcomeSubtitle;
+
+  /// No description provided for @customerSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get customerSectionTitle;
+
+  /// No description provided for @customerSectionText.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a place, reserve a table and get a discount. No account needed.'**
+  String get customerSectionText;
+
+  /// No description provided for @continueAsCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as a customer'**
+  String get continueAsCustomer;
+
+  /// No description provided for @ownerSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant owner or waiter'**
+  String get ownerSectionTitle;
+
+  /// No description provided for @ownerSectionText.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm customers\' codes and look after your restaurant.'**
+  String get ownerSectionText;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
+
+  /// No description provided for @registerAsOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as a restaurant owner'**
+  String get registerAsOwner;
+
+  /// No description provided for @registerAsStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as a waiter'**
+  String get registerAsStaff;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat the password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
+  /// No description provided for @wrongCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong email or password.'**
+  String get wrongCredentials;
+
+  /// No description provided for @noAccountYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No account yet?'**
+  String get noAccountYet;
+
+  /// No description provided for @registerOwnerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Register your restaurant'**
+  String get registerOwnerTitle;
+
+  /// No description provided for @registerOwnerIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account and tell us about your restaurant. We review every registration before the restaurant appears in HARA.'**
+  String get registerOwnerIntro;
+
+  /// No description provided for @sectionAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account'**
+  String get sectionAccount;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get createAccount;
+
+  /// No description provided for @passwordRules.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters, with a letter and a digit.'**
+  String get passwordRules;
+
+  /// No description provided for @passwordsDontMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The passwords don\'t match.'**
+  String get passwordsDontMatch;
+
+  /// No description provided for @emailTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already registered.'**
+  String get emailTaken;
+
+  /// No description provided for @tooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please try again later.'**
+  String get tooManyAttempts;
+
+  /// No description provided for @registerStaffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as a waiter'**
+  String get registerStaffTitle;
+
+  /// No description provided for @registerStaffIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the restaurant you work at. Its owner has to approve you before you can confirm codes.'**
+  String get registerStaffIntro;
+
+  /// No description provided for @yourRestaurantSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Your restaurant'**
+  String get yourRestaurantSection;
+
+  /// No description provided for @selectRestaurantRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your restaurant first.'**
+  String get selectRestaurantRequired;
+
+  /// No description provided for @venueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your restaurant'**
+  String get venueTitle;
+
+  /// No description provided for @pendingOwnerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for approval'**
+  String get pendingOwnerTitle;
+
+  /// No description provided for @pendingOwnerText.
+  ///
+  /// In en, this message translates to:
+  /// **'We are reviewing your registration. You will be able to confirm customers\' codes as soon as it is approved.'**
+  String get pendingOwnerText;
+
+  /// No description provided for @pendingStaffText.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant\'s owner has to approve you. Ask them to open the app and accept your request.'**
+  String get pendingStaffText;
+
+  /// No description provided for @rejectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not approved'**
+  String get rejectedTitle;
+
+  /// No description provided for @rejectedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request was not approved.'**
+  String get rejectedText;
+
+  /// No description provided for @rejectedReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {note}'**
+  String rejectedReason(String note);
+
+  /// No description provided for @noVenueText.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is not linked to a restaurant.'**
+  String get noVenueText;
+
+  /// No description provided for @checkAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get checkAgain;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// No description provided for @browseAsCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse restaurants'**
+  String get browseAsCustomer;
 }
 
 class _AppLocalizationsDelegate

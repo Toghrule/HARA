@@ -7,6 +7,7 @@ import 'core/auth/session_storage.dart';
 import 'core/l10n/locale_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/data/customer_choice.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
@@ -14,11 +15,13 @@ Future<void> main() async {
   final initialLocale = await loadInitialLocale();
   const sessionStorage = SecureSessionStorage();
   final initialSession = await sessionStorage.read();
+  final continuedAsCustomer = await loadContinuedAsCustomer();
 
   runApp(
     ProviderScope(
       overrides: [
         localeProvider.overrideWith((ref) => LocaleController(initialLocale)),
+        customerChoiceProvider.overrideWith((ref) => CustomerChoice(continuedAsCustomer)),
         authControllerProvider.overrideWith(
           (ref) => AuthController(ref.watch(authRepositoryProvider), sessionStorage, initialSession),
         ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/auth/auth_controller.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/language_menu.dart';
@@ -72,6 +73,12 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
             tooltip: l10n.aboutTooltip,
             icon: const Icon(Icons.info_outline),
             onPressed: () => context.push('/about'),
+          ),
+          IconButton(
+            key: const Key('accountButton'),
+            tooltip: l10n.accountTooltip,
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => context.push(ref.read(authControllerProvider) != null ? '/venue' : '/welcome'),
           ),
           const LanguageMenu(),
           TextButton.icon(
@@ -159,7 +166,7 @@ class _RestaurantList extends ConsumerWidget {
                     if (search.isNotEmpty)
                       TextButton(onPressed: onClearSearch, child: Text(l10n.clearSearch)),
                     TextButton(
-                      onPressed: () => context.push('/submit-restaurant'),
+                      onPressed: () => context.push('/register-owner'),
                       child: Text(l10n.ownRestaurantAddIt),
                     ),
                   ],
@@ -270,7 +277,7 @@ class _ListFooter extends ConsumerWidget {
       title: Text(l10n.ownRestaurant),
       subtitle: Text(l10n.addItToHara),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () => context.push('/submit-restaurant'),
+      onTap: () => context.push('/register-owner'),
     );
   }
 }
