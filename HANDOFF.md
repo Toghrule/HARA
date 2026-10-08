@@ -1,4 +1,4 @@
-# HARA — Handoff (yeni söhbət üçün)
+﻿# HARA — Handoff (yeni söhbət üçün)
 
 Bu fayl yeni söhbətin (insan və ya Claude) layihə haqqında heç nə bilmədən işə başlaması üçündür.
 Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline -10` və `git status` ilə faylın hələ də aktual olduğunu yoxlayın.
@@ -145,10 +145,10 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 - **FAQ ekranı brauzerdə gözlə görülməyib** (Claude pəncərəsi gizli olduğu üçün); widget testləri və canlı backend ilə yoxlanıb. Haqqımızda və Əlaqə brauzerdə görülüb.
 - **Android / iOS / Windows build-ləri yoxlanmayıb:** platform qovluqları var, amma bu maşında Android SDK və Visual Studio (C++) yoxdur; iOS üçün Mac lazımdır. Yalnız **Web** build olunub və işləyir.
 - Sorğu ↔ restoran bağlantısı yoxdur (qərarla).
-- Real data boşluqları: "Mixək Restoranı" koordinatı hələ `0,0` (endirimi 2026-10-08-də 5% edildi); Haqqımızda 3 dildə dolduruldu (Rusca/İngiliscə mətni Claude tərcüməsidir, bilən biri yoxlamalıdır); Contacts / FAQ / Social Links hələ doldurulmayıb, FAQ-nin Ru/En tərcüməsi də yoxdur.
+- Real data boşluqları: "Mixək Restoranı" koordinatı hələ `0,0` (endirimi 2026-10-08-də 5% edildi); Haqqımızda 3 dildə dolduruldu (Rusca/İngiliscə mətni Claude tərcüməsidir, bilən biri yoxlamalıdır); FAQ 8 sualla 3 dildə dolduruldu (Claude tərcüməsi, yoxlanmalıdır; №6 kodun ekrandan sonra görünməməsini açıq yazır); Contacts və Social Links hələ doldurulmayıb.
 
 ### Növbəti addımlar (istifadəçi hələ seçməyib — soruşun; təxmini prioritet)
-1. Real məzmunu admin paneldə doldurmaq (qalan: Mixək koordinatı, Contacts, FAQ, Social Links; FAQ üçün 3 dil).
+1. Real məzmunu admin paneldə doldurmaq (qalan: Mixək koordinatı, Contacts, Social Links).
 2. **SMS OTP** (rezervasiya telefonlarını təsdiqləmək) — provayder və xərc qərarı lazımdır.
 3. **"Ən yaxın" sıralaması:** backend hazırdır (`?sort=nearest&lat&lng`), mobil app yer icazəsi istəmir.
 4. **Real serverə çıxış:** API üçün Dockerfile, gizli açarlar (`Jwt:SigningKey` boşdur → boşdursa API açılmır), real CORS origin-ləri, HTTPS, reverse proxy üçün forwarded headers (IP üzrə limit buna bağlıdır), dev admin parolunun dəyişdirilməsi, bazanın ehtiyat nüsxəsi, **şəkillər üçün bulud saxlama** (indi lokal diskdə).
