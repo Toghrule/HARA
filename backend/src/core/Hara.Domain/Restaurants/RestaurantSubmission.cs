@@ -40,4 +40,14 @@ public class RestaurantSubmission : BaseAuditableEntity
 
     /// <summary>When the submission was last reviewed by an admin, or <c>null</c> while still <see cref="SubmissionStatus.Pending"/>.</summary>
     public DateTimeOffset? ReviewedAt { get; set; }
+
+    /// <summary>
+    /// The account that registered this restaurant from the app (an owner sign-up), or <c>null</c> for an
+    /// anonymous submission. When the admin creates the restaurant from this submission, that account
+    /// becomes the restaurant's owner.
+    /// </summary>
+    public Guid? OwnerUserId { get; set; }
+
+    /// <summary>The restaurant the admin created from this submission, once they have.</summary>
+    public Guid? RestaurantId { get; set; }
 }

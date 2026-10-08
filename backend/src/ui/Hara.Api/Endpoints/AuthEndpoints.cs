@@ -2,6 +2,8 @@ using Hara.Api.RateLimiting;
 using Hara.Application.Auth.Commands.Login;
 using Hara.Application.Auth.Commands.Logout;
 using Hara.Application.Auth.Commands.RefreshToken;
+using Hara.Application.Auth.Commands.RegisterOwner;
+using Hara.Application.Auth.Commands.RegisterStaff;
 using MediatR;
 
 namespace Hara.Api.Endpoints;
@@ -19,6 +21,20 @@ public static class AuthEndpoints
             .WithName("Login")
             .AllowAnonymous()
             .RequireRateLimiting(RateLimitPolicies.Login);
+
+        app.MapPost("/api/auth/register-owner", async (RegisterOwnerCommand command, ISender sender, CancellationToken cancellationToken) =>
+                Results.Created((string?)null, await sender.Send(command, cancellationToken)))
+            .WithTags("Auth")
+            .WithName("RegisterOwner")
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.Registrations);
+
+        app.MapPost("/api/auth/register-staff", async (RegisterStaffCommand command, ISender sender, CancellationToken cancellationToken) =>
+                Results.Created((string?)null, await sender.Send(command, cancellationToken)))
+            .WithTags("Auth")
+            .WithName("RegisterStaff")
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.Registrations);
 
         app.MapPost("/api/auth/refresh", async (RefreshTokenCommand command, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(command, cancellationToken)))

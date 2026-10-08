@@ -1,4 +1,5 @@
 using Hara.Domain.Restaurants;
+using Hara.Persistence.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,6 +19,17 @@ public class RestaurantSubmissionConfiguration : IEntityTypeConfiguration<Restau
         builder.Property(s => s.AdminNote).HasMaxLength(1000);
         builder.Property(s => s.Status).HasConversion<string>().HasMaxLength(20);
 
+        builder.HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(s => s.OwnerUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne<Restaurant>()
+            .WithMany()
+            .HasForeignKey(s => s.RestaurantId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.HasIndex(s => s.Status);
+        builder.HasIndex(s => s.OwnerUserId);
     }
 }

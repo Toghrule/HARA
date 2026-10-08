@@ -121,6 +121,7 @@ app.MapAuthEndpoints();
 app.MapRestaurantsEndpoints();
 app.MapSubmissionsEndpoints();
 app.MapReservationsEndpoints();
+app.MapVenueEndpoints();
 app.MapAdvertisementsEndpoints();
 app.MapCompanyInfoEndpoints();
 app.MapFaqEndpoints();

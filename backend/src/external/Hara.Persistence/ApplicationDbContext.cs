@@ -3,6 +3,7 @@ using Hara.Domain.Advertisements;
 using Hara.Domain.CompanyInfo;
 using Hara.Domain.Common;
 using Hara.Domain.Faq;
+using Hara.Domain.Members;
 using Hara.Domain.Reservations;
 using Hara.Domain.Restaurants;
 using Hara.Persistence.Identity;
@@ -38,6 +39,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<FaqItem> FaqItems => Set<FaqItem>();
 
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    public DbSet<RestaurantMember> RestaurantMembers => Set<RestaurantMember>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
