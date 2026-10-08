@@ -1,7 +1,6 @@
 using Hara.Api.RateLimiting;
 using Hara.Application.Reservations.Commands.CancelReservation;
 using Hara.Application.Reservations.Commands.CreateReservation;
-using Hara.Application.Reservations.Commands.RedeemReservation;
 using Hara.Application.Reservations.Queries.GetReservations;
 using Hara.Application.Reservations.Queries.GetReservationStatus;
 using Hara.Domain.Reservations;
@@ -45,9 +44,7 @@ public static class ReservationsEndpoints
                 Results.Ok(await sender.Send(new GetReservationsQuery(code, status), cancellationToken)))
             .WithName("AdminGetReservations");
 
-        admin.MapPatch("/{id:guid}/redeem", async (Guid id, ISender sender, CancellationToken cancellationToken) =>
-                Results.Ok(await sender.Send(new RedeemReservationCommand(id), cancellationToken)))
-            .WithName("AdminRedeemReservation");
+        // Confirming a code is done by the restaurant's own owner or waiter (see VenueEndpoints), not by the admin.
 
         return app;
     }

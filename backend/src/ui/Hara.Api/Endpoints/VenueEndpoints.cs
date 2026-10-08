@@ -1,7 +1,11 @@
+using Hara.Application.Venue.Commands.RedeemVenueReservation;
 using Hara.Application.Venue.Commands.RemoveStaff;
 using Hara.Application.Venue.Commands.ReviewStaff;
 using Hara.Application.Venue.Queries.GetMyVenueStatus;
+using Hara.Application.Venue.Queries.GetVenueReservation;
+using Hara.Application.Venue.Queries.GetVenueReservations;
 using Hara.Application.Venue.Queries.GetVenueStaff;
+using Hara.Domain.Reservations;
 using MediatR;
 
 namespace Hara.Api.Endpoints;
@@ -21,6 +25,18 @@ public static class VenueEndpoints
         venue.MapGet("/me", async (ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new GetMyVenueStatusQuery(), cancellationToken)))
             .WithName("GetMyVenueStatus");
+
+        venue.MapGet("/reservations", async (ReservationStatus? status, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetVenueReservationsQuery(status), cancellationToken)))
+            .WithName("GetVenueReservations");
+
+        venue.MapGet("/reservations/{code}", async (string code, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetVenueReservationQuery(code), cancellationToken)))
+            .WithName("GetVenueReservation");
+
+        venue.MapPost("/reservations/{code}/redeem", async (string code, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new RedeemVenueReservationCommand(code), cancellationToken)))
+            .WithName("RedeemVenueReservation");
 
         var staff = venue.MapGroup("/staff").RequireAuthorization("Owner");
 

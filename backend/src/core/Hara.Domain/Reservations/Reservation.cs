@@ -34,6 +34,9 @@ public class Reservation : BaseAuditableEntity
     /// <summary>When venue staff redeemed the code, or <c>null</c> if not redeemed.</summary>
     public DateTimeOffset? RedeemedAt { get; set; }
 
+    /// <summary>The owner or waiter who confirmed the code at the venue, so the restaurant can see who did.</summary>
+    public Guid? RedeemedByUserId { get; set; }
+
     /// <summary>Whether the reservation is still active but its window has already elapsed at <paramref name="now"/>.</summary>
     public bool IsExpired(DateTimeOffset now) => Status == ReservationStatus.Active && ExpiresAt <= now;
 

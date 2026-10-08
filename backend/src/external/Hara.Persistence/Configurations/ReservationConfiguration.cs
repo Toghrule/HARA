@@ -1,4 +1,5 @@
 using Hara.Domain.Reservations;
+using Hara.Persistence.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,6 +17,11 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
             .WithMany()
             .HasForeignKey(r => r.RestaurantId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(r => r.RedeemedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasIndex(r => r.Code).IsUnique();
         builder.HasIndex(r => new { r.RestaurantId, r.Status });
