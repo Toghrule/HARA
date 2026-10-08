@@ -19,6 +19,16 @@ class Reservation {
         expiresAt: DateTime.parse(json['expiresAt'] as String),
       );
 
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'restaurantId': restaurantId,
+        'restaurantName': restaurantName,
+        'discountPercent': discountPercent,
+        'code': code,
+        'durationMinutes': durationMinutes,
+        'expiresAt': expiresAt.toUtc().toIso8601String(),
+      };
+
   final String id;
   final String restaurantId;
   final String restaurantName;

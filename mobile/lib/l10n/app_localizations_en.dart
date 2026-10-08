@@ -115,6 +115,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourCode => 'Your code';
 
   @override
+  String activeReservationSubtitle(String code, String countdown) {
+    return 'Code $code · $countdown left';
+  }
+
+  @override
   String get copyCode => 'Copy code';
 
   @override
@@ -122,6 +127,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reservationExpired => 'This reservation has expired';
+
+  @override
+  String get reservationEnded => 'This reservation is no longer active';
 
   @override
   String validFor(String countdown) {

@@ -114,6 +114,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get yourCode => 'Ваш код';
 
   @override
+  String activeReservationSubtitle(String code, String countdown) {
+    return 'Код $code · осталось $countdown';
+  }
+
+  @override
   String get copyCode => 'Скопировать код';
 
   @override
@@ -121,6 +126,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reservationExpired => 'Срок брони истёк';
+
+  @override
+  String get reservationEnded => 'Эта бронь больше не активна';
 
   @override
   String validFor(String countdown) {

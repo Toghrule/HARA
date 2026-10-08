@@ -9,6 +9,7 @@ import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
+import '../../../reservations/presentation/widgets/active_reservations_banner.dart';
 import '../../data/restaurant.dart';
 import '../maps_launcher.dart';
 import '../providers/restaurant_search_provider.dart';
@@ -82,6 +83,7 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
       ),
       body: Column(
         children: [
+          const ActiveReservationsBanner(),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: ValueListenableBuilder<TextEditingValue>(

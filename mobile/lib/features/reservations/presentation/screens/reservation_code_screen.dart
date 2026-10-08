@@ -10,6 +10,7 @@ import '../../../../core/network/api_error.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/reservation.dart';
 import '../../data/reservations_repository.dart';
+import '../providers/active_reservations_provider.dart';
 
 /// Shows the customer their reservation code to present at the venue, with a
 /// live countdown until the reservation window ends, and lets them cancel it.
@@ -26,6 +27,9 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
   Timer? _timer;
   late Duration _remaining;
   bool _cancelling = false;
+
+  // Set when the server says the code was used or cancelled while the screen was open.
+  bool _ended = false;
 
   @override
   void initState() {
@@ -82,6 +86,8 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
     setState(() => _cancelling = true);
     try {
       await ref.read(reservationsRepositoryProvider).cancel(widget.reservation.code);
+      // Forgetting the code on this device must never hold up the screen.
+      unawaited(ref.read(activeReservationsProvider.notifier).remove(widget.reservation.code));
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.reservationCancelled)));
       context.go('/');
@@ -89,6 +95,8 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
       if (!mounted) return;
       setState(() => _cancelling = false);
       final notFound = error is DioException && error.response?.statusCode == 404;
+      if (notFound) unawaited(ref.read(activeReservationsProvider.notifier).remove(widget.reservation.code));
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(notFound ? l10n.reservationNotFound : apiErrorMessage(error, l10n))),
       );
@@ -100,8 +108,17 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
     final reservation = widget.reservation;
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final expired = _remaining == Duration.zero;
+    final expiredByTime = _remaining == Duration.zero;
+    final expired = expiredByTime || _ended;
     final l10n = AppLocalizations.of(context);
+
+    ref.listen<List<Reservation>>(activeReservationsProvider, (previous, next) {
+      final wasKept = previous?.any((kept) => kept.code == reservation.code) ?? false;
+      final isKept = next.any((kept) => kept.code == reservation.code);
+      if (wasKept && !isKept && !_cancelling && !_ended && _remaining > Duration.zero) {
+        setState(() => _ended = true);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.yourReservation), automaticallyImplyLeading: false),
@@ -158,7 +175,11 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    expired ? l10n.reservationExpired : l10n.validFor(_countdownLabel),
+                    _ended && !expiredByTime
+                        ? l10n.reservationEnded
+                        : expired
+                            ? l10n.reservationExpired
+                            : l10n.validFor(_countdownLabel),
                     style: textTheme.titleMedium?.copyWith(
                       color: expired ? theme.colorScheme.error : null,
                     ),

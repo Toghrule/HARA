@@ -10,6 +10,7 @@ public static class RateLimitPolicies
     public const string Reservations = "Reservations";
     public const string Submissions = "Submissions";
     public const string ReservationCancels = "ReservationCancels";
+    public const string ReservationStatusChecks = "ReservationStatusChecks";
     public const string Login = "Login";
 }
 
@@ -41,6 +42,7 @@ public static class RateLimitingExtensions
 
             AddPerIpPolicy(options, configuration, RateLimitPolicies.Reservations, defaultPermitLimit: 5);
             AddPerIpPolicy(options, configuration, RateLimitPolicies.ReservationCancels, defaultPermitLimit: 10);
+            AddPerIpPolicy(options, configuration, RateLimitPolicies.ReservationStatusChecks, defaultPermitLimit: 300);
             AddPerIpPolicy(options, configuration, RateLimitPolicies.Submissions, defaultPermitLimit: 3);
             AddPerIpPolicy(options, configuration, RateLimitPolicies.Login, defaultPermitLimit: 10, defaultWindowMinutes: 10);
         });

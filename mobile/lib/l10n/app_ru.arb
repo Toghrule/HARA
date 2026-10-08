@@ -35,9 +35,11 @@
 
   "yourReservation": "Ваша бронь",
   "yourCode": "Ваш код",
+  "activeReservationSubtitle": "Код {code} · осталось {countdown}",
   "copyCode": "Скопировать код",
   "codeCopied": "Код скопирован",
   "reservationExpired": "Срок брони истёк",
+  "reservationEnded": "Эта бронь больше не активна",
   "validFor": "Осталось: {countdown}",
   "tableHeldUntil": "Столик удерживается до {time} ({minutes} мин)",
   "showCodeWithDiscount": "Покажите этот код в заведении по приходе и получите скидку {percent}% на счёт.",

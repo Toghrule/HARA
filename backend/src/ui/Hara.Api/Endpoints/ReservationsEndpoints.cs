@@ -3,6 +3,7 @@ using Hara.Application.Reservations.Commands.CancelReservation;
 using Hara.Application.Reservations.Commands.CreateReservation;
 using Hara.Application.Reservations.Commands.RedeemReservation;
 using Hara.Application.Reservations.Queries.GetReservations;
+using Hara.Application.Reservations.Queries.GetReservationStatus;
 using Hara.Domain.Reservations;
 using MediatR;
 
@@ -21,6 +22,13 @@ public static class ReservationsEndpoints
             .WithName("CreateReservation")
             .AllowAnonymous()
             .RequireRateLimiting(RateLimitPolicies.Reservations);
+
+        app.MapGet("/api/reservations/{code}/status", async (string code, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetReservationStatusQuery(code), cancellationToken)))
+            .WithTags("Reservations")
+            .WithName("GetReservationStatus")
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.ReservationStatusChecks);
 
         app.MapPost("/api/reservations/{code}/cancel", async (string code, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new CancelReservationCommand(code), cancellationToken)))

@@ -280,6 +280,12 @@ abstract class AppLocalizations {
   /// **'Your code'**
   String get yourCode;
 
+  /// No description provided for @activeReservationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Code {code} · {countdown} left'**
+  String activeReservationSubtitle(String code, String countdown);
+
   /// No description provided for @copyCode.
   ///
   /// In en, this message translates to:
@@ -297,6 +303,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This reservation has expired'**
   String get reservationExpired;
+
+  /// No description provided for @reservationEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'This reservation is no longer active'**
+  String get reservationEnded;
 
   /// No description provided for @validFor.
   ///

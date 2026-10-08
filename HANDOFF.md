@@ -39,6 +39,8 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 **Mobil app-də olanlar:** restoran siyahısı (axtarış, A-Z/Z-A sıralama, 20-lik səhifələr), restoran detalı, rezervasiya (telefon + 30/60 dəq → kod ekranı, geri sayım, ləğv), "restoranımı əlavə et" forması, Haqqımızda / Əlaqə / FAQ.
 
+**Aktiv rezerv (2026-10-08):** rezervdən sonra kod itmir, əsas ekranda kart kimi qalır (bax §7).
+
 **Dillər (2026-10-08):** tətbiq **Azərbaycanca (əsas), Rusca, İngiliscə** dəstəkləyir. İlk açılışda telefonun dili (az/ru/en), uyğun deyilsə Azərbaycanca; AppBar-dakı dil düyməsi ilə dəyişir və yadda qalır (`shared_preferences`). Mobil hər sorğuya `?lang=` əlavə edir; server Haqqımızda, FAQ və restoran təsvirini həmin dildə qaytarır, tərcümə boşdursa Azərbaycancaya düşür.
 
 ## 3. Əsas qərarlar və səbəbləri
@@ -92,7 +94,7 @@ HARA/
 - `frontend/src/lib/api.ts` — HTTP klienti (`anonymous` bayrağı, şəbəkə xətası mesajı).
 
 **API xülasəsi:**
-- Public: `GET /api/restaurants[?sort=name_asc|name_desc|nearest&lat&lng&search&pageSize&page]`, `GET /api/restaurants/{id}`, `POST /api/reservations`, `POST /api/reservations/{code}/cancel`, `POST /api/submissions`, `GET /api/faq`, `GET /api/company-info/{about|contacts|social-links}`, `GET /api/advertisements`, `GET /health`, `POST /api/auth/login`.
+- Public: `GET /api/restaurants[?sort=name_asc|name_desc|nearest&lat&lng&search&pageSize&page]`, `GET /api/restaurants/{id}`, `POST /api/reservations`, `GET /api/reservations/{code}/status` (yalnız status, bitmə vaxtı; telefon/restoran qaytarmır), `POST /api/reservations/{code}/cancel`, `POST /api/submissions`, `GET /api/faq`, `GET /api/company-info/{about|contacts|social-links}`, `GET /api/advertisements`, `GET /health`, `POST /api/auth/login`.
 - Admin (JWT, rol `Admin`): `/api/admin/{restaurants|reservations|submissions|advertisements|faq|company-info/*|uploads/{category}}`.
 - Swagger Development-də açıqdır (`/swagger`).
 
@@ -114,7 +116,7 @@ dotnet ef database update --project src/external/Hara.Persistence --startup-proj
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (66 test, 8 fayl). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl və brauzerlə yoxlanıb).
+**Testlər:** `cd mobile && flutter analyze && flutter test` (81 test, 9 fayl). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl və brauzerlə yoxlanıb).
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -167,10 +169,10 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 
 **Qaydalar (indi işləyən davranış)**
 - Rezervasiya: bir telefon eyni anda **1 aktiv** rezerv saxlaya bilər; 24 saatda ən çox **5** (ləğv olunanlar da sayılır); kod 6 simvoldur (0/O/1/I yoxdur); rezerv `ExpiresAt`-dan sonra redeem olunmur.
-- Sürət limitləri (hər IP, `RateLimiting` bölməsi): rezervasiya 5/saat, sorğu 3/saat, ləğv 10/saat, admin login 10/10 dəq. **Development-də 100-ə yüksəldilib** (əl ilə sınaq bloklanmasın).
+- Sürət limitləri (hər IP, `RateLimiting` bölməsi): rezervasiya 5/saat, sorğu 3/saat, ləğv 10/saat, status yoxlaması 300/saat, admin login 10/10 dəq. **Development-də 100-ə yüksəldilib** (əl ilə sınaq bloklanmasın).
 - Sorğu: eyni əlaqədən eyni adlı gözləyən sorğu rədd edilir; bir əlaqədən ən çox 3 gözləyən sorğu.
 - Admin JWT 60 dəqiqə yaşayır, yenilənmə (refresh) yoxdur — saatda bir yenidən login.
-- Müştərinin rezervasiya kodu yalnız kod ekranındadır; ekrandan çıxanda itir (hesab/SMS yoxdur, kodla axtarış yoxdur).
+- **Aktiv rezerv cihazda saxlanılır** (`shared_preferences`, açar `active_reservations`): əsas ekranın yuxarısında "Rezerviniz" kartı çıxır, basanda kod ekranı açılır. Kod **yalnız həmin cihazda** var (hesab/SMS yoxdur): tətbiq məlumatı/brauzer yaddaşı silinəndə və ya başqa cihazda görünmür. Kart silinir: vaxt bitəndə, ləğv edəndə, və **server kodu "istifadə olundu"/"ləğv"/"tanınmır" bildirəndə** (`GET /status`; siyahı açılanda, tətbiq ön plana qayıdanda və açıq qaldıqca 60 san-də bir yoxlanılır; açıq kod ekranı da "artıq aktiv deyil" göstərir). Server əlçatmaz/xətalıdırsa kart saxlanılır. Ləğv zamanı yerli silmə UI-ı gözlətmir (`unawaited`).
 - Backend səhv/etibarsız UTF-8 JSON gələndə 400 yox **500** qaytarır (köhnə davranış).
 
 **İşlədərkən**

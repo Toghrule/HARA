@@ -41,9 +41,12 @@
 
   "yourReservation": "Your reservation",
   "yourCode": "Your code",
+  "activeReservationSubtitle": "Code {code} · {countdown} left",
+  "@activeReservationSubtitle": {"placeholders": {"code": {"type": "String"}, "countdown": {"type": "String"}}},
   "copyCode": "Copy code",
   "codeCopied": "Code copied",
   "reservationExpired": "This reservation has expired",
+  "reservationEnded": "This reservation is no longer active",
   "validFor": "Valid for {countdown}",
   "@validFor": {"placeholders": {"countdown": {"type": "String"}}},
   "tableHeldUntil": "Table held until {time} ({minutes} min)",

@@ -35,9 +35,11 @@
 
   "yourReservation": "Rezerviniz",
   "yourCode": "Kodunuz",
+  "activeReservationSubtitle": "Kod {code} · {countdown} qalıb",
   "copyCode": "Kodu kopyala",
   "codeCopied": "Kod kopyalandı",
   "reservationExpired": "Bu rezervin vaxtı bitib",
+  "reservationEnded": "Bu rezerv artıq aktiv deyil",
   "validFor": "Qalan vaxt: {countdown}",
   "tableHeldUntil": "Masa saat {time}-dək saxlanılır ({minutes} dəq)",
   "showCodeWithDiscount": "Məkana çatanda bu kodu göstərin və hesabdan {percent}% endirim alın.",

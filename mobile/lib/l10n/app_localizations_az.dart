@@ -114,6 +114,11 @@ class AppLocalizationsAz extends AppLocalizations {
   String get yourCode => 'Kodunuz';
 
   @override
+  String activeReservationSubtitle(String code, String countdown) {
+    return 'Kod $code · $countdown qalıb';
+  }
+
+  @override
   String get copyCode => 'Kodu kopyala';
 
   @override
@@ -121,6 +126,9 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get reservationExpired => 'Bu rezervin vaxtı bitib';
+
+  @override
+  String get reservationEnded => 'Bu rezerv artıq aktiv deyil';
 
   @override
   String validFor(String countdown) {
