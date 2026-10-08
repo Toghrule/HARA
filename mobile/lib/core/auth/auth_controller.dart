@@ -24,6 +24,9 @@ class AuthController extends StateNotifier<AuthSession?> implements TokenSource 
 
   bool get isSignedIn => state != null;
 
+  /// The current session, or `null` when nobody is signed in.
+  AuthSession? get session => state;
+
   Future<void> signIn({required String email, required String password}) async =>
       _start(await _repository.login(email: email, password: password));
 

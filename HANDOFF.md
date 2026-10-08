@@ -37,9 +37,9 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 | Mobil app (Flutter) | `mobile/` | 6 planlı addımın hamısı hazırdır; **yalnız brauzerdə (web) yoxlanıb** |
 | Baza | `docker-compose.yml` | Postgres 16 (konteyner `hara-postgres`) |
 
-**Mobil app-də olanlar:** restoran siyahısı (axtarış, A-Z/Z-A sıralama, 20-lik səhifələr), restoran detalı, rezervasiya (telefon + 30/60 dəq → kod ekranı, geri sayım, ləğv), "restoranımı əlavə et" forması, Haqqımızda / Əlaqə / FAQ.
+**Mobil app-də olanlar:** restoran siyahısı (axtarış, A-Z/Z-A sıralama, 20-lik səhifələr), restoran detalı, rezervasiya (telefon + 30/60 dəq → kod ekranı, geri sayım, ləğv), Haqqımızda / Əlaqə / FAQ. **Sahibkar/ofisiant hissəsi (2026-10-08):** qarşılama ekranı ("Müştəri kimi davam et" | Daxil ol / Sahibkar kimi qeydiyyat / Ofisiant kimi qeydiyyat), giriş, qeydiyyat formaları, sahibkar/ofisiant ana ekranı (bax aşağı). Köhnə anonim "Restoranımı əlavə et" forması **silinib** (əvəzində sahibkar qeydiyyatı).
 
-**Rezervasiyanı restoran təsdiqləyir (2026-10-08):** sahibkar/təsdiqlənmiş ofisiant kodu `/api/venue/...` ilə yoxlayıb təsdiqləyir, **yalnız öz restoranının** kodunu (başqasının kodu "tapılmadı" kimi görünür); icazə hər sorğuda bazadakı üzvlükdən yoxlanır (token-dəki rol yetərli deyil, silinmiş ofisiantın köhnə token-i dərhal işləməz). Admin paneldə Redeem YOXDUR, Reservations yalnız oxunur. **Hələ mobil app-də sahibkar ekranı yoxdur, yəni hələlik kodu real həyatda təsdiqləmək üçün Mərhələ 4 (mobil) lazımdır.**
+**Rezervasiyanı restoran təsdiqləyir (2026-10-08):** sahibkar/təsdiqlənmiş ofisiant kodu `/api/venue/...` ilə yoxlayıb təsdiqləyir, **yalnız öz restoranının** kodunu (başqasının kodu "tapılmadı" kimi görünür); icazə hər sorğuda bazadakı üzvlükdən yoxlanır (token-dəki rol yetərli deyil, silinmiş ofisiantın köhnə token-i dərhal işləməz). Admin paneldə Redeem YOXDUR, Reservations yalnız oxunur. **Mobil app-də** təsdiqlənmiş sahibkar/ofisiantın ekranları var: "Kodu təsdiqlə" (kodu yaz → yoxla → endirim/telefon → təsdiq sualı), "Rezervlər" (Aktiv/İstifadə olunub/Hamısı); yalnız **sahibkara** əlavə: "Komanda" (ofisiantı təsdiqlə/rədd et/sil) və "Restoran" (dəyişiklik sorğusu göndər, cavabları gör). Ofisiant yalnız ilk iki bölməni görür.
 
 **Aktiv rezerv (2026-10-08):** rezervdən sonra kod itmir, əsas ekranda kart kimi qalır (bax §7).
 
@@ -82,7 +82,7 @@ HARA/
    └─ lib/
       ├─ main.dart
       ├─ core/{constants/app_constants.dart, network/{api_client,api_error}.dart, router/app_router.dart, theme/, utils/open_link.dart, widgets/error_view.dart}
-      └─ features/{restaurants, reservations, submissions, company_info, faq}/{data, presentation/{providers,screens,widgets}}
+      └─ features/{restaurants, reservations, auth, venue, company_info, faq}/{data, presentation/{providers,screens,widgets}}
 ```
 
 **Vacib fayllar:**
@@ -98,7 +98,7 @@ HARA/
 **API xülasəsi:**
 - Public: `GET /api/restaurants[?sort=name_asc|name_desc|nearest&lat&lng&search&pageSize&page]`, `GET /api/restaurants/{id}`, `POST /api/reservations`, `GET /api/reservations/{code}/status` (yalnız status, bitmə vaxtı; telefon/restoran qaytarmır), `POST /api/reservations/{code}/cancel`, `POST /api/submissions`, `GET /api/faq`, `GET /api/company-info/{about|contacts|social-links}`, `GET /api/advertisements`, `GET /health`, `POST /api/auth/login`.
 - Admin (JWT, rol `Admin`): `/api/admin/{restaurants|reservations|submissions|advertisements|faq|company-info/*|uploads/{category}}`.
-- **Sahibkar/ofisiant (rol `Owner`/`Staff`, hesab restorana təsdiqlənibsə):** `POST /api/auth/register-owner`, `POST /api/auth/register-staff` (ictimai, 5/saat), `POST /api/auth/refresh`, `POST /api/auth/logout`; `GET /api/venue/me`, `GET /api/venue/reservations[?status]`, `GET /api/venue/reservations/{code}`, `POST /api/venue/reservations/{code}/redeem`; yalnız `Owner`: `GET /api/venue/staff`, `POST /api/venue/staff/{id}/approve|reject`, `DELETE /api/venue/staff/{id}`. Admin: `POST /api/admin/restaurants` body-sində `fromSubmissionId` varsa sorğu təsdiqlənir və qeydiyyatdakı sahibkar həmin restoranın sahibi olur.
+- **Sahibkar/ofisiant (rol `Owner`/`Staff`, hesab restorana təsdiqlənibsə):** `POST /api/auth/register-owner`, `POST /api/auth/register-staff` (ictimai, 5/saat), `POST /api/auth/refresh`, `POST /api/auth/logout`; `GET /api/venue/me`, `GET /api/venue/reservations[?status]`, `GET /api/venue/reservations/{code}`, `POST /api/venue/reservations/{code}/redeem`; yalnız `Owner`: `GET /api/venue/staff`, `POST /api/venue/staff/{id}/approve|reject`, `DELETE /api/venue/staff/{id}`, `GET|POST /api/venue/change-requests` (dəyişiklik sorğusu: ad, ünvan, telefon, 3 dildə təsvir, endirim; eyni anda ən çox 5 gözləyən). Admin: `POST /api/admin/restaurants` body-sində `fromSubmissionId` varsa sorğu təsdiqlənir və qeydiyyatdakı sahibkar həmin restoranın sahibi olur; `GET /api/admin/change-requests[?status]`, `PATCH /api/admin/change-requests/{id}/status` (`{decision: 1|2, adminNote}`; təsdiq dəyişiklikləri restorana tətbiq edir).
 - Swagger Development-də açıqdır (`/swagger`).
 
 **Mobil route-lar:** `/` siyahı, `/restaurants/:id`, `/about`, `/contact`, `/faq`, `/submit-restaurant`, `/reservation` (kod ekranı, `extra` ilə).
@@ -112,14 +112,14 @@ HARA/
 - Mobil app: `http://localhost:5174` (ilk açılış 20–60 san, boş qara səhifə = gözləyin).
 - Admin panel: `http://localhost:5173`. Login: `admin@hara.local`, parol `backend/src/ui/Hara.Api/appsettings.Development.json`-da (`AdminUser`). **Repo ictimaidir — real serverə çıxmazdan əvvəl mütləq dəyişin.**
 
-**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddRuEnTranslations`). Skript bunu etmir. Boş bazada əvvəl:
+**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddRestaurantChangeRequests`). Skript bunu etmir. Boş bazada əvvəl:
 ```bash
 cd backend
 dotnet ef database update --project src/external/Hara.Persistence --startup-project src/ui/Hara.Api --context ApplicationDbContext
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (81 test, 9 fayl). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl və brauzerlə yoxlanıb).
+**Testlər:** `cd mobile && flutter analyze && flutter test` (149 test, 12 fayl: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -159,7 +159,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 4. **Real serverə çıxış:** API üçün Dockerfile, gizli açarlar (`Jwt:SigningKey` boşdur → boşdursa API açılmır), real CORS origin-ləri, HTTPS, reverse proxy üçün forwarded headers (IP üzrə limit buna bağlıdır), dev admin parolunun dəyişdirilməsi, bazanın ehtiyat nüsxəsi, **şəkillər üçün bulud saxlama** (indi lokal diskdə).
 5. **Avtomatik testlər:** backend üçün xUnit layihəsi, frontend üçün `vitest` (təklif olunub, istənməyib).
 6. ~~Lokalizasiya~~ — mobil UI 3 dildədir (2026-10-08). Qalan: Rusca/Azərbaycanca tərcümələrin bilən biri tərəfindən yoxlanması; admin panel UI-ı və server doğrulama mesajları hələ ingiliscədir.
-7. **Sahibkar/ofisiant hesabları — Mərhələ 1–2 (BACKEND) HAZIRDIR (2026-10-08), qalanı (admin səhifələri, mobil ekranlar, e-poçt) qurulmayıb.** Qərarlar: eyni mobil app; qeydiyyat ekranı iki hissəli "Sahibkar" / "Müştəri" (düymə mətni **"Müştəri kimi davam et"**, müştəri hesabsız qalır); sahibkar hesab + restoran məlumatını birlikdə göndərir, admin restoranı həmin qeydiyyatdan yaradanda hesab sahibkar olur; ofisiantı restoran sahibi təsdiqləyir; sahibkar məlumatı birbaşa dəyişmir, admin-ə dəyişiklik sorğusu göndərir (**hələ yoxdur**); parol sıfırlama sahibkarın öz Gmail-inə link ilə, göndərən hesab lazımdır (**hələ yoxdur, ən sonda**). **Qalan mərhələlər:** 3 admin səhifələri (sahibkar qeydiyyatları → "Create restaurant" dialoqu `fromSubmissionId` göndərməlidir; dəyişiklik sorğuları), 4 mobil ekranlar, 5 e-poçt/parol sıfırlama.
+7. **Sahibkar/ofisiant hesabları — Mərhələ 1–4 HAZIRDIR (2026-10-08), yalnız e-poçt (Mərhələ 5) qalıb.** Qərarlar: eyni mobil app; qeydiyyat ekranı iki hissəli "Sahibkar" / "Müştəri" (düymə mətni **"Müştəri kimi davam et"**, müştəri hesabsız qalır); sahibkar hesab + restoran məlumatını birlikdə göndərir, admin restoranı həmin qeydiyyatdan yaradanda ("Submissions" səhifəsində "Create restaurant") hesab sahibkar olur; ofisiantı restoran sahibi təsdiqləyir; sahibkar məlumatı birbaşa dəyişmir, admin-ə dəyişiklik sorğusu göndərir ("Change requests" səhifəsi: indiki dəyər ↔ istənilən dəyər, təsdiq/rədd). **Qalan işlər:** (a) **parol sıfırlama və e-poçtun təsdiqi** — sahibkarın öz Gmail-inə link; göndərən hesab (ayrıca Gmail + "tətbiq parolu", repoya yazılmamalıdır) lazımdır, hələ yoxdur; (b) sahibkar şəkil yükləyə bilmir (yükləmə endpoint-i yalnız admindir) — şəkil dəyişikliyi sorğuda yoxdur; (c) dəyişiklik sorğusunda boş xana = "dəyişmə" (isteğe bağlı mətni silmək üçün mobil formada yol yoxdur; API boş sətri qəbul edir); (d) admin panelində sahibkar/ofisiant siyahısı yoxdur; (e) backend-də köhnə anonim `POST /api/submissions` hələ də var (mobil artıq istifadə etmir) — silmək olar; (f) e-poçtlar təsdiqlənmir.
 8. Sorğu ↔ restoran bağlantısı (`RestaurantId` + migration), admin siyahılarında səhifələmə/axtarış.
 9. Android Studio / Visual Studio qurub Android/Windows build; Mac ilə iOS.
 10. Biznes qərarları (bonus/loyallıq, abunə avtomatlaşdırması, reklam səviyyələri).
@@ -179,6 +179,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 - Backend səhv/etibarsız UTF-8 JSON gələndə 400 yox **500** qaytarır (köhnə davranış).
 
 **İşlədərkən**
+- **Canlı test (mobil ↔ backend):** `hara_test` boş bazası yaradın və migration edin (aşağıdakı `--connection` qaydası), API-ni ona qarşı 5081-də `ASPNETCORE_ENVIRONMENT=Development` ilə qaldırın, sonra `cd mobile && ADMIN_PW=<AdminUser parolu> flutter test live_test/live_contract_test.dart --dart-define=API_BASE_URL=http://localhost:5081`. Hər işə düşmədən əvvəl baza **boş** olmalıdır (test məlumat yaradır), sonda `DROP DATABASE hara_test WITH (FORCE)`. İstifadəçinin real bazasına (`hara`) və 5080/5173/5174 proseslərinə toxunmayın.
 - **Windows konsolu ASCII-dən kənar simvolları komanda sətrində pozur** (curl-a `Ə`, `ı` kimi hərfləri arqument kimi vermək 500/`?` verir). Test məlumatını **UTF-8 JSON fayldan** göndərin (`curl --data-binary @fayl.json`).
 - İstifadəçinin işlətdiyi backend (5080) **Debug DLL-lərini kilidləyir** — o işləyərkən `dotnet build` xəta verir. Test üçün `-c Release` ilə build edib 5081-də ayrıca nüsxə qaldırın (`dotnet bin/Release/net9.0/Hara.Api.dll --urls http://localhost:5081`, `src/ui/Hara.Api`-dən), `dotnet ef`-i də `--configuration Release` ilə işlədin. İstifadəçinin 5080/5173/5174 proseslərini öldürməyin (yalnız `restart-dev-environment.bat` bunu edir).
 - **Canlı test üçün təcrid olunmuş baza:** konteynerdə `hara_test` yaradın, `dotnet ef database update --connection "...Database=hara_test..." --configuration Release ...` ilə migrate edin, API-ni `ConnectionStrings__DefaultConnection` ilə ona yönəldin, admin API ilə məlumat yazın, sonda `DROP DATABASE hara_test WITH (FORCE)`.
