@@ -6,7 +6,7 @@ namespace Hara.Api.Middleware;
 /// <summary>
 /// Translates Application-layer exceptions into the HTTP responses endpoints
 /// don't have to think about individually: <see cref="ValidationException"/> → 400,
-/// <see cref="AuthenticationFailedException"/> → 401, <see cref="NotFoundException"/> → 404,
+/// <see cref="AuthenticationFailedException"/> → 401, <see cref="ForbiddenException"/> → 403, <see cref="NotFoundException"/> → 404,
 /// anything else → 500 (with details hidden outside Development).
 /// </summary>
 public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger, IHostEnvironment environment)
@@ -24,6 +24,10 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         catch (AuthenticationFailedException ex)
         {
             await WriteProblemAsync(context, StatusCodes.Status401Unauthorized, ex.Message);
+        }
+        catch (ForbiddenException ex)
+        {
+            await WriteProblemAsync(context, StatusCodes.Status403Forbidden, ex.Message);
         }
         catch (NotFoundException ex)
         {

@@ -21,7 +21,7 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 **İstifadəçinin özü tərəfindən qeyd olunmuş, HƏLƏ AÇIQ qalan biznes suallar (dəyər uydurmayın, soruşun):**
 1. Yeni məkanlar üçün pulsuz dövrün müddəti.
 2. Aylıq abunə haqqı (AZN).
-3. Məkanın müştəri kodunu öz tərəfində qeydiyyatdan keçirmə/istifadə mexanizmi (indiki müvəqqəti həll: admin paneldə "Reservations" səhifəsi).
+3. ~~Məkanın müştəri kodunu necə təsdiqləməsi~~ — **qərar verildi (2026-10-08), hələ qurulmayıb:** sahibkar/ofisiant hesabları, bax §6 №7.
 4. Bonusun işlədilməsi üçün minimum hesab məbləği (AZN).
 
 **Təsdiqlənmiş MVP həddi (2026-09-22):** məkan onboarding-i sorğu/təsdiq olaraq qalır (owner hesab sistemi yoxdur — yalnız bir ümumi admin login var). Ən vacib hissə rezervasiya + kod axını idi (hazırdır). Bonus/loyallıq, abunə avtomatlaşdırması və reklam səviyyələri **MVP üçün aşağı prioritetdir**, əl ilə/təxirə salına bilər.
@@ -156,7 +156,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 4. **Real serverə çıxış:** API üçün Dockerfile, gizli açarlar (`Jwt:SigningKey` boşdur → boşdursa API açılmır), real CORS origin-ləri, HTTPS, reverse proxy üçün forwarded headers (IP üzrə limit buna bağlıdır), dev admin parolunun dəyişdirilməsi, bazanın ehtiyat nüsxəsi, **şəkillər üçün bulud saxlama** (indi lokal diskdə).
 5. **Avtomatik testlər:** backend üçün xUnit layihəsi, frontend üçün `vitest` (təklif olunub, istənməyib).
 6. ~~Lokalizasiya~~ — mobil UI 3 dildədir (2026-10-08). Qalan: Rusca/Azərbaycanca tərcümələrin bilən biri tərəfindən yoxlanması; admin panel UI-ı və server doğrulama mesajları hələ ingiliscədir.
-7. Məkan sahibləri üçün hesab sistemi (kodu özləri təsdiqləsin) — MVP-dən sonra.
+7. **Sahibkar/ofisiant hesabları (qərar verilib, başlanmayıb, istifadəçidən "başla" gözlənilir).** Eyni mobil app; qeydiyyat ekranı iki hissəli: "Sahibkar" və "Müştəri" (düymə mətni **"Müştəri kimi davam et"**, müştəri hesabsız qalır). Sahibkar hesabı + restoran məlumatını birlikdə göndərir, admin birlikdə təsdiqləyir (anonim "Restoranınız var?" formunu əvəz edir). Ofisiantı restoran sahibi təsdiqləyir. Sahibkar məlumatı birbaşa dəyişmir, admin-ə dəyişiklik sorğusu göndərir. Sahibkar/ofisiant yalnız öz restoranının kodunu təsdiqləyir; **admin paneldən Redeem düyməsi və `PATCH /api/admin/reservations/{id}/redeem` silinir**, Reservations siyahısı yalnız oxunur. Parol sıfırlama: sahibkarın öz Gmail-inə link, göndərən hesab lazımdır (ən sonda). Mərhələlər: 1 hesablar/rollar (backend), 2 kodun təsdiqi, 3 admin səhifələri (qeydiyyatlar, dəyişiklik sorğuları), 4 mobil ekranlar, 5 e-poçt. **Hazırda kodu admin panelin Redeem düyməsi təsdiq edir (müvəqqəti).**
 8. Sorğu ↔ restoran bağlantısı (`RestaurantId` + migration), admin siyahılarında səhifələmə/axtarış.
 9. Android Studio / Visual Studio qurub Android/Windows build; Mac ilə iOS.
 10. Biznes qərarları (bonus/loyallıq, abunə avtomatlaşdırması, reklam səviyyələri).

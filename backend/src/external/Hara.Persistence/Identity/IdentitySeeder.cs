@@ -13,6 +13,8 @@ namespace Hara.Persistence.Identity;
 public static class IdentitySeeder
 {
     public const string AdminRole = "Admin";
+    public const string OwnerRole = "Owner";
+    public const string StaffRole = "Staff";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -20,9 +22,12 @@ public static class IdentitySeeder
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-        if (!await roleManager.RoleExistsAsync(AdminRole))
+        foreach (var role in new[] { AdminRole, OwnerRole, StaffRole })
         {
-            await roleManager.CreateAsync(new IdentityRole<Guid>(AdminRole));
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+            }
         }
 
         var adminEmail = configuration["AdminUser:Email"];

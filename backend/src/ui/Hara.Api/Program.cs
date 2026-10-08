@@ -16,6 +16,8 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration, builder.Environment);
 builder.Services.AddHaraRateLimiting(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<Hara.Application.Common.Interfaces.ICurrentUserService, Hara.Api.Services.CurrentUserService>();
 
 var jwtSection = builder.Configuration.GetSection(JwtOptions.SectionName);
 var jwtOptions = jwtSection.Get<JwtOptions>() ?? new JwtOptions();
@@ -47,6 +49,10 @@ builder.Services
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireRole(IdentitySeeder.AdminRole));
+    // Signed in as a restaurant owner or waiter. Whether they are *approved* for a restaurant is
+    // checked against the database on each request, not trusted from the token.
+    options.AddPolicy("VenueMember", policy => policy.RequireRole(IdentitySeeder.OwnerRole, IdentitySeeder.StaffRole));
+    options.AddPolicy("Owner", policy => policy.RequireRole(IdentitySeeder.OwnerRole));
 });
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];

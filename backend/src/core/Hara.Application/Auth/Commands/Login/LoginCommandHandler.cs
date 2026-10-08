@@ -15,6 +15,6 @@ public class LoginCommandHandler(IIdentityService identityService) : IRequestHan
             throw new AuthenticationFailedException();
         }
 
-        return new LoginResult(result.Token!, result.ExpiresAtUtc!.Value);
+        return new LoginResult(result.Token!, result.ExpiresAtUtc!.Value, result.RefreshToken, result.Roles);
     }
 }

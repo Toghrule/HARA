@@ -16,4 +16,7 @@ public class JwtOptions
 
     /// <summary>How long an issued access token remains valid.</summary>
     public int ExpiryMinutes { get; set; } = 60;
+
+    /// <summary>How long a refresh token keeps a device signed in without the password. Each refresh starts a new window.</summary>
+    public int RefreshTokenDays { get; set; } = 60;
 }
