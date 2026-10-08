@@ -63,7 +63,10 @@ export function SubmissionsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Submissions" description="Restaurants suggested by mobile app users." />
+      <PageHeader
+        title="Submissions"
+        description="Restaurants registered in the mobile app. Creating the restaurant from an owner's registration approves it and activates their account."
+      />
 
       <div className="flex gap-1 border-b border-slate-200">
         {tabs.map((tab) => (
@@ -104,6 +107,11 @@ export function SubmissionsPage() {
                 <tr key={submission.id}>
                   <td className="px-4 py-3">
                     <p className="font-medium text-slate-900">{submission.restaurantName}</p>
+                    {submission.hasOwnerAccount && (
+                      <div className="mt-1">
+                        <Badge variant="neutral">Owner account</Badge>
+                      </div>
+                    )}
                     <p className="text-xs text-slate-500">{submission.address ?? "No address given"}</p>
                     {submission.adminNote && (
                       <p className="mt-1 text-xs italic text-slate-400">Note: {submission.adminNote}</p>
@@ -123,7 +131,29 @@ export function SubmissionsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
-                      {submission.status === SubmissionStatus.Pending && (
+                      {submission.status === SubmissionStatus.Pending && submission.hasOwnerAccount && (
+                        <>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            className="whitespace-nowrap"
+                            onClick={() => setCreateFrom(submission)}
+                          >
+                            <Plus className="h-4 w-4" />
+                            Create restaurant
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setReviewTarget({ submission, decision: SubmissionStatus.Rejected })}
+                          >
+                            <X className="h-4 w-4 text-red-600" />
+                          </Button>
+                        </>
+                      )}
+                      {submission.status === SubmissionStatus.Pending && !submission.hasOwnerAccount && (
                         <>
                           <Button
                             type="button"
@@ -143,7 +173,10 @@ export function SubmissionsPage() {
                           </Button>
                         </>
                       )}
-                      {submission.status === SubmissionStatus.Approved && (
+                      {submission.status === SubmissionStatus.Approved && submission.restaurantId && (
+                        <span className="self-center text-xs text-slate-500">Restaurant created</span>
+                      )}
+                      {submission.status === SubmissionStatus.Approved && !submission.restaurantId && (
                         <Button
                           type="button"
                           variant="secondary"
@@ -172,7 +205,12 @@ export function SubmissionsPage() {
         decision={reviewTarget?.decision ?? null}
         onClose={() => setReviewTarget(null)}
       />
-      <RestaurantFormDialog open={createFrom !== null} onClose={() => setCreateFrom(null)} prefill={prefill} />
+      <RestaurantFormDialog
+        open={createFrom !== null}
+        onClose={() => setCreateFrom(null)}
+        prefill={prefill}
+        fromSubmissionId={createFrom?.id ?? null}
+      />
       <ConfirmDialog
         open={pendingDelete !== null}
         title="Delete submission"

@@ -9,6 +9,7 @@ import { LoginPage } from "./features/auth/LoginPage";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
 import { RestaurantsPage } from "./features/restaurants/RestaurantsPage";
 import { SubmissionsPage } from "./features/submissions/SubmissionsPage";
+import { ChangeRequestsPage } from "./features/change-requests/ChangeRequestsPage";
 import { ReservationsPage } from "./features/reservations/ReservationsPage";
 import { AdvertisementsPage } from "./features/advertisements/AdvertisementsPage";
 import { FaqPage } from "./features/faq/FaqPage";
@@ -35,6 +36,7 @@ export default function App() {
                 <Route path="restaurants" element={<RestaurantsPage />} />
                 <Route path="reservations" element={<ReservationsPage />} />
                 <Route path="submissions" element={<SubmissionsPage />} />
+                <Route path="change-requests" element={<ChangeRequestsPage />} />
                 <Route path="advertisements" element={<AdvertisementsPage />} />
                 <Route path="faq" element={<FaqPage />} />
                 <Route path="company-info/about" element={<AboutUsPage />} />

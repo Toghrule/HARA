@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import { api } from "./api";
+import { api, ApiError } from "./api";
 import { clearSession, getSession, setSession } from "./token";
 import type { LoginResult } from "../types";
 
@@ -19,6 +19,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated,
       login: async (email: string, password: string) => {
         const result = await api.post<LoginResult>("/api/auth/login", { email, password }, { anonymous: true });
+        // Restaurant owners and waiters sign in with the same endpoint (they use the mobile app); none of the
+        // admin screens would work for them, so say so instead of letting them in to a wall of errors.
+        if (!result.roles?.includes("Admin")) {
+          throw new ApiError(403, "This account is not an administrator.");
+        }
         setSession(result.token, result.expiresAtUtc);
         setIsAuthenticated(true);
       },

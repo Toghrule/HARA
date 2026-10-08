@@ -1,4 +1,4 @@
-import { ContactType, ReservationStatus, SocialMediaPlatform, SubmissionStatus } from "../types";
+import { ChangeRequestStatus, ContactType, ReservationStatus, SocialMediaPlatform, SubmissionStatus } from "../types";
 
 export const reservationStatusLabels: Record<ReservationStatus, string> = {
   [ReservationStatus.Active]: "Active",
@@ -40,6 +40,18 @@ export const submissionStatusBadgeVariant: Record<SubmissionStatus, "success" | 
   [SubmissionStatus.Pending]: "warning",
   [SubmissionStatus.Approved]: "success",
   [SubmissionStatus.Rejected]: "danger",
+};
+
+export const changeRequestStatusLabels: Record<ChangeRequestStatus, string> = {
+  [ChangeRequestStatus.Pending]: "Pending",
+  [ChangeRequestStatus.Approved]: "Approved",
+  [ChangeRequestStatus.Rejected]: "Rejected",
+};
+
+export const changeRequestStatusBadgeVariant: Record<ChangeRequestStatus, "success" | "warning" | "danger"> = {
+  [ChangeRequestStatus.Pending]: "warning",
+  [ChangeRequestStatus.Approved]: "success",
+  [ChangeRequestStatus.Rejected]: "danger",
 };
 
 export function numericEnumEntries(e: object): [string, number][] {

@@ -1,4 +1,5 @@
 import { useEffect, type ClipboardEvent } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -63,11 +64,14 @@ interface RestaurantFormDialogProps {
   restaurant?: RestaurantDto | null;
   /** Only used when creating. Keep the object stable between renders or the form resets while typing. */
   prefill?: RestaurantPrefill | null;
+  /** Only used when creating. The registration this restaurant comes from: approves it and, if an owner signed up with it, makes them the restaurant's owner. */
+  fromSubmissionId?: string | null;
 }
 
-export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: RestaurantFormDialogProps) {
+export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromSubmissionId }: RestaurantFormDialogProps) {
   const isEdit = Boolean(restaurant);
   const { push } = useToast();
+  const queryClient = useQueryClient();
   const createMutation = useCreateRestaurant();
   const updateMutation = useUpdateRestaurant();
 
@@ -141,7 +145,11 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: Res
         await updateMutation.mutateAsync({ id: restaurant.id, body: { ...payload, isActive: values.isActive } });
         push("Restaurant updated");
       } else {
-        await createMutation.mutateAsync(payload);
+        await createMutation.mutateAsync({ ...payload, fromSubmissionId: fromSubmissionId ?? null });
+        if (fromSubmissionId) {
+          // The registration is now approved and linked to this restaurant.
+          await queryClient.invalidateQueries({ queryKey: ["admin-submissions"] });
+        }
         push("Restaurant created");
       }
       onClose();

@@ -34,6 +34,8 @@ export enum SocialMediaPlatform {
 export interface LoginResult {
   token: string;
   expiresAtUtc: string;
+  refreshToken?: string | null;
+  roles?: string[] | null;
 }
 
 // Restaurants
@@ -66,6 +68,8 @@ export interface CreateRestaurantBody {
   discountPercent: number;
   descriptionRu?: string | null;
   descriptionEn?: string | null;
+  /** Approves this registration and makes its owner the restaurant's owner. */
+  fromSubmissionId?: string | null;
 }
 
 // Reservations
@@ -103,6 +107,10 @@ export interface RestaurantSubmissionDto {
   adminNote: string | null;
   reviewedAt: string | null;
   createdAt: string;
+  /** An owner signed up with this registration, so creating its restaurant also activates their account. */
+  hasOwnerAccount?: boolean;
+  /** The restaurant created from this registration, once there is one. */
+  restaurantId?: string | null;
 }
 
 export interface ReviewSubmissionBody {
@@ -224,6 +232,50 @@ export interface CreateSocialMediaLinkBody {
 
 export interface UpdateSocialMediaLinkBody extends CreateSocialMediaLinkBody {
   isActive: boolean;
+}
+
+// Owners' change requests
+
+export enum ChangeRequestStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+}
+
+/** What the restaurant shows right now. */
+export interface RestaurantSnapshotDto {
+  name: string;
+  address: string;
+  phoneNumber: string | null;
+  description: string | null;
+  descriptionRu: string | null;
+  descriptionEn: string | null;
+  discountPercent: number;
+}
+
+/** Requested fields that are null are not being changed; an empty string asks to remove an optional text. */
+export interface ChangeRequestDto {
+  id: string;
+  restaurantId: string;
+  restaurantName: string;
+  name: string | null;
+  address: string | null;
+  phoneNumber: string | null;
+  description: string | null;
+  descriptionRu: string | null;
+  descriptionEn: string | null;
+  discountPercent: number | null;
+  ownerNote: string | null;
+  status: ChangeRequestStatus;
+  adminNote: string | null;
+  reviewedAt: string | null;
+  createdAt: string;
+  current: RestaurantSnapshotDto;
+}
+
+export interface ReviewChangeRequestBody {
+  decision: ChangeRequestStatus;
+  adminNote?: string | null;
 }
 
 // Uploads
