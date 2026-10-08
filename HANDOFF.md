@@ -1,4 +1,4 @@
-﻿# HARA — Handoff (yeni söhbət üçün)
+# HARA — Handoff (yeni söhbət üçün)
 
 Bu fayl yeni söhbətin (insan və ya Claude) layihə haqqında heç nə bilmədən işə başlaması üçündür.
 Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline -10` və `git status` ilə faylın hələ də aktual olduğunu yoxlayın.
