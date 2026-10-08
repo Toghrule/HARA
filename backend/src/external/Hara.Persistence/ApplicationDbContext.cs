@@ -42,6 +42,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<RestaurantMember> RestaurantMembers => Set<RestaurantMember>();
 
+    public DbSet<RestaurantChangeRequest> RestaurantChangeRequests => Set<RestaurantChangeRequest>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

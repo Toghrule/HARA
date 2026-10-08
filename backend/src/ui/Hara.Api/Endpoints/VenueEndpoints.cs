@@ -1,3 +1,5 @@
+using Hara.Application.ChangeRequests.Commands.CreateChangeRequest;
+using Hara.Application.ChangeRequests.Queries.GetVenueChangeRequests;
 using Hara.Application.Venue.Commands.RedeemVenueReservation;
 using Hara.Application.Venue.Commands.RemoveStaff;
 using Hara.Application.Venue.Commands.ReviewStaff;
@@ -37,6 +39,16 @@ public static class VenueEndpoints
         venue.MapPost("/reservations/{code}/redeem", async (string code, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new RedeemVenueReservationCommand(code), cancellationToken)))
             .WithName("RedeemVenueReservation");
+
+        var requests = venue.MapGroup("/change-requests").RequireAuthorization("Owner");
+
+        requests.MapGet("/", async (ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetVenueChangeRequestsQuery(), cancellationToken)))
+            .WithName("GetVenueChangeRequests");
+
+        requests.MapPost("/", async (CreateChangeRequestCommand command, ISender sender, CancellationToken cancellationToken) =>
+                Results.Created((string?)null, await sender.Send(command, cancellationToken)))
+            .WithName("CreateVenueChangeRequest");
 
         var staff = venue.MapGroup("/staff").RequireAuthorization("Owner");
 
