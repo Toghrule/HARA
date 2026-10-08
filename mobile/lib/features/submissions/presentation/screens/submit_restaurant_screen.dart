@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/submissions_repository.dart';
 
 /// "Own a restaurant? Add it to HARA" — an anonymous request the HARA team reviews.
@@ -48,17 +49,18 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
 
   String? _required(String? value, {required int max}) {
     final text = value?.trim() ?? '';
-    if (text.isEmpty) return 'This field is required';
-    return text.length > max ? 'Too long (max $max characters)' : null;
+    final l10n = AppLocalizations.of(context);
+    if (text.isEmpty) return l10n.fieldRequired;
+    return text.length > max ? l10n.tooLong(max) : null;
   }
 
   String? _optional(String? value, {required int max}) =>
-      (value?.trim().length ?? 0) > max ? 'Too long (max $max characters)' : null;
+      (value?.trim().length ?? 0) > max ? AppLocalizations.of(context).tooLong(max) : null;
 
   String? _email(String? value) {
     final text = value?.trim() ?? '';
     if (text.isEmpty) return null;
-    if (text.length > 320 || !_emailPattern.hasMatch(text)) return 'Enter a valid email address';
+    if (text.length > 320 || !_emailPattern.hasMatch(text)) return AppLocalizations.of(context).invalidEmail;
     return null;
   }
 
@@ -73,7 +75,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
 
     setState(() {
       _error = null;
-      _contactError = hasContact ? null : 'Add an email or a phone number so we can reach you.';
+      _contactError = hasContact ? null : AppLocalizations.of(context).contactRequired;
     });
     if (!formValid || !hasContact) return;
 
@@ -93,7 +95,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
       if (mounted) {
         setState(() {
           _submitting = false;
-          _error = apiErrorMessage(error);
+          _error = apiErrorMessage(error, AppLocalizations.of(context));
         });
       }
     }
@@ -102,7 +104,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add your restaurant')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).addYourRestaurant)),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -115,6 +117,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
   }
 
   Widget _buildThanks(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
@@ -124,18 +127,17 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
         children: [
           Icon(Icons.check_circle_outline, size: 72, color: Theme.of(context).colorScheme.primary),
           const SizedBox(height: 16),
-          Text('Thank you!', style: textTheme.headlineSmall),
+          Text(l10n.thankYou, style: textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text(
-            'We received your request for "${_restaurantName.text.trim()}". '
-            'Our team will review it and get in touch using the contact details you gave us.',
+            l10n.requestReceived(_restaurantName.text.trim()),
             style: textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           FilledButton(
             onPressed: () => context.go('/'),
-            child: const Text('Back to restaurants'),
+            child: Text(l10n.backToRestaurants),
           ),
         ],
       ),
@@ -143,6 +145,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
   }
 
   Widget _buildForm(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     const gap = SizedBox(height: 16);
@@ -153,18 +156,18 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
         padding: const EdgeInsets.all(16),
         children: [
           Text(
-            'Tell us about your restaurant. We review every request before it appears in HARA.',
+            l10n.submitIntro,
             style: textTheme.bodyMedium,
           ),
           const SizedBox(height: 24),
-          Text('Restaurant', style: textTheme.titleMedium),
+          Text(l10n.sectionRestaurant, style: textTheme.titleMedium),
           gap,
           TextFormField(
             key: const Key('restaurantName'),
             controller: _restaurantName,
             enabled: !_submitting,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(labelText: 'Restaurant name *', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: l10n.restaurantNameLabel, border: const OutlineInputBorder()),
             validator: (value) => _required(value, max: 200),
           ),
           gap,
@@ -173,7 +176,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
             controller: _address,
             enabled: !_submitting,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(labelText: 'Address', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: l10n.addressLabel, border: const OutlineInputBorder()),
             validator: (value) => _optional(value, max: 400),
           ),
           gap,
@@ -183,7 +186,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
             enabled: !_submitting,
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(labelText: 'Restaurant phone', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: l10n.restaurantPhoneLabel, border: const OutlineInputBorder()),
             validator: (value) => _optional(value, max: 50),
           ),
           gap,
@@ -194,22 +197,22 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
             minLines: 3,
             maxLines: 6,
             keyboardType: TextInputType.multiline,
-            decoration: const InputDecoration(
-              labelText: 'Description',
+            decoration: InputDecoration(
+              labelText: l10n.descriptionLabel,
               alignLabelWithHint: true,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
             validator: (value) => _optional(value, max: 4000),
           ),
           const SizedBox(height: 32),
-          Text('About you', style: textTheme.titleMedium),
+          Text(l10n.sectionAboutYou, style: textTheme.titleMedium),
           gap,
           TextFormField(
             key: const Key('submitterName'),
             controller: _submitterName,
             enabled: !_submitting,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(labelText: 'Your name *', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: l10n.yourNameLabel, border: const OutlineInputBorder()),
             validator: (value) => _required(value, max: 200),
           ),
           gap,
@@ -219,7 +222,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
             enabled: !_submitting,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(labelText: 'Your email', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: l10n.yourEmailLabel, border: const OutlineInputBorder()),
             validator: _email,
           ),
           gap,
@@ -228,12 +231,12 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
             controller: _submitterPhone,
             enabled: !_submitting,
             keyboardType: TextInputType.phone,
-            decoration: const InputDecoration(labelText: 'Your phone', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: l10n.yourPhoneLabel, border: const OutlineInputBorder()),
             validator: (value) => _optional(value, max: 50),
           ),
           const SizedBox(height: 8),
           Text(
-            _contactError ?? 'Email or phone — at least one, so we can follow up.',
+            _contactError ?? l10n.contactHint,
             style: textTheme.bodySmall?.copyWith(
               color: _contactError != null ? theme.colorScheme.error : null,
             ),
@@ -247,7 +250,7 @@ class _SubmitRestaurantScreenState extends ConsumerState<SubmitRestaurantScreen>
             onPressed: _submitting ? null : _submit,
             child: _submitting
                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Send request'),
+                : Text(l10n.sendRequest),
           ),
         ],
       ),

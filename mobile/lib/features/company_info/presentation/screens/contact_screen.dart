@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/open_link.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../data/contact_info.dart';
@@ -13,9 +14,10 @@ class ContactScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final contactsAsync = ref.watch(contactsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Contact us')),
+      appBar: AppBar(title: Text(l10n.contactUs)),
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(contactsProvider.future),
         child: contactsAsync.when(
@@ -26,7 +28,7 @@ class ContactScreen extends ConsumerWidget {
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: SizedBox(
                     height: constraints.maxHeight,
-                    child: const Center(child: Text('No contact details yet.')),
+                    child: Center(child: Text(l10n.noContactDetails)),
                   ),
                 ),
               );
@@ -41,7 +43,7 @@ class ContactScreen extends ConsumerWidget {
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stackTrace) => ErrorView(
-            message: apiErrorMessage(error),
+            message: apiErrorMessage(error, l10n),
             onRetry: () => ref.invalidate(contactsProvider),
           ),
         ),
@@ -67,7 +69,7 @@ class _ContactTile extends StatelessWidget {
           ContactType.other => Icons.contact_support_outlined,
         },
       ),
-      title: Text(contact.title),
+      title: Text(contact.title(AppLocalizations.of(context))),
       subtitle: Text(contact.value),
       onTap: uri == null ? null : () => openLink(context, uri),
     );

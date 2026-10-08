@@ -1,10 +1,13 @@
 import 'package:dio/dio.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// Turns an error from the API into one short message a customer can read.
 ///
 /// The backend reports validation problems as `{"errors": {"Field": ["message"]}}`
-/// and other failures as `{"title": "..."}`.
-String apiErrorMessage(Object error) {
+/// and other failures as `{"title": "..."}`. Those server messages are English; the
+/// connection and generic messages are shown in the app's language.
+String apiErrorMessage(Object error, AppLocalizations l10n) {
   if (error is DioException) {
     final data = error.response?.data;
     if (data is Map<String, dynamic>) {
@@ -18,9 +21,7 @@ String apiErrorMessage(Object error) {
         return title;
       }
     }
-    if (error.response == null) {
-      return 'Can\'t reach the server. Check your connection and try again.';
-    }
+    if (error.response == null) return l10n.errorCantReachServer;
   }
-  return 'Something went wrong. Please try again.';
+  return l10n.errorSomethingWrong;
 }

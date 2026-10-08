@@ -1,3 +1,5 @@
+import '../../../l10n/app_localizations.dart';
+
 enum SocialPlatform {
   facebook(0, 'Facebook'),
   instagram(1, 'Instagram'),
@@ -12,6 +14,13 @@ enum SocialPlatform {
 
   final int apiValue;
   final String label;
+
+  /// Brand names stay as they are; only the generic "Website" and "Link" are translated.
+  String displayName(AppLocalizations l10n) => switch (this) {
+        website => l10n.socialWebsite,
+        other => l10n.socialOther,
+        _ => label,
+      };
 
   static SocialPlatform fromApi(int value) =>
       values.firstWhere((platform) => platform.apiValue == value, orElse: () => other);

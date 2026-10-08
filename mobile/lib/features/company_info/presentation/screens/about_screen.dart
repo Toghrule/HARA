@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/open_link.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/language_menu.dart';
 import '../../data/about_us.dart';
 import '../../data/social_link.dart';
 import '../providers/company_info_providers.dart';
@@ -14,8 +16,10 @@ class AboutScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('About us')),
+      appBar: AppBar(title: Text(l10n.aboutUs), actions: const [LanguageMenu()]),
       body: RefreshIndicator(
         onRefresh: () async {
           ref
@@ -31,20 +35,20 @@ class AboutScreen extends ConsumerWidget {
             const Divider(height: 32),
             ListTile(
               leading: const Icon(Icons.support_agent_outlined),
-              title: const Text('Contact us'),
+              title: Text(l10n.contactUs),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/contact'),
             ),
             ListTile(
               leading: const Icon(Icons.help_outline),
-              title: const Text('Frequently asked questions'),
+              title: Text(l10n.faqTitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/faq'),
             ),
             ListTile(
               leading: const Icon(Icons.add_business_outlined),
-              title: const Text('Own a restaurant?'),
-              subtitle: const Text('Add it to HARA'),
+              title: Text(l10n.ownRestaurant),
+              subtitle: Text(l10n.addItToHara),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/submit-restaurant'),
             ),
@@ -71,7 +75,7 @@ class _AboutSection extends ConsumerWidget {
       error: (error, stackTrace) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 24),
         child: ErrorView(
-          message: apiErrorMessage(error),
+          message: apiErrorMessage(error, AppLocalizations.of(context)),
           onRetry: () => ref.invalidate(aboutUsProvider),
         ),
       ),
@@ -92,7 +96,7 @@ class _AboutContent extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.all(24),
         child: Text(
-          'More about us is coming soon.',
+          AppLocalizations.of(context).moreAboutUsSoon,
           style: textTheme.bodyLarge,
           textAlign: TextAlign.center,
         ),
@@ -145,14 +149,14 @@ class _SocialLinksSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(24, 8, 24, 0),
-          child: Text('Follow us', style: TextStyle(fontWeight: FontWeight.w600)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+          child: Text(AppLocalizations.of(context).followUs, style: const TextStyle(fontWeight: FontWeight.w600)),
         ),
         for (final link in links)
           ListTile(
             leading: Icon(_iconFor(link.platform)),
-            title: Text(link.platform.label),
+            title: Text(link.platform.displayName(AppLocalizations.of(context))),
             subtitle: Text(link.url),
             onTap: () => openLink(context, link.uri!),
           ),

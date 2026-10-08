@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hara/l10n/app_localizations.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/reservations/data/reservation.dart';
 import 'package:hara/features/reservations/data/reservations_repository.dart';
@@ -98,7 +99,12 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [reservationsRepositoryProvider.overrideWithValue(repository)],
-          child: MaterialApp.router(routerConfig: router),
+          child: MaterialApp.router(
+        routerConfig: router,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
+      ),
         ),
       );
       await tester.pumpAndSettle();
@@ -205,6 +211,9 @@ void main() {
         ProviderScope(
           overrides: [reservationsRepositoryProvider.overrideWithValue(repository)],
           child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
             home: Builder(
               builder: (context) => Scaffold(
                 body: Center(

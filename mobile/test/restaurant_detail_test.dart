@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/l10n/app_localizations.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
 import 'package:hara/features/restaurants/data/restaurants_repository.dart';
@@ -37,7 +38,11 @@ Future<void> pumpDetail(WidgetTester tester, Future<Restaurant> Function(String 
   return tester.pumpWidget(
     ProviderScope(
       overrides: [restaurantsRepositoryProvider.overrideWithValue(_FakeRestaurantsRepository(onGet))],
-      child: const MaterialApp(home: RestaurantDetailScreen(restaurantId: 'rest1')),
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
+        home: RestaurantDetailScreen(restaurantId: 'rest1')),
     ),
   );
 }

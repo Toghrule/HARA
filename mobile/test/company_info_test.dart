@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hara/l10n/app_localizations_en.dart';
+import 'package:hara/l10n/app_localizations.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/company_info/data/about_us.dart';
 import 'package:hara/features/company_info/data/company_info_repository.dart';
@@ -105,7 +107,12 @@ Future<void> _pumpApp(
         companyInfoRepositoryProvider.overrideWithValue(companyInfo ?? _FakeCompanyInfoRepository()),
         faqRepositoryProvider.overrideWithValue(faq ?? _FakeFaqRepository()),
       ],
-      child: MaterialApp.router(routerConfig: router),
+      child: MaterialApp.router(
+        routerConfig: router,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
+      ),
     ),
   );
   await tester.pumpAndSettle();
@@ -127,9 +134,9 @@ void main() {
     });
 
     test('the title is the admin\'s label, or the type when there is none', () {
-      expect(const ContactInfo(type: ContactType.phone, value: '1', label: ' Support ').title, 'Support');
-      expect(const ContactInfo(type: ContactType.phone, value: '1').title, 'Phone');
-      expect(const ContactInfo(type: ContactType.email, value: 'a@b.c', label: '  ').title, 'Email');
+      expect(const ContactInfo(type: ContactType.phone, value: '1', label: ' Support ').title(AppLocalizationsEn()), 'Support');
+      expect(const ContactInfo(type: ContactType.phone, value: '1').title(AppLocalizationsEn()), 'Phone');
+      expect(const ContactInfo(type: ContactType.email, value: 'a@b.c', label: '  ').title(AppLocalizationsEn()), 'Email');
     });
 
     test('fromJson reads the API shape, treating an unknown type as other', () {

@@ -1,3 +1,5 @@
+import '../../../l10n/app_localizations.dart';
+
 enum ContactType {
   phone,
   email,
@@ -23,14 +25,15 @@ class ContactInfo {
   final String value;
   final String? label;
 
-  String get title {
+  /// The admin-typed label, or the contact type in the app's language when there is none.
+  String title(AppLocalizations l10n) {
     final text = label?.trim();
     if (text != null && text.isNotEmpty) return text;
 
     return switch (type) {
-      ContactType.phone => 'Phone',
-      ContactType.email => 'Email',
-      ContactType.other => 'Contact',
+      ContactType.phone => l10n.contactPhone,
+      ContactType.email => l10n.contactEmail,
+      ContactType.other => l10n.contactOther,
     };
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
 import '../maps_launcher.dart';
@@ -18,16 +19,17 @@ class RestaurantDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final restaurantAsync = ref.watch(restaurantProvider(restaurantId));
     final restaurant = restaurantAsync.valueOrNull;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(restaurant?.name ?? 'Restaurant')),
+      appBar: AppBar(title: Text(restaurant?.name ?? l10n.restaurantFallbackTitle)),
       body: restaurantAsync.when(
         data: (restaurant) => _Details(restaurant: restaurant),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => _ErrorView(
           message: error is DioException && error.response?.statusCode == 404
-              ? 'This restaurant is no longer available.'
-              : apiErrorMessage(error),
+              ? l10n.restaurantNoLongerAvailable
+              : apiErrorMessage(error, l10n),
           onRetry: () => ref.invalidate(restaurantProvider(restaurantId)),
         ),
       ),
@@ -39,7 +41,7 @@ class RestaurantDetailScreen extends ConsumerWidget {
                 child: FilledButton.icon(
                   onPressed: () => startReservation(context, restaurant),
                   icon: const Icon(Icons.event_seat),
-                  label: const Text('Reserve a table'),
+                  label: Text(l10n.reserveTable),
                 ),
               ),
             ),
@@ -71,7 +73,7 @@ class _Details extends StatelessWidget {
                 const SizedBox(height: 12),
                 Chip(
                   avatar: const Icon(Icons.local_offer_outlined, size: 18),
-                  label: Text('${restaurant.discountPercent}% off with a reservation code'),
+                  label: Text(AppLocalizations.of(context).discountWithCode(restaurant.discountPercent)),
                 ),
               ],
             ],
@@ -147,7 +149,7 @@ class _ErrorView extends StatelessWidget {
           children: [
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            FilledButton(onPressed: onRetry, child: const Text('Retry')),
+            FilledButton(onPressed: onRetry, child: Text(AppLocalizations.of(context).retry)),
           ],
         ),
       ),

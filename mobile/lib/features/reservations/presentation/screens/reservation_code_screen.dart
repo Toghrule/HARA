@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/reservation.dart';
 import '../../data/reservations_repository.dart';
 
@@ -58,22 +59,20 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
   }
 
   Future<void> _cancel() async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Cancel reservation?'),
-        content: const Text(
-          'Your code will stop working and the table will be released. '
-          'You can make a new reservation afterwards.',
-        ),
+        title: Text(l10n.cancelReservationTitle),
+        content: Text(l10n.cancelReservationBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Keep it'),
+            child: Text(l10n.keepIt),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Cancel reservation'),
+            child: Text(l10n.cancelReservation),
           ),
         ],
       ),
@@ -84,14 +83,14 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
     try {
       await ref.read(reservationsRepositoryProvider).cancel(widget.reservation.code);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Reservation cancelled')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.reservationCancelled)));
       context.go('/');
     } catch (error) {
       if (!mounted) return;
       setState(() => _cancelling = false);
       final notFound = error is DioException && error.response?.statusCode == 404;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(notFound ? 'We couldn\'t find this reservation.' : apiErrorMessage(error))),
+        SnackBar(content: Text(notFound ? l10n.reservationNotFound : apiErrorMessage(error, l10n))),
       );
     }
   }
@@ -102,9 +101,10 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final expired = _remaining == Duration.zero;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Your reservation'), automaticallyImplyLeading: false),
+      appBar: AppBar(title: Text(l10n.yourReservation), automaticallyImplyLeading: false),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -121,7 +121,7 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
-                  Text('Your code', style: textTheme.labelLarge, textAlign: TextAlign.center),
+                  Text(l10n.yourCode, style: textTheme.labelLarge, textAlign: TextAlign.center),
                   const SizedBox(height: 8),
                   Card(
                     color: expired
@@ -141,13 +141,13 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
                             ),
                           ),
                           IconButton(
-                            tooltip: 'Copy code',
+                            tooltip: l10n.copyCode,
                             icon: const Icon(Icons.copy),
                             onPressed: () async {
                               await Clipboard.setData(ClipboardData(text: reservation.code));
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Code copied')),
+                                  SnackBar(content: Text(l10n.codeCopied)),
                                 );
                               }
                             },
@@ -158,7 +158,7 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    expired ? 'This reservation has expired' : 'Valid for $_countdownLabel',
+                    expired ? l10n.reservationExpired : l10n.validFor(_countdownLabel),
                     style: textTheme.titleMedium?.copyWith(
                       color: expired ? theme.colorScheme.error : null,
                     ),
@@ -166,23 +166,22 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Table held until $_validUntilLabel (${reservation.durationMinutes} min)',
+                    l10n.tableHeldUntil(_validUntilLabel, reservation.durationMinutes),
                     style: textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
                   Text(
                     reservation.discountPercent > 0
-                        ? 'Show this code at the venue when you arrive to get '
-                            '${reservation.discountPercent}% off your bill.'
-                        : 'Show this code at the venue when you arrive.',
+                        ? l10n.showCodeWithDiscount(reservation.discountPercent)
+                        : l10n.showCode,
                     style: textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
                   FilledButton(
                     onPressed: _cancelling ? null : () => context.go('/'),
-                    child: const Text('Done'),
+                    child: Text(l10n.done),
                   ),
                   if (!expired) ...[
                     const SizedBox(height: 8),
@@ -195,7 +194,7 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Cancel reservation'),
+                          : Text(l10n.cancelReservation),
                     ),
                   ],
                 ],

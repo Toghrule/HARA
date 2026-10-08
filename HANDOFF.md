@@ -1,7 +1,7 @@
 # HARA — Handoff (yeni söhbət üçün)
 
 Bu fayl yeni söhbətin (insan və ya Claude) layihə haqqında heç nə bilmədən işə başlaması üçündür.
-Vəziyyət **2026-10-07**-yə görədir. Hər şeydən əvvəl `git log --oneline -10` və `git status` ilə faylın hələ də aktual olduğunu yoxlayın.
+Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline -10` və `git status` ilə faylın hələ də aktual olduğunu yoxlayın.
 
 ---
 
@@ -39,6 +39,8 @@ Vəziyyət **2026-10-07**-yə görədir. Hər şeydən əvvəl `git log --onelin
 
 **Mobil app-də olanlar:** restoran siyahısı (axtarış, A-Z/Z-A sıralama, 20-lik səhifələr), restoran detalı, rezervasiya (telefon + 30/60 dəq → kod ekranı, geri sayım, ləğv), "restoranımı əlavə et" forması, Haqqımızda / Əlaqə / FAQ.
 
+**Dillər (2026-10-08):** tətbiq **Azərbaycanca (əsas), Rusca, İngiliscə** dəstəkləyir. İlk açılışda telefonun dili (az/ru/en), uyğun deyilsə Azərbaycanca; AppBar-dakı dil düyməsi ilə dəyişir və yadda qalır (`shared_preferences`). Mobil hər sorğuya `?lang=` əlavə edir; server Haqqımızda, FAQ və restoran təsvirini həmin dildə qaytarır, tərcümə boşdursa Azərbaycancaya düşür.
+
 ## 3. Əsas qərarlar və səbəbləri
 
 - **Flutter** seçildi (React Native/native yox): `mobile/`-də artıq router, API klienti, tema var idi; Android + iOS üçün tək kod bazası. iOS build üçün **Mac** (və ya bulud Mac CI) lazımdır, Windows-da mümkün deyil.
@@ -53,6 +55,8 @@ Vəziyyət **2026-10-07**-yə görədir. Hər şeydən əvvəl `git log --onelin
 - **Mobil API ünvanı** `--dart-define=API_BASE_URL=...` ilə dəyişir (defolt `http://localhost:5080`) — real serverdə lazım olacaq.
 - **Mobil web port 5174 sabitdir:** backend CORS yalnız `localhost:3000/5173/5174`-ə icazə verir (`appsettings.Development.json`).
 - **FluentValidation mesajları həmişə ingilis dilində** (server OS dilindən asılı olmasın deyə; əvvəl rusca çıxırdı).
+- **Üç dilli məzmun (Ru/En sütunları):** Azərbaycanca mətn əsas sütunlarda qalır (`Description`, `Question`, `Answer`), yanlarında `...Ru`/`...En` ixtiyari sütunlar var (Haqqımızda təsvir, FAQ sual/cavab, restoran təsviri). Seçim `Common/Localization.Pick`-dədir. Restoran adı/ünvanı, sorğu, əlaqə və sosial şəbəkə mətnləri tərcümə olunmur. Admin API `lang` qəbul etmir (həmişə xam 3 dil qaytarır), ictimai API qəbul edir. **Serverin doğrulama mesajları (`errors`/`title`) hələ də ingiliscədir** və mobilə olduğu kimi çatır.
+- **Mobil tərcümələr** `mobile/lib/l10n/app_{en,az,ru}.arb` fayllarındadır (`flutter gen-l10n` ilə `app_localizations*.dart` yaranır, onlar da git-dədir). Yeni mətn əlavə edəndə **üç faylı da** doldurun; `test/localization_test.dart` açarların eyni olduğunu yoxlayır.
 
 ## 4. Texnologiyalar və fayl strukturu
 
@@ -103,14 +107,14 @@ HARA/
 - Mobil app: `http://localhost:5174` (ilk açılış 20–60 san, boş qara səhifə = gözləyin).
 - Admin panel: `http://localhost:5173`. Login: `admin@hara.local`, parol `backend/src/ui/Hara.Api/appsettings.Development.json`-da (`AdminUser`). **Repo ictimaidir — real serverə çıxmazdan əvvəl mütləq dəyişin.**
 
-**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur.** Skript bunu etmir. Boş bazada əvvəl:
+**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddRuEnTranslations`). Skript bunu etmir. Boş bazada əvvəl:
 ```bash
 cd backend
 dotnet ef database update --project src/external/Hara.Persistence --startup-project src/ui/Hara.Api --context ApplicationDbContext
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (58 test, 7 fayl). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl və brauzerlə yoxlanıb).
+**Testlər:** `cd mobile && flutter analyze && flutter test` (66 test, 8 fayl). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl və brauzerlə yoxlanıb).
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -135,20 +139,21 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 | `fa16fe1` | Haqqımızda / Əlaqə / FAQ ekranları |
 | `052c0ba` | Siyahıda axtarış + səhifələmə |
 | `afd54ae` | `restart-dev-environment.bat`-a mobil app addımı |
+| `41b5d64` | Haqqımızda/FAQ/restoran təsviri üçün Ru/En tərcümə sütunları, `?lang=`, admin forma xanaları |
 
 ### Yarımçıq / tam yoxlanmamış
 - **FAQ ekranı brauzerdə gözlə görülməyib** (Claude pəncərəsi gizli olduğu üçün); widget testləri və canlı backend ilə yoxlanıb. Haqqımızda və Əlaqə brauzerdə görülüb.
 - **Android / iOS / Windows build-ləri yoxlanmayıb:** platform qovluqları var, amma bu maşında Android SDK və Visual Studio (C++) yoxdur; iOS üçün Mac lazımdır. Yalnız **Web** build olunub və işləyir.
 - Sorğu ↔ restoran bağlantısı yoxdur (qərarla).
-- Real data boşluqları: "Mixək Restoranı" koordinatı `0,0`, endirimi `0%`; About Us / Contacts / FAQ / Social Links admin paneldə hələ doldurulmayıb (mobil bu halda "More about us is coming soon" və boş siyahılar göstərir).
+- Real data boşluqları: "Mixək Restoranı" koordinatı hələ `0,0` (endirimi 2026-10-08-də 5% edildi); Haqqımızda 3 dildə dolduruldu (Rusca/İngiliscə mətni Claude tərcüməsidir, bilən biri yoxlamalıdır); Contacts / FAQ / Social Links hələ doldurulmayıb, FAQ-nin Ru/En tərcüməsi də yoxdur.
 
 ### Növbəti addımlar (istifadəçi hələ seçməyib — soruşun; təxmini prioritet)
-1. Real məzmunu admin paneldə doldurmaq (Mixək koordinatı/endirimi, About/Contacts/FAQ/Social Links).
+1. Real məzmunu admin paneldə doldurmaq (qalan: Mixək koordinatı, Contacts, FAQ, Social Links; FAQ üçün 3 dil).
 2. **SMS OTP** (rezervasiya telefonlarını təsdiqləmək) — provayder və xərc qərarı lazımdır.
 3. **"Ən yaxın" sıralaması:** backend hazırdır (`?sort=nearest&lat&lng`), mobil app yer icazəsi istəmir.
 4. **Real serverə çıxış:** API üçün Dockerfile, gizli açarlar (`Jwt:SigningKey` boşdur → boşdursa API açılmır), real CORS origin-ləri, HTTPS, reverse proxy üçün forwarded headers (IP üzrə limit buna bağlıdır), dev admin parolunun dəyişdirilməsi, bazanın ehtiyat nüsxəsi, **şəkillər üçün bulud saxlama** (indi lokal diskdə).
 5. **Avtomatik testlər:** backend üçün xUnit layihəsi, frontend üçün `vitest` (təklif olunub, istənməyib).
-6. Lokalizasiya (Azərbaycan dili): UI mətnləri hamısı **ingilis dilindədir**, məhsul isə Azərbaycan üçündür.
+6. ~~Lokalizasiya~~ — mobil UI 3 dildədir (2026-10-08). Qalan: Rusca/Azərbaycanca tərcümələrin bilən biri tərəfindən yoxlanması; admin panel UI-ı və server doğrulama mesajları hələ ingiliscədir.
 7. Məkan sahibləri üçün hesab sistemi (kodu özləri təsdiqləsin) — MVP-dən sonra.
 8. Sorğu ↔ restoran bağlantısı (`RestaurantId` + migration), admin siyahılarında səhifələmə/axtarış.
 9. Android Studio / Visual Studio qurub Android/Windows build; Mac ilə iOS.

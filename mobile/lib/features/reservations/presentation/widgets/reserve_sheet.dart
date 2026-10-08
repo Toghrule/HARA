@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../restaurants/data/restaurant.dart';
 import '../../data/reservation.dart';
 import '../../data/reservations_repository.dart';
@@ -34,7 +35,7 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
   Future<void> _submit() async {
     final phone = _phoneController.text.trim();
     if (!_phonePattern.hasMatch(phone)) {
-      setState(() => _error = 'Enter a valid phone number, e.g. +994 50 123 45 67.');
+      setState(() => _error = AppLocalizations.of(context).invalidPhone);
       return;
     }
 
@@ -54,7 +55,7 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
       if (mounted) {
         setState(() {
           _submitting = false;
-          _error = apiErrorMessage(error);
+          _error = apiErrorMessage(error, AppLocalizations.of(context));
         });
       }
     }
@@ -64,6 +65,7 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final discount = widget.restaurant.discountPercent;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(24, 8, 24, 24 + MediaQuery.of(context).viewInsets.bottom),
@@ -72,14 +74,14 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Reserve a table', style: textTheme.titleLarge),
+            Text(l10n.reserveTable, style: textTheme.titleLarge),
             const SizedBox(height: 4),
             Text(widget.restaurant.name, style: textTheme.titleMedium),
             const SizedBox(height: 4),
             Text(
               discount > 0
-                  ? 'Free. Show your code at the venue to get $discount% off your bill.'
-                  : 'Free. Show your code at the venue when you arrive.',
+                  ? l10n.reserveSheetFreeWithDiscount(discount)
+                  : l10n.reserveSheetFree,
               style: textTheme.bodyMedium,
             ),
             const SizedBox(height: 20),
@@ -88,20 +90,20 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
               keyboardType: TextInputType.phone,
               autofocus: true,
               enabled: !_submitting,
-              decoration: const InputDecoration(
-                labelText: 'Phone number',
+              decoration: InputDecoration(
+                labelText: l10n.phoneNumber,
                 hintText: '+994 50 123 45 67',
                 border: OutlineInputBorder(),
               ),
               onSubmitted: (_) => _submit(),
             ),
             const SizedBox(height: 16),
-            Text('Hold the table for', style: textTheme.labelLarge),
+            Text(l10n.holdTableFor, style: textTheme.labelLarge),
             const SizedBox(height: 8),
             SegmentedButton<int>(
-              segments: const [
-                ButtonSegment(value: 30, label: Text('30 min')),
-                ButtonSegment(value: 60, label: Text('60 min')),
+              segments: [
+                ButtonSegment(value: 30, label: Text(l10n.minutesShort(30))),
+                ButtonSegment(value: 60, label: Text(l10n.minutesShort(60))),
               ],
               selected: {_durationMinutes},
               onSelectionChanged: _submitting
@@ -124,7 +126,7 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Reserve'),
+                  : Text(l10n.reserve),
             ),
           ],
         ),

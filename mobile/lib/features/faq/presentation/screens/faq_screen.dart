@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../providers/faq_provider.dart';
 
@@ -11,9 +12,10 @@ class FaqScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemsAsync = ref.watch(faqItemsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Frequently asked questions')),
+      appBar: AppBar(title: Text(l10n.faqTitle)),
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(faqItemsProvider.future),
         child: itemsAsync.when(
@@ -24,7 +26,7 @@ class FaqScreen extends ConsumerWidget {
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: SizedBox(
                     height: constraints.maxHeight,
-                    child: const Center(child: Text('No questions yet.')),
+                    child: Center(child: Text(l10n.noQuestionsYet)),
                   ),
                 ),
               );
@@ -48,7 +50,7 @@ class FaqScreen extends ConsumerWidget {
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stackTrace) => ErrorView(
-            message: apiErrorMessage(error),
+            message: apiErrorMessage(error, l10n),
             onRetry: () => ref.invalidate(faqItemsProvider),
           ),
         ),

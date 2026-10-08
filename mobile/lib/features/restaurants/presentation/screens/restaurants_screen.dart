@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/language_menu.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
 import '../maps_launcher.dart';
@@ -59,16 +61,18 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
   Widget build(BuildContext context) {
     final restaurantsAsync = ref.watch(restaurantsProvider);
     final sort = ref.watch(restaurantSortProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('HARA'),
         actions: [
           IconButton(
-            tooltip: 'About us, contact and FAQ',
+            tooltip: l10n.aboutTooltip,
             icon: const Icon(Icons.info_outline),
             onPressed: () => context.push('/about'),
           ),
+          const LanguageMenu(),
           TextButton.icon(
             onPressed: () => ref.read(restaurantSortProvider.notifier).toggle(),
             icon: const Icon(Icons.swap_vert),
@@ -88,13 +92,13 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
                 onSubmitted: _searchNow,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  hintText: 'Search by name or address',
+                  hintText: l10n.searchHint,
                   isDense: true,
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: value.text.isEmpty
                       ? null
                       : IconButton(
-                          tooltip: 'Clear search',
+                          tooltip: l10n.clearSearch,
                           icon: const Icon(Icons.close),
                           onPressed: _clearSearch,
                         ),
@@ -110,7 +114,7 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
                 data: (state) => _RestaurantList(state: state, onClearSearch: _clearSearch),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stackTrace) => ErrorView(
-                  message: 'Couldn\'t load restaurants.\n${apiErrorMessage(error)}',
+                  message: l10n.couldntLoadRestaurants(apiErrorMessage(error, l10n)),
                   onRetry: () => ref.invalidate(restaurantsProvider),
                 ),
               ),
@@ -131,6 +135,7 @@ class _RestaurantList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final search = ref.watch(restaurantSearchProvider);
+    final l10n = AppLocalizations.of(context);
 
     if (state.items.isEmpty) {
       return LayoutBuilder(
@@ -145,15 +150,15 @@ class _RestaurantList extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      search.isEmpty ? 'No restaurants yet.' : 'No restaurants match "$search".',
+                      search.isEmpty ? l10n.noRestaurantsYet : l10n.noRestaurantsMatch(search),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     if (search.isNotEmpty)
-                      TextButton(onPressed: onClearSearch, child: const Text('Clear search')),
+                      TextButton(onPressed: onClearSearch, child: Text(l10n.clearSearch)),
                     TextButton(
                       onPressed: () => context.push('/submit-restaurant'),
-                      child: const Text('Own a restaurant? Add it to HARA'),
+                      child: Text(l10n.ownRestaurantAddIt),
                     ),
                   ],
                 ),
@@ -184,11 +189,13 @@ class _RestaurantTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return ListTile(
       title: Text(restaurant.name),
       subtitle: Text(
         restaurant.discountPercent > 0
-            ? '${restaurant.address}\n${restaurant.discountPercent}% off with a reservation code'
+            ? '${restaurant.address}\n${l10n.discountWithCode(restaurant.discountPercent)}'
             : restaurant.address,
       ),
       isThreeLine: restaurant.discountPercent > 0,
@@ -196,13 +203,13 @@ class _RestaurantTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            tooltip: 'Open in Google Maps',
+            tooltip: l10n.openInGoogleMaps,
             icon: const Icon(Icons.map_outlined),
             onPressed: () => openInGoogleMaps(restaurant),
           ),
           FilledButton.tonal(
             onPressed: () => startReservation(context, restaurant),
-            child: const Text('Reserve'),
+            child: Text(l10n.reserve),
           ),
         ],
       ),
@@ -220,19 +227,21 @@ class _ListFooter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
     if (state.hasMore && state.loadMoreError != null) {
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Text(
-              'Couldn\'t load more restaurants.\n${apiErrorMessage(state.loadMoreError!)}',
+              l10n.couldntLoadMoreRestaurants(apiErrorMessage(state.loadMoreError!, l10n)),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             FilledButton(
               onPressed: () => ref.read(restaurantsProvider.notifier).retryLoadMore(),
-              child: const Text('Retry'),
+              child: Text(l10n.retry),
             ),
           ],
         ),
@@ -256,8 +265,8 @@ class _ListFooter extends ConsumerWidget {
 
     return ListTile(
       leading: const Icon(Icons.add_business_outlined),
-      title: const Text('Own a restaurant?'),
-      subtitle: const Text('Add it to HARA'),
+      title: Text(l10n.ownRestaurant),
+      subtitle: Text(l10n.addItToHara),
       trailing: const Icon(Icons.chevron_right),
       onTap: () => context.push('/submit-restaurant'),
     );
