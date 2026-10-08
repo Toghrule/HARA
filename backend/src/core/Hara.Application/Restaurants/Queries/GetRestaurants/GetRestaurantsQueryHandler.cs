@@ -47,7 +47,9 @@ public class GetRestaurantsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
             sorted = sorted.Skip(((request.Page ?? 1) - 1) * pageSize).Take(pageSize);
         }
 
-        return sorted.Select(RestaurantDto.FromEntity).ToList();
+        return sorted
+            .Select(r => request.Language is null ? RestaurantDto.FromEntity(r) : RestaurantDto.FromEntity(r).Localize(request.Language))
+            .ToList();
     }
 
     /// <summary>Great-circle distance between two points, in kilometers (Haversine formula).</summary>

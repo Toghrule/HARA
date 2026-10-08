@@ -14,6 +14,12 @@ public class Restaurant : BaseAuditableEntity
     /// <summary>Free-text description shown on the restaurant's detail screen.</summary>
     public string? Description { get; set; }
 
+    /// <summary>Russian translation of <see cref="Description"/>; falls back to the Azerbaijani text when empty.</summary>
+    public string? DescriptionRu { get; set; }
+
+    /// <summary>English translation of <see cref="Description"/>; falls back to the Azerbaijani text when empty.</summary>
+    public string? DescriptionEn { get; set; }
+
     /// <summary>Physical address of the restaurant.</summary>
     public string Address { get; set; } = string.Empty;
 

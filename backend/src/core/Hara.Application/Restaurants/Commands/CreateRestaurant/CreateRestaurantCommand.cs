@@ -19,4 +19,6 @@ public sealed record CreateRestaurantCommand(
     double Longitude,
     string? PhoneNumber,
     string? ImageUrl,
-    int DiscountPercent) : IRequest<RestaurantDto>;
+    int DiscountPercent,
+    string? DescriptionRu = null,
+    string? DescriptionEn = null) : IRequest<RestaurantDto>;

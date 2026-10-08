@@ -13,4 +13,8 @@ public sealed record UpdateFaqItemCommand(
     string Question,
     string Answer,
     int SortOrder,
-    bool IsActive) : IRequest<FaqItemDto>;
+    bool IsActive,
+    string? QuestionRu = null,
+    string? QuestionEn = null,
+    string? AnswerRu = null,
+    string? AnswerEn = null) : IRequest<FaqItemDto>;

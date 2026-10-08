@@ -12,6 +12,10 @@ public class CreateFaqItemCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
         {
             Question = request.Question,
             Answer = request.Answer,
+            QuestionRu = request.QuestionRu,
+            QuestionEn = request.QuestionEn,
+            AnswerRu = request.AnswerRu,
+            AnswerEn = request.AnswerEn,
             SortOrder = request.SortOrder,
             IsActive = true
         };

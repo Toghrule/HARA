@@ -10,6 +10,8 @@ public class AboutUsContentConfiguration : IEntityTypeConfiguration<AboutUsConte
     {
         builder.Property(a => a.CompanyName).IsRequired().HasMaxLength(200);
         builder.Property(a => a.Description).IsRequired().HasMaxLength(8000);
+        builder.Property(a => a.DescriptionRu).HasMaxLength(8000);
+        builder.Property(a => a.DescriptionEn).HasMaxLength(8000);
         builder.Property(a => a.LogoUrl).HasMaxLength(1000);
     }
 }

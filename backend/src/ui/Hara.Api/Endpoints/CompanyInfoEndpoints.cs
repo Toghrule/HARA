@@ -27,8 +27,8 @@ public static class CompanyInfoEndpoints
 
     private static void MapPublic(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/company-info/about", async (ISender sender, CancellationToken cancellationToken) =>
-                Results.Ok(await sender.Send(new GetAboutUsQuery(), cancellationToken)))
+        app.MapGet("/api/company-info/about", async (string? lang, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetAboutUsQuery(lang), cancellationToken)))
             .WithTags("CompanyInfo")
             .WithName("GetAboutUs")
             .AllowAnonymous();

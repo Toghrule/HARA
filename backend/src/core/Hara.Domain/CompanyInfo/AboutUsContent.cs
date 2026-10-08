@@ -16,6 +16,12 @@ public class AboutUsContent : BaseAuditableEntity
     /// <summary>Main "about us" body text.</summary>
     public string Description { get; set; } = string.Empty;
 
+    /// <summary>Russian translation of <see cref="Description"/>; falls back to the Azerbaijani text when empty.</summary>
+    public string? DescriptionRu { get; set; }
+
+    /// <summary>English translation of <see cref="Description"/>; falls back to the Azerbaijani text when empty.</summary>
+    public string? DescriptionEn { get; set; }
+
     /// <summary>Relative URL of the company logo, as returned by the upload endpoint.</summary>
     public string? LogoUrl { get; set; }
 }

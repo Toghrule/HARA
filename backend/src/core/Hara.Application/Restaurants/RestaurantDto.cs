@@ -1,9 +1,11 @@
+using Hara.Application.Common;
+
 namespace Hara.Application.Restaurants;
 
 /// <summary>Read model for a <see cref="Hara.Domain.Restaurants.Restaurant"/>, returned by every Restaurants query/command.</summary>
 /// <param name="Id">Unique identifier.</param>
 /// <param name="Name">Display name.</param>
-/// <param name="Description">Free-text description, if any.</param>
+/// <param name="Description">Free-text description, if any (Azerbaijani — or the requested language, after <see cref="Localize"/>).</param>
 /// <param name="Address">Physical address.</param>
 /// <param name="Latitude">Latitude of the restaurant's exact location, in decimal degrees.</param>
 /// <param name="Longitude">Longitude of the restaurant's exact location, in decimal degrees.</param>
@@ -13,6 +15,8 @@ namespace Hara.Application.Restaurants;
 /// <param name="IsActive">Whether the restaurant is currently visible to mobile app users.</param>
 /// <param name="CreatedAt">When the restaurant was created.</param>
 /// <param name="LastModifiedAt">When the restaurant was last updated, if ever.</param>
+/// <param name="DescriptionRu">Russian translation of the description, if filled in.</param>
+/// <param name="DescriptionEn">English translation of the description, if filled in.</param>
 public sealed record RestaurantDto(
     Guid Id,
     string Name,
@@ -25,7 +29,9 @@ public sealed record RestaurantDto(
     int DiscountPercent,
     bool IsActive,
     DateTimeOffset CreatedAt,
-    DateTimeOffset? LastModifiedAt)
+    DateTimeOffset? LastModifiedAt,
+    string? DescriptionRu = null,
+    string? DescriptionEn = null)
 {
     public static RestaurantDto FromEntity(Domain.Restaurants.Restaurant restaurant) => new(
         restaurant.Id,
@@ -39,5 +45,11 @@ public sealed record RestaurantDto(
         restaurant.DiscountPercent,
         restaurant.IsActive,
         restaurant.CreatedAt,
-        restaurant.LastModifiedAt);
+        restaurant.LastModifiedAt,
+        restaurant.DescriptionRu,
+        restaurant.DescriptionEn);
+
+    /// <summary>Returns a copy whose <see cref="Description"/> is the text in <paramref name="language"/> (falling back to Azerbaijani).</summary>
+    public RestaurantDto Localize(string? language) =>
+        this with { Description = Localization.Pick(language, Description, DescriptionRu, DescriptionEn) };
 }

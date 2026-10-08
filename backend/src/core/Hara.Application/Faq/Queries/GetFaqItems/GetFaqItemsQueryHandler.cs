@@ -18,6 +18,8 @@ public class GetFaqItemsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 
         var faqItems = await query.OrderBy(f => f.SortOrder).ToListAsync(cancellationToken);
 
-        return faqItems.Select(FaqItemDto.FromEntity).ToList();
+        return faqItems
+            .Select(f => request.Language is null ? FaqItemDto.FromEntity(f) : FaqItemDto.FromEntity(f).Localize(request.Language))
+            .ToList();
     }
 }

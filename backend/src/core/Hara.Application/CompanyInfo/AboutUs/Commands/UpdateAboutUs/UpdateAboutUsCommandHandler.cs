@@ -18,6 +18,8 @@ public class UpdateAboutUsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
             {
                 CompanyName = request.CompanyName,
                 Description = request.Description,
+                DescriptionRu = request.DescriptionRu,
+                DescriptionEn = request.DescriptionEn,
                 LogoUrl = request.LogoUrl
             };
             await repository.AddAsync(content, cancellationToken);
@@ -26,6 +28,8 @@ public class UpdateAboutUsCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
         {
             content.CompanyName = request.CompanyName;
             content.Description = request.Description;
+            content.DescriptionRu = request.DescriptionRu;
+            content.DescriptionEn = request.DescriptionEn;
             content.LogoUrl = request.LogoUrl;
             repository.Update(content);
         }

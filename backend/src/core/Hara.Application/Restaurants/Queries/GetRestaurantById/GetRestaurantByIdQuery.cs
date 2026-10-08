@@ -7,4 +7,4 @@ namespace Hara.Application.Restaurants.Queries.GetRestaurantById;
 /// = <c>true</c> so an inactive restaurant 404s for mobile app users the same as a
 /// nonexistent one; the admin endpoint passes <c>false</c>.
 /// </summary>
-public sealed record GetRestaurantByIdQuery(Guid Id, bool OnlyActive) : IRequest<RestaurantDto>;
+public sealed record GetRestaurantByIdQuery(Guid Id, bool OnlyActive, string? Language = null) : IRequest<RestaurantDto>;

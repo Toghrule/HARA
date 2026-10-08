@@ -13,6 +13,8 @@ public class UpdateRestaurantCommandValidator : AbstractValidator<UpdateRestaura
         RuleFor(c => c.Longitude).InclusiveBetween(-180, 180);
         RuleFor(c => c.PhoneNumber).MaximumLength(50);
         RuleFor(c => c.Description).MaximumLength(4000);
+        RuleFor(c => c.DescriptionRu).MaximumLength(4000);
+        RuleFor(c => c.DescriptionEn).MaximumLength(4000);
         RuleFor(c => c.ImageUrl).MaximumLength(1000);
         RuleFor(c => c.DiscountPercent).InclusiveBetween(0, 100);
     }

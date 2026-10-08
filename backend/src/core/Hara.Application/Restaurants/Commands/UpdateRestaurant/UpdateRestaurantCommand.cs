@@ -13,4 +13,6 @@ public sealed record UpdateRestaurantCommand(
     string? PhoneNumber,
     string? ImageUrl,
     int DiscountPercent,
-    bool IsActive) : IRequest<RestaurantDto>;
+    bool IsActive,
+    string? DescriptionRu = null,
+    string? DescriptionEn = null) : IRequest<RestaurantDto>;

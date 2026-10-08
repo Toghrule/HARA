@@ -11,6 +11,12 @@ public class GetAboutUsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<Ge
     {
         var content = await unitOfWork.Repository<AboutUsContent>().Query().FirstOrDefaultAsync(cancellationToken);
 
-        return content is null ? AboutUsDto.Empty : AboutUsDto.FromEntity(content);
+        if (content is null)
+        {
+            return AboutUsDto.Empty;
+        }
+
+        var dto = AboutUsDto.FromEntity(content);
+        return request.Language is null ? dto : dto.Localize(request.Language);
     }
 }

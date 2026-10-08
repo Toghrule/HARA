@@ -11,8 +11,8 @@ public static class FaqEndpoints
 {
     public static IEndpointRouteBuilder MapFaqEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/faq", async (ISender sender, CancellationToken cancellationToken) =>
-                Results.Ok(await sender.Send(new GetFaqItemsQuery(OnlyActive: true), cancellationToken)))
+        app.MapGet("/api/faq", async (string? lang, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetFaqItemsQuery(OnlyActive: true, lang), cancellationToken)))
             .WithTags("Faq")
             .WithName("GetActiveFaqItems")
             .AllowAnonymous();
@@ -34,7 +34,7 @@ public static class FaqEndpoints
 
         admin.MapPut("/{id:guid}", async (Guid id, UpdateFaqItemBody body, ISender sender, CancellationToken cancellationToken) =>
             {
-                var command = new UpdateFaqItemCommand(id, body.Question, body.Answer, body.SortOrder, body.IsActive);
+                var command = new UpdateFaqItemCommand(id, body.Question, body.Answer, body.SortOrder, body.IsActive, body.QuestionRu, body.QuestionEn, body.AnswerRu, body.AnswerEn);
                 return Results.Ok(await sender.Send(command, cancellationToken));
             })
             .WithName("AdminUpdateFaqItem");
@@ -56,5 +56,5 @@ public static class FaqEndpoints
         return app;
     }
 
-    private sealed record UpdateFaqItemBody(string Question, string Answer, int SortOrder, bool IsActive);
+    private sealed record UpdateFaqItemBody(string Question, string Answer, int SortOrder, bool IsActive, string? QuestionRu = null, string? QuestionEn = null, string? AnswerRu = null, string? AnswerEn = null);
 }

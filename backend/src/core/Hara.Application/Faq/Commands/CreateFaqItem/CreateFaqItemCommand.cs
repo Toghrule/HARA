@@ -9,4 +9,8 @@ namespace Hara.Application.Faq.Commands.CreateFaqItem;
 public sealed record CreateFaqItemCommand(
     string Question,
     string Answer,
-    int SortOrder) : IRequest<FaqItemDto>;
+    int SortOrder,
+    string? QuestionRu = null,
+    string? QuestionEn = null,
+    string? AnswerRu = null,
+    string? AnswerEn = null) : IRequest<FaqItemDto>;

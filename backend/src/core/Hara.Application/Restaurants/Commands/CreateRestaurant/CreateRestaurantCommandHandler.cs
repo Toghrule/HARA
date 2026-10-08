@@ -12,6 +12,8 @@ public class CreateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         {
             Name = request.Name,
             Description = request.Description,
+            DescriptionRu = request.DescriptionRu,
+            DescriptionEn = request.DescriptionEn,
             Address = request.Address,
             Latitude = request.Latitude,
             Longitude = request.Longitude,

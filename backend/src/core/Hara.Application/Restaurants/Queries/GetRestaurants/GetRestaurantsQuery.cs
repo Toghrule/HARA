@@ -21,4 +21,5 @@ public sealed record GetRestaurantsQuery(
     double? Longitude = null,
     string? Search = null,
     int? PageSize = null,
-    int? Page = null) : IRequest<IReadOnlyList<RestaurantDto>>;
+    int? Page = null,
+    string? Language = null) : IRequest<IReadOnlyList<RestaurantDto>>;

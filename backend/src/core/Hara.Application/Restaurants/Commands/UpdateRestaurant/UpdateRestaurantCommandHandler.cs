@@ -15,6 +15,8 @@ public class UpdateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
 
         restaurant.Name = request.Name;
         restaurant.Description = request.Description;
+        restaurant.DescriptionRu = request.DescriptionRu;
+        restaurant.DescriptionEn = request.DescriptionEn;
         restaurant.Address = request.Address;
         restaurant.Latitude = request.Latitude;
         restaurant.Longitude = request.Longitude;

@@ -8,6 +8,8 @@ public class UpdateAboutUsCommandValidator : AbstractValidator<UpdateAboutUsComm
     {
         RuleFor(c => c.CompanyName).NotEmpty().MaximumLength(200);
         RuleFor(c => c.Description).NotEmpty().MaximumLength(8000);
+        RuleFor(c => c.DescriptionRu).MaximumLength(8000);
+        RuleFor(c => c.DescriptionEn).MaximumLength(8000);
         RuleFor(c => c.LogoUrl).MaximumLength(1000);
     }
 }

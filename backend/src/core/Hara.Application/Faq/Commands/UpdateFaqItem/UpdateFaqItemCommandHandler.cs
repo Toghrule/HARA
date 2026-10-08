@@ -15,6 +15,10 @@ public class UpdateFaqItemCommandHandler(IUnitOfWork unitOfWork) : IRequestHandl
 
         faqItem.Question = request.Question;
         faqItem.Answer = request.Answer;
+        faqItem.QuestionRu = request.QuestionRu;
+        faqItem.QuestionEn = request.QuestionEn;
+        faqItem.AnswerRu = request.AnswerRu;
+        faqItem.AnswerEn = request.AnswerEn;
         faqItem.SortOrder = request.SortOrder;
         faqItem.IsActive = request.IsActive;
 

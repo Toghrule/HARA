@@ -15,6 +15,8 @@ public class RestaurantConfiguration : IEntityTypeConfiguration<Restaurant>
         builder.Property(r => r.PhoneNumber).HasMaxLength(50);
         builder.Property(r => r.ImageUrl).HasMaxLength(1000);
         builder.Property(r => r.Description).HasMaxLength(4000);
+        builder.Property(r => r.DescriptionRu).HasMaxLength(4000);
+        builder.Property(r => r.DescriptionEn).HasMaxLength(4000);
 
         builder.HasIndex(r => r.IsActive);
     }

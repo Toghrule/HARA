@@ -51,6 +51,8 @@ export interface RestaurantDto {
   isActive: boolean;
   createdAt: string;
   lastModifiedAt: string | null;
+  descriptionRu?: string | null;
+  descriptionEn?: string | null;
 }
 
 export interface CreateRestaurantBody {
@@ -62,6 +64,8 @@ export interface CreateRestaurantBody {
   phoneNumber?: string | null;
   imageUrl?: string | null;
   discountPercent: number;
+  descriptionRu?: string | null;
+  descriptionEn?: string | null;
 }
 
 // Reservations
@@ -140,12 +144,20 @@ export interface FaqItemDto {
   isActive: boolean;
   createdAt: string;
   lastModifiedAt: string | null;
+  questionRu?: string | null;
+  questionEn?: string | null;
+  answerRu?: string | null;
+  answerEn?: string | null;
 }
 
 export interface CreateFaqItemBody {
   question: string;
   answer: string;
   sortOrder: number;
+  questionRu?: string | null;
+  questionEn?: string | null;
+  answerRu?: string | null;
+  answerEn?: string | null;
 }
 
 export interface UpdateFaqItemBody extends CreateFaqItemBody {
@@ -160,12 +172,16 @@ export interface AboutUsDto {
   description: string;
   logoUrl: string | null;
   lastModifiedAt: string | null;
+  descriptionRu?: string | null;
+  descriptionEn?: string | null;
 }
 
 export interface UpdateAboutUsBody {
   companyName: string;
   description: string;
   logoUrl?: string | null;
+  descriptionRu?: string | null;
+  descriptionEn?: string | null;
 }
 
 // Company info — Contacts

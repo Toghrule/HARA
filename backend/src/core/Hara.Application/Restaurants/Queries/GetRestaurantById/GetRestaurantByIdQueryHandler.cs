@@ -16,6 +16,7 @@ public class GetRestaurantByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHan
             throw new NotFoundException(nameof(Restaurant), request.Id);
         }
 
-        return RestaurantDto.FromEntity(restaurant);
+        var dto = RestaurantDto.FromEntity(restaurant);
+        return request.Language is null ? dto : dto.Localize(request.Language);
     }
 }

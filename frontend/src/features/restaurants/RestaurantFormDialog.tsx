@@ -18,6 +18,8 @@ import type { RestaurantDto } from "../../types";
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(200),
   description: z.string().trim().max(4000).optional(),
+  descriptionRu: z.string().trim().max(4000).optional(),
+  descriptionEn: z.string().trim().max(4000).optional(),
   address: z.string().trim().min(1, "Address is required").max(400),
   latitude: z.coerce.number({ invalid_type_error: "Latitude is required" }).min(-90, "Must be between -90 and 90").max(90, "Must be between -90 and 90"),
   longitude: z.coerce.number({ invalid_type_error: "Longitude is required" }).min(-180, "Must be between -180 and 180").max(180, "Must be between -180 and 180"),
@@ -36,6 +38,8 @@ type FormValues = z.infer<typeof schema>;
 const emptyValues: FormValues = {
   name: "",
   description: "",
+  descriptionRu: "",
+  descriptionEn: "",
   address: "",
   latitude: 0,
   longitude: 0,
@@ -83,6 +87,8 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: Res
         ? {
             name: restaurant.name,
             description: restaurant.description ?? "",
+            descriptionRu: restaurant.descriptionRu ?? "",
+            descriptionEn: restaurant.descriptionEn ?? "",
             address: restaurant.address,
             latitude: restaurant.latitude,
             longitude: restaurant.longitude,
@@ -121,6 +127,8 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: Res
     const payload = {
       name: values.name,
       description: values.description || null,
+      descriptionRu: values.descriptionRu || null,
+      descriptionEn: values.descriptionEn || null,
       address: values.address,
       latitude: values.latitude,
       longitude: values.longitude,
@@ -211,8 +219,14 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill }: Res
             onFocus={(e) => e.currentTarget.select()}
           />
         </FormField>
-        <FormField label="Description" htmlFor="description" error={errors.description?.message}>
+        <FormField label="Description (Azerbaijani)" htmlFor="description" error={errors.description?.message}>
           <Textarea id="description" rows={3} {...register("description")} />
+        </FormField>
+        <FormField label="Description (Russian, optional)" htmlFor="descriptionRu" error={errors.descriptionRu?.message}>
+          <Textarea id="descriptionRu" rows={3} {...register("descriptionRu")} />
+        </FormField>
+        <FormField label="Description (English, optional)" htmlFor="descriptionEn" error={errors.descriptionEn?.message}>
+          <Textarea id="descriptionEn" rows={3} {...register("descriptionEn")} />
         </FormField>
         <FormField label="Cover image">
           <ImageUploader

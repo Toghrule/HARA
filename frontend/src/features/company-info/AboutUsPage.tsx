@@ -16,6 +16,8 @@ import { useAboutUs, useUpdateAboutUs } from "./aboutUsApi";
 const schema = z.object({
   companyName: z.string().trim().min(1, "Company name is required").max(200),
   description: z.string().trim().min(1, "Description is required").max(8000),
+  descriptionRu: z.string().trim().max(8000),
+  descriptionEn: z.string().trim().max(8000),
   logoUrl: z.string().trim().max(1000).optional(),
 });
 
@@ -35,12 +37,18 @@ export function AboutUsPage() {
     formState: { errors, isSubmitting, isDirty },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { companyName: "", description: "", logoUrl: "" },
+    defaultValues: { companyName: "", description: "", descriptionRu: "", descriptionEn: "", logoUrl: "" },
   });
 
   useEffect(() => {
     if (data) {
-      reset({ companyName: data.companyName, description: data.description, logoUrl: data.logoUrl ?? "" });
+      reset({
+        companyName: data.companyName,
+        description: data.description,
+        descriptionRu: data.descriptionRu ?? "",
+        descriptionEn: data.descriptionEn ?? "",
+        logoUrl: data.logoUrl ?? "",
+      });
     }
   }, [data, reset]);
 
@@ -51,6 +59,8 @@ export function AboutUsPage() {
       await updateMutation.mutateAsync({
         companyName: values.companyName,
         description: values.description,
+        descriptionRu: values.descriptionRu || null,
+        descriptionEn: values.descriptionEn || null,
         logoUrl: values.logoUrl || null,
       });
       push("About Us content saved");
@@ -68,8 +78,14 @@ export function AboutUsPage() {
         <FormField label="Company name" htmlFor="companyName" error={errors.companyName?.message}>
           <Input id="companyName" {...register("companyName")} />
         </FormField>
-        <FormField label="Description" htmlFor="description" error={errors.description?.message}>
+        <FormField label="Description (Azerbaijani)" htmlFor="description" error={errors.description?.message}>
           <Textarea id="description" rows={6} {...register("description")} />
+        </FormField>
+        <FormField label="Description (Russian, optional)" htmlFor="descriptionRu" error={errors.descriptionRu?.message}>
+          <Textarea id="descriptionRu" rows={6} {...register("descriptionRu")} />
+        </FormField>
+        <FormField label="Description (English, optional)" htmlFor="descriptionEn" error={errors.descriptionEn?.message}>
+          <Textarea id="descriptionEn" rows={6} {...register("descriptionEn")} />
         </FormField>
         <FormField label="Logo">
           <ImageUploader category="company" value={logoUrl} onChange={(url) => setValue("logoUrl", url, { shouldDirty: true })} />

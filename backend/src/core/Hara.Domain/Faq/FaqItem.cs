@@ -11,6 +11,18 @@ public class FaqItem : BaseAuditableEntity
     /// <summary>The answer text.</summary>
     public string Answer { get; set; } = string.Empty;
 
+    /// <summary>Russian translation of <see cref="Question"/>; falls back to the Azerbaijani text when empty.</summary>
+    public string? QuestionRu { get; set; }
+
+    /// <summary>English translation of <see cref="Question"/>; falls back to the Azerbaijani text when empty.</summary>
+    public string? QuestionEn { get; set; }
+
+    /// <summary>Russian translation of <see cref="Answer"/>; falls back to the Azerbaijani text when empty.</summary>
+    public string? AnswerRu { get; set; }
+
+    /// <summary>English translation of <see cref="Answer"/>; falls back to the Azerbaijani text when empty.</summary>
+    public string? AnswerEn { get; set; }
+
     /// <summary>Display position among other FAQ entries; lower values appear first.</summary>
     public int SortOrder { get; set; }
 
