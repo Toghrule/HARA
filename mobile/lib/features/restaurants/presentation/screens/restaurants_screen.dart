@@ -165,10 +165,6 @@ class _RestaurantList extends ConsumerWidget {
                     const SizedBox(height: 8),
                     if (search.isNotEmpty)
                       TextButton(onPressed: onClearSearch, child: Text(l10n.clearSearch)),
-                    TextButton(
-                      onPressed: () => context.push('/register-owner'),
-                      child: Text(l10n.ownRestaurantAddIt),
-                    ),
                   ],
                 ),
               ),
@@ -272,12 +268,7 @@ class _ListFooter extends ConsumerWidget {
       );
     }
 
-    return ListTile(
-      leading: const Icon(Icons.add_business_outlined),
-      title: Text(l10n.ownRestaurant),
-      subtitle: Text(l10n.addItToHara),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () => context.push('/register-owner'),
-    );
+    // Everything is loaded: nothing more to show below the last restaurant.
+    return const SizedBox.shrink();
   }
 }

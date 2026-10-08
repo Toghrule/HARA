@@ -120,27 +120,26 @@ void main() {
     expect(find.text('Test Restoran 25'), findsNothing); // beyond page 1
   });
 
-  testWidgets('scrolling to the end loads each further page once, then offers "add your restaurant"', (tester) async {
+  testWidgets('scrolling to the end loads each further page once, then the list simply ends', (tester) async {
     final repository = await _pumpHome(tester);
 
-    await _scrollUntil(tester, find.text('Own a restaurant?'));
+    await _scrollUntil(tester, find.text('Test Restoran 45'));
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(repository.calls.map((c) => c.page).toList(), [1, 2, 3]);
-    expect(find.text('Own a restaurant?'), findsOneWidget);
     expect(find.text('Test Restoran 45'), findsOneWidget); // the very last one arrived
+    expect(find.text('Own a restaurant?'), findsNothing, reason: 'owners register from the account button, not from the customer list');
   });
 
   testWidgets('a server that ignores paging does not make the list repeat itself', (tester) async {
     // 25 restaurants come back for page 1 (more than a page), and the same 25 for page 2.
     final repository = await _pumpHome(tester, count: 25, ignorePaging: true);
 
-    await _scrollUntil(tester, find.text('Own a restaurant?'));
+    await _scrollUntil(tester, find.text('Test Restoran 25'));
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(repository.calls.map((c) => c.page).toList(), [1, 2]); // stops once page 2 adds nothing new
     expect(find.text('Test Restoran 25'), findsOneWidget);
-    expect(find.text('Own a restaurant?'), findsOneWidget);
 
     // Scroll back to the top: the first restaurant is there exactly once.
     await tester.drag(find.byType(ListView), const Offset(0, 20000));
@@ -154,7 +153,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(repository.calls, hasLength(1));
-    expect(find.text('Own a restaurant?'), findsOneWidget);
+    expect(find.text('Test Restoran 05'), findsOneWidget);
+    expect(find.text('Own a restaurant?'), findsNothing);
   });
 
   testWidgets('searching waits for a pause in typing, then restarts from page 1', (tester) async {
@@ -266,9 +266,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    // Only the one match plus the "add your restaurant" row. If the late page were merged in, the
-    // old restaurants would be back and there would be many more rows.
+    // Only the one match. If the late page were merged in, the old restaurants would be back and there
+    // would be many more rows.
     expect(find.text('Test Restoran 33'), findsOneWidget);
-    expect(find.byType(ListTile), findsNWidgets(2));
+    expect(find.byType(ListTile), findsNWidgets(1));
   });
 }

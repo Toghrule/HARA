@@ -178,24 +178,6 @@ abstract class AppLocalizations {
   /// **'No restaurants match \"{search}\".'**
   String noRestaurantsMatch(String search);
 
-  /// No description provided for @ownRestaurantAddIt.
-  ///
-  /// In en, this message translates to:
-  /// **'Own a restaurant? Add it to HARA'**
-  String get ownRestaurantAddIt;
-
-  /// No description provided for @ownRestaurant.
-  ///
-  /// In en, this message translates to:
-  /// **'Own a restaurant?'**
-  String get ownRestaurant;
-
-  /// No description provided for @addItToHara.
-  ///
-  /// In en, this message translates to:
-  /// **'Add it to HARA'**
-  String get addItToHara;
-
   /// No description provided for @discountWithCode.
   ///
   /// In en, this message translates to:
@@ -891,12 +873,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No reservations here.'**
   String get noReservationsHere;
-
-  /// No description provided for @timeLeft.
-  ///
-  /// In en, this message translates to:
-  /// **'{countdown} left'**
-  String timeLeft(String countdown);
 
   /// No description provided for @waitingForYou.
   ///

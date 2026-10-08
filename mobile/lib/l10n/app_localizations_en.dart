@@ -55,15 +55,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get ownRestaurantAddIt => 'Own a restaurant? Add it to HARA';
-
-  @override
-  String get ownRestaurant => 'Own a restaurant?';
-
-  @override
-  String get addItToHara => 'Add it to HARA';
-
-  @override
   String discountWithCode(int percent) {
     return '$percent% off with a reservation code';
   }
@@ -447,11 +438,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noReservationsHere => 'No reservations here.';
-
-  @override
-  String timeLeft(String countdown) {
-    return '$countdown left';
-  }
 
   @override
   String get waitingForYou => 'Waiting for your approval';

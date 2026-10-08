@@ -56,15 +56,6 @@ class AppLocalizationsAz extends AppLocalizations {
   }
 
   @override
-  String get ownRestaurantAddIt => 'Restoranınız var? HARA-ya əlavə edin';
-
-  @override
-  String get ownRestaurant => 'Restoranınız var?';
-
-  @override
-  String get addItToHara => 'HARA-ya əlavə edin';
-
-  @override
   String discountWithCode(int percent) {
     return 'Rezerv kodu ilə $percent% endirim';
   }
@@ -446,11 +437,6 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get noReservationsHere => 'Burada rezerv yoxdur.';
-
-  @override
-  String timeLeft(String countdown) {
-    return 'Qalıb: $countdown';
-  }
 
   @override
   String get waitingForYou => 'Sizin təsdiqinizi gözləyir';

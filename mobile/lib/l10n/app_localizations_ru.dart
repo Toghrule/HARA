@@ -55,15 +55,6 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get ownRestaurantAddIt => 'Есть ресторан? Добавьте его в HARA';
-
-  @override
-  String get ownRestaurant => 'Есть ресторан?';
-
-  @override
-  String get addItToHara => 'Добавьте его в HARA';
-
-  @override
   String discountWithCode(int percent) {
     return 'Скидка $percent% по коду брони';
   }
@@ -445,11 +436,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get noReservationsHere => 'Здесь нет броней.';
-
-  @override
-  String timeLeft(String countdown) {
-    return 'Осталось: $countdown';
-  }
 
   @override
   String get waitingForYou => 'Ждут вашего подтверждения';
