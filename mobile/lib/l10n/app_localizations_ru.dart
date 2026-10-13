@@ -87,7 +87,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get phoneNumber => 'Номер телефона';
 
   @override
-  String get holdTableFor => 'Держать столик';
+  String tableHeldFor(String duration) {
+    return 'Столик удерживается $duration.';
+  }
 
   @override
   String minutesShort(int count) {

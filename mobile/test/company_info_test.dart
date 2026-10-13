@@ -77,7 +77,7 @@ const _socialLinks = [
 
 const _faqItems = [
   FaqItem(question: 'Is HARA free?', answer: 'Yes, customers never pay.'),
-  FaqItem(question: 'How long is a reservation?', answer: '30 or 60 minutes.'),
+  FaqItem(question: 'How long is a reservation?', answer: '30 minutes.'),
 ];
 
 Future<void> _pumpApp(
@@ -211,7 +211,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Yes, customers never pay.'), findsOneWidget);
-      expect(find.text('30 or 60 minutes.'), findsNothing);
+      expect(find.text('30 minutes.'), findsNothing);
     });
 
     testWidgets('says so when there are no questions', (tester) async {

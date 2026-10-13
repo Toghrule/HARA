@@ -35,9 +35,9 @@ public class CreateReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
             RestaurantId = restaurant.Id,
             Restaurant = restaurant,
             PhoneNumber = phoneNumber,
-            DurationMinutes = request.DurationMinutes,
+            DurationMinutes = Reservation.HoldMinutes,
             Code = await GenerateUniqueCodeAsync(repository, cancellationToken),
-            ExpiresAt = now.AddMinutes(request.DurationMinutes)
+            ExpiresAt = now.AddMinutes(Reservation.HoldMinutes)
         };
 
         await repository.AddAsync(reservation, cancellationToken);

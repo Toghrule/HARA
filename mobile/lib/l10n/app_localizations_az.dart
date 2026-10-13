@@ -87,7 +87,9 @@ class AppLocalizationsAz extends AppLocalizations {
   String get phoneNumber => 'Telefon nömrəsi';
 
   @override
-  String get holdTableFor => 'Masanı saxla';
+  String tableHeldFor(String duration) {
+    return 'Masanız $duration saxlanılır.';
+  }
 
   @override
   String minutesShort(int count) {

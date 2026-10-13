@@ -26,7 +26,7 @@
   "reserveSheetFreeWithDiscount": "Pulsuzdur. Hesabdan {percent}% endirim almaq üçün məkanda kodunuzu göstərin.",
   "reserveSheetFree": "Pulsuzdur. Məkana çatanda kodunuzu göstərin.",
   "phoneNumber": "Telefon nömrəsi",
-  "holdTableFor": "Masanı saxla",
+  "tableHeldFor": "Masanız {duration} saxlanılır.",
   "minutesShort": "{count} dəq",
   "invalidPhone": "Düzgün telefon nömrəsi daxil edin, məsələn +994 50 123 45 67.",
 

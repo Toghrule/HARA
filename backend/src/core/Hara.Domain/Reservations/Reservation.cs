@@ -19,7 +19,10 @@ public class Reservation : BaseAuditableEntity
     /// <summary>Phone number the customer left so the venue can reach them.</summary>
     public string PhoneNumber { get; set; } = string.Empty;
 
-    /// <summary>How long the table is held for, in minutes (30 or 60).</summary>
+    /// <summary>How long a reservation holds the table, in minutes. Every new reservation uses this.</summary>
+    public const int HoldMinutes = 30;
+
+    /// <summary>How long the table is held for, in minutes. Reservations made before the limit was set to <see cref="HoldMinutes"/> may have held it for 60.</summary>
     public int DurationMinutes { get; set; }
 
     /// <summary>Short, unique, human-friendly code the customer presents at the venue.</summary>

@@ -88,7 +88,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneNumber => 'Phone number';
 
   @override
-  String get holdTableFor => 'Hold the table for';
+  String tableHeldFor(String duration) {
+    return 'We hold your table for $duration.';
+  }
 
   @override
   String minutesShort(int count) {

@@ -19,7 +19,7 @@ List<PolicySection> privacyPolicyFor(String languageCode) => switch (languageCod
 
 const _az = [
   PolicySection('Nələri toplayırıq', [
-    'Masa rezerv edəndə: telefon nömrənizi, seçdiyiniz restoranı, müddəti (30 və ya 60 dəqiqə) və vaxtı. Bunun üçün hesab açmaq lazım deyil.',
+    'Masa rezerv edəndə: telefon nömrənizi, seçdiyiniz restoranı, rezervin vaxtını (masa 30 dəqiqə saxlanılır). Bunun üçün hesab açmaq lazım deyil.',
     'Restoran sahibi və ya ofisiant qeydiyyatdan keçəndə: adı, e-poçtu, telefon nömrəsini (məcburi deyil), parolu (yalnız çevrilmiş, oxunmaz şəkildə saxlanılır) və sahibkar üçün restoranın məlumatlarını.',
     'Telefonunuzda: dil seçiminizi, aktiv rezerv kodunuzu və hesaba daxil olubsunuzsa girişinizi. Bunlar yalnız sizin cihazınızda qalır.',
     'Məkanınızı, ödəniş məlumatınızı və əlaqələrinizi toplamırıq, reklam izləyiciləri istifadə etmirik.',
@@ -48,7 +48,7 @@ const _az = [
 
 const _ru = [
   PolicySection('Что мы собираем', [
-    'При бронировании столика: ваш номер телефона, выбранный ресторан, срок (30 или 60 минут) и время. Для этого не нужен аккаунт.',
+    'При бронировании столика: ваш номер телефона, выбранный ресторан, время брони (столик удерживается 30 минут). Для этого не нужен аккаунт.',
     'При регистрации владельца ресторана или официанта: имя, e-mail, номер телефона (по желанию), пароль (хранится только в виде необратимого шифра) и, для владельца, данные ресторана.',
     'На вашем телефоне: выбранный язык, код активной брони и, если вы вошли в аккаунт, ваш вход. Это остаётся только на вашем устройстве.',
     'Мы не собираем ваше местоположение, платёжные данные и контакты и не используем рекламные трекеры.',
@@ -77,7 +77,7 @@ const _ru = [
 
 const _en = [
   PolicySection('What we collect', [
-    'When you reserve a table: your phone number, the restaurant, the length you chose (30 or 60 minutes) and the time. You do not need an account for this.',
+    'When you reserve a table: your phone number, the restaurant, the time of the reservation (a table is held for 30 minutes). You do not need an account for this.',
     'When a restaurant owner or waiter registers: name, email, an optional phone number, a password (stored only in scrambled form that cannot be read back) and, for owners, the restaurant\'s details.',
     'On your phone: your language choice, your active reservation code and, if you are signed in, your sign-in. These stay on your device.',
     'We do not collect your location, payment details or contacts, and we do not use advertising trackers.',

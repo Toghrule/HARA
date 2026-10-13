@@ -22,7 +22,6 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
   static final _phonePattern = RegExp(r'^\+?[0-9\s\-()]{7,20}$');
 
   final _phoneController = TextEditingController();
-  int _durationMinutes = 30;
   bool _submitting = false;
   String? _error;
 
@@ -48,7 +47,7 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
       final reservation = await ref.read(reservationsRepositoryProvider).create(
             restaurantId: widget.restaurant.id,
             phoneNumber: phone,
-            durationMinutes: _durationMinutes,
+            durationMinutes: reservationHoldMinutes,
           );
       if (mounted) Navigator.of(context).pop(reservation);
     } catch (error) {
@@ -98,17 +97,18 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
               onSubmitted: (_) => _submit(),
             ),
             const SizedBox(height: 16),
-            Text(l10n.holdTableFor, style: textTheme.labelLarge),
-            const SizedBox(height: 8),
-            SegmentedButton<int>(
-              segments: [
-                ButtonSegment(value: 30, label: Text(l10n.minutesShort(30))),
-                ButtonSegment(value: 60, label: Text(l10n.minutesShort(60))),
+            Row(
+              children: [
+                const Icon(Icons.timer_outlined, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.tableHeldFor(l10n.minutesShort(reservationHoldMinutes)),
+                    key: const Key('holdNotice'),
+                    style: textTheme.bodyMedium,
+                  ),
+                ),
               ],
-              selected: {_durationMinutes},
-              onSelectionChanged: _submitting
-                  ? null
-                  : (selection) => setState(() => _durationMinutes = selection.first),
             ),
             if (_error != null) ...[
               const SizedBox(height: 12),

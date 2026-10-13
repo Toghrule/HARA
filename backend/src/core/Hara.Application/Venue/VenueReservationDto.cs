@@ -9,7 +9,7 @@ namespace Hara.Application.Venue;
 /// <param name="Id">Unique identifier.</param>
 /// <param name="Code">The code the customer shows.</param>
 /// <param name="PhoneNumber">The customer's phone number.</param>
-/// <param name="DurationMinutes">How long the table is held for (30 or 60).</param>
+/// <param name="DurationMinutes">How long the table is held for (30 for new reservations; older ones may be 60).</param>
 /// <param name="CreatedAt">When the customer reserved.</param>
 /// <param name="ExpiresAt">When the reservation window ends.</param>
 /// <param name="Status">Effective state — <see cref="ReservationStatus.Expired"/> once an active reservation's window has elapsed.</param>

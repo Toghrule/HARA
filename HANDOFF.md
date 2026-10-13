@@ -10,7 +10,7 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 **HARA** ("hara" = "where", şüar: *"Hara? deyə düşünmə"*) — məkan kəşfi + masa rezervasiyası tətbiqidir. Məqsəd: insanlar həmişə eyni tanış yerlərə getməsin, yeni məkanları kəşf etsin.
 
 **Müştəri tərəfi (pulsuz):**
-- Müştəri məkanı seçir, **telefon nömrəsi** ilə masanı **30 və ya 60 dəqiqəlik** rezerv edir (ödəniş yoxdur, hesab yoxdur).
+- Müştəri məkanı seçir, **telefon nömrəsi** ilə masanı **30 dəqiqəlik** rezerv edir (yalnız 30; 60 seçimi 2026-10-13-də götürüldü) (ödəniş yoxdur, hesab yoxdur).
 - Rezervdən sonra qısa **kod** alır, bu müddət ərzində məkana çatıb kodu göstərir və məkanın təyin etdiyi **faiz endirimi** istəyir.
 - Gələcəkdə (v1 deyil): bal/loyallıq sistemi.
 
@@ -37,7 +37,7 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 | Mobil app (Flutter) | `mobile/` | 6 planlı addımın hamısı hazırdır; **yalnız brauzerdə (web) yoxlanıb** |
 | Baza | `docker-compose.yml` | Postgres 16 (konteyner `hara-postgres`) |
 
-**Mobil app-də olanlar:** restoran siyahısı (axtarış, A-Z/Z-A sıralama, 20-lik səhifələr), restoran detalı, rezervasiya (telefon + 30/60 dəq → kod ekranı, geri sayım, ləğv), Haqqımızda / Əlaqə / FAQ. **Sahibkar/ofisiant hissəsi (2026-10-08):** qarşılama ekranı ("Müştəri kimi davam et" | Daxil ol / Sahibkar kimi qeydiyyat / Ofisiant kimi qeydiyyat), giriş, qeydiyyat formaları, sahibkar/ofisiant ana ekranı (bax aşağı). Köhnə anonim "Restoranımı əlavə et" forması **silinib** (əvəzində sahibkar qeydiyyatı).
+**Mobil app-də olanlar:** restoran siyahısı (axtarış, A-Z/Z-A sıralama, 20-lik səhifələr), restoran detalı, rezervasiya (telefon, masa həmişə 30 dəq → kod ekranı, geri sayım, ləğv), Haqqımızda / Əlaqə / FAQ. **Sahibkar/ofisiant hissəsi (2026-10-08):** qarşılama ekranı ("Müştəri kimi davam et" | Daxil ol / Sahibkar kimi qeydiyyat / Ofisiant kimi qeydiyyat), giriş, qeydiyyat formaları, sahibkar/ofisiant ana ekranı (bax aşağı). Köhnə anonim "Restoranımı əlavə et" forması **silinib** (əvəzində sahibkar qeydiyyatı).
 
 **Rezervasiyanı restoran təsdiqləyir (2026-10-08):** sahibkar/təsdiqlənmiş ofisiant kodu `/api/venue/...` ilə yoxlayıb təsdiqləyir, **yalnız öz restoranının** kodunu (başqasının kodu "tapılmadı" kimi görünür); icazə hər sorğuda bazadakı üzvlükdən yoxlanır (token-dəki rol yetərli deyil, silinmiş ofisiantın köhnə token-i dərhal işləməz). Admin paneldə Redeem YOXDUR, Reservations yalnız oxunur. **Mobil app-də** təsdiqlənmiş sahibkar/ofisiantın ekranları var: "Kodu təsdiqlə" (kodu yaz → yoxla → endirim/telefon → təsdiq sualı), "Rezervlər" (Aktiv/İstifadə olunub/Hamısı); yalnız **sahibkara** əlavə: "Komanda" (ofisiantı təsdiqlə/rədd et/sil) və "Restoran" (dəyişiklik sorğusu göndər, cavabları gör). Ofisiant yalnız ilk iki bölməni görür.
 
@@ -212,7 +212,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 6. İş saatları yoxdur: gecə 3-də bağlı restoranda rezerv etmək olur.
 7. Restoran rezervi ləğv edə bilmir, sahibkarın "bu gün doluyuq, rezervləri dayandır" açarı yoxdur; hər dəyişiklik admindən keçir (yavaş).
 8. Gəlməyənə (no-show) nəticə yoxdur; telefon təsdiqlənmir (SMS təxirə salınıb): başqasının nömrəsini bloklamaq və ya spam mümkündür.
-9. 30/60 dəq yol vaxtını nəzərə almır; 31-ci dəqiqədə çatan endirimi itirir.
+9. 30 dəq yol vaxtını nəzərə almır; 31-ci dəqiqədə çatan endirimi itirir.
 
 **C. Restoran və hesab dövrü**
 10. Admin tərəfindən yaradılmış restoranların (məs. Mixək) sahibi YOXDUR: sahibkar qeydiyyatı həmişə YENİ restoran yaradır. "Bu mənim restoranımdır" (claim) axını və ya admin dəvəti lazımdır.

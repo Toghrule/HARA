@@ -1,3 +1,6 @@
+/// How long a reservation holds the table. The server accepts only this length.
+const reservationHoldMinutes = 30;
+
 class Reservation {
   const Reservation({
     required this.id,

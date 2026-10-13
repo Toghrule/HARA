@@ -250,11 +250,19 @@ void main() {
       expect(result, isNull);
     });
 
-    testWidgets('creates a 60-minute reservation and returns it', (tester) async {
+    testWidgets('there is no length to choose: the table is held for 30 minutes', (tester) async {
+      await openSheet(tester);
+
+      expect(find.byType(SegmentedButton<int>), findsNothing);
+      expect(find.text('60 min'), findsNothing);
+      expect(find.byKey(const Key('holdNotice')), findsOneWidget);
+      expect(find.text('We hold your table for 30 min.'), findsOneWidget);
+    });
+
+    testWidgets('creates a 30-minute reservation and returns it', (tester) async {
       await openSheet(tester);
 
       await tester.enterText(find.byType(TextField), '+994 50 123 45 67');
-      await tester.tap(find.text('60 min'));
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(FilledButton, 'Reserve'));
       await tester.pumpAndSettle();
@@ -262,7 +270,7 @@ void main() {
       expect(repository.calls, hasLength(1));
       expect(repository.calls.single.restaurantId, 'rest1');
       expect(repository.calls.single.phoneNumber, '+994 50 123 45 67');
-      expect(repository.calls.single.durationMinutes, 60);
+      expect(repository.calls.single.durationMinutes, 30);
       expect(result?.code, 'S68NRG');
     });
 

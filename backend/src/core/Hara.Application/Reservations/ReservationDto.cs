@@ -9,7 +9,7 @@ namespace Hara.Application.Reservations;
 /// <param name="DiscountPercent">The restaurant's discount (0–100) the code entitles the customer to.</param>
 /// <param name="PhoneNumber">The customer's phone number.</param>
 /// <param name="Code">Short code the customer presents at the venue.</param>
-/// <param name="DurationMinutes">How long the table is held for (30 or 60).</param>
+/// <param name="DurationMinutes">How long the table is held for (30 for new reservations; older ones may be 60).</param>
 /// <param name="CreatedAt">When the reservation was made.</param>
 /// <param name="ExpiresAt">When the reservation window ends.</param>
 /// <param name="Status">Effective state — <see cref="ReservationStatus.Expired"/> once an active reservation's window has elapsed.</param>

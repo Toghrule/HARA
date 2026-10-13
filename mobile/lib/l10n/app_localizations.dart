@@ -232,11 +232,11 @@ abstract class AppLocalizations {
   /// **'Phone number'**
   String get phoneNumber;
 
-  /// No description provided for @holdTableFor.
+  /// No description provided for @tableHeldFor.
   ///
   /// In en, this message translates to:
-  /// **'Hold the table for'**
-  String get holdTableFor;
+  /// **'We hold your table for {duration}.'**
+  String tableHeldFor(String duration);
 
   /// No description provided for @minutesShort.
   ///

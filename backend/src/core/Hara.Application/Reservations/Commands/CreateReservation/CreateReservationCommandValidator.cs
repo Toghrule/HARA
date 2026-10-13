@@ -15,6 +15,7 @@ public class CreateReservationCommandValidator : AbstractValidator<CreateReserva
             .Must(Common.PhoneNumber.HasValidDigitCount)
             .WithMessage($"'Phone Number' must have between {Common.PhoneNumber.MinDigits} and {Common.PhoneNumber.MaxDigits} digits.");
         RuleFor(c => c.DurationMinutes)
-            .Must(minutes => minutes is 30 or 60).WithMessage("'Duration Minutes' must be 30 or 60.");
+            .Equal(Domain.Reservations.Reservation.HoldMinutes)
+            .WithMessage($"'Duration Minutes' must be {Domain.Reservations.Reservation.HoldMinutes}.");
     }
 }
