@@ -34,6 +34,20 @@ class VenueRepository {
     return VenueReservation.fromJson(response.data!);
   }
 
+  /// Accepts a customer's request: the hold timer starts now and the customer gets their code.
+  Future<VenueReservation> accept(String code) async {
+    final response = await _apiClient.dio.post<Map<String, dynamic>>('/api/venue/reservations/${Uri.encodeComponent(code)}/accept');
+
+    return VenueReservation.fromJson(response.data!);
+  }
+
+  /// Declines a customer's request.
+  Future<VenueReservation> decline(String code) async {
+    final response = await _apiClient.dio.post<Map<String, dynamic>>('/api/venue/reservations/${Uri.encodeComponent(code)}/decline');
+
+    return VenueReservation.fromJson(response.data!);
+  }
+
   /// Confirms a code: the customer is here and gets the discount. A code can only be confirmed once.
   Future<VenueReservation> redeem(String code) async {
     final response = await _apiClient.dio.post<Map<String, dynamic>>('/api/venue/reservations/${Uri.encodeComponent(code)}/redeem');

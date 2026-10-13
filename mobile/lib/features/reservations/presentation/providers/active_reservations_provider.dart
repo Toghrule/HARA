@@ -7,9 +7,11 @@ import '../../data/reservation.dart';
 import '../../data/reservation_state.dart';
 import '../../data/reservations_repository.dart';
 
-/// The customer's reservations that are still running, kept on this device so the code can be
-/// shown again at any time, not just right after booking. There are no accounts, so this is the
-/// only place the code lives: clearing the app's data (or using another device) loses it.
+/// The customer's reservations that are still going, kept on this device so the code can be shown again at
+/// any time, not just right after booking: requests waiting for the restaurant, and accepted ones with their
+/// hold timer. A request the restaurant declined, or never answered, stays in the list as a notice until the
+/// customer closes it, so they are told what happened. There are no accounts, so this is the only place the
+/// code lives: clearing the app's data (or using another device) loses it.
 class ActiveReservations extends StateNotifier<List<Reservation>> {
   ActiveReservations(this._repository) : super(const []) {
     _ready = _load();
@@ -21,7 +23,10 @@ class ActiveReservations extends StateNotifier<List<Reservation>> {
 
   late final Future<void> _ready;
 
-  static bool _isRunning(Reservation reservation) => reservation.expiresAt.isAfter(DateTime.now());
+  /// Whether a saved reservation is still worth keeping after a restart: going, and its deadline not passed.
+  /// (Notices about declined or unanswered requests were shown in the run they happened in.)
+  static bool _isRunning(Reservation reservation) =>
+      reservation.status.isInProgress && reservation.expiresAt.isAfter(DateTime.now());
 
   Future<void> _load() async {
     try {
@@ -57,7 +62,7 @@ class ActiveReservations extends StateNotifier<List<Reservation>> {
     await _save();
   }
 
-  /// Forgets a reservation once it has ended or been cancelled.
+  /// Forgets a reservation once it has ended, been cancelled, or the customer closed its notice.
   Future<void> remove(String code) async {
     await _ready;
     if (!mounted || !state.any((reservation) => reservation.code == code)) return;
@@ -66,19 +71,59 @@ class ActiveReservations extends StateNotifier<List<Reservation>> {
     await _save();
   }
 
-  /// Asks the server about each kept reservation and forgets the ones that are no longer usable:
-  /// the venue marked the code as used, it was cancelled, or the server doesn't know it any more.
-  /// A reservation whose status can't be fetched (no connection, server trouble) is kept, since not
-  /// knowing is no reason to take a valid code away from the customer.
+  /// Replaces what is kept about a reservation (its state and deadline), if it is still kept.
+  Future<void> _update(Reservation updated) async {
+    if (!mounted || !state.any((reservation) => reservation.code == updated.code)) return;
+
+    state = [for (final reservation in state) reservation.code == updated.code ? updated : reservation];
+    await _save();
+  }
+
+  /// The deadline on this phone's clock has passed. A request nobody answered becomes a notice for the customer;
+  /// an accepted reservation whose hold time ran out is simply over.
+  Future<void> deadlinePassed(String code) async {
+    await _ready;
+    final reservation = state.where((kept) => kept.code == code).firstOrNull;
+    if (reservation == null) return;
+
+    if (reservation.status == ReservationState.pending) {
+      await _update(reservation.copyWith(status: ReservationState.unanswered));
+    } else if (reservation.status == ReservationState.active) {
+      await remove(code);
+    }
+  }
+
+  /// Asks the server about each reservation still going and brings the saved copy up to date:
+  /// the restaurant accepted a request (the hold timer now runs from then, so the deadline changes), declined
+  /// it, never answered, or the code was used or cancelled. A reservation whose status can't be fetched (no
+  /// connection, server trouble) is left as it is, since not knowing is no reason to take a valid code away.
   Future<void> refresh() async {
     await _ready;
     if (!mounted) return;
 
     final repository = _repository();
     for (final reservation in List.of(state)) {
+      if (!reservation.status.isInProgress) continue;
+
       try {
-        final status = await repository.getStatus(reservation.code);
-        if (status != ReservationState.active) await remove(reservation.code);
+        final info = await repository.getStatus(reservation.code);
+        if (!mounted) return;
+
+        if (info == null) {
+          await remove(reservation.code);
+          continue;
+        }
+
+        switch (info.state) {
+          case ReservationState.pending || ReservationState.active:
+            if (info.state != reservation.status || info.expiresAt != reservation.expiresAt) {
+              await _update(reservation.copyWith(status: info.state, expiresAt: info.expiresAt));
+            }
+          case ReservationState.declined || ReservationState.unanswered:
+            await _update(reservation.copyWith(status: info.state));
+          case ReservationState.redeemed || ReservationState.cancelled || ReservationState.expired:
+            await remove(reservation.code);
+        }
       } catch (_) {
         // Keep it and try again on the next check.
       }

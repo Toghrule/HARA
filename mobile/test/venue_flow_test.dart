@@ -24,10 +24,11 @@ void main() {
   }
 
   group('the tabs', () {
-    testWidgets('a waiter can confirm codes and see reservations, nothing else', (tester) async {
+    testWidgets('a waiter answers requests, confirms codes and sees reservations, nothing else', (tester) async {
       await open(tester);
 
       expect(find.text('Cafe One'), findsOneWidget);
+      expect(find.widgetWithText(Tab, 'Requests'), findsOneWidget);
       expect(find.widgetWithText(Tab, 'Confirm code'), findsOneWidget);
       expect(find.widgetWithText(Tab, 'Reservations'), findsOneWidget);
       expect(find.widgetWithText(Tab, 'Team'), findsNothing);
@@ -44,6 +45,7 @@ void main() {
 
   group('confirming a code', () {
     Future<void> checkCode(WidgetTester tester, String typed) async {
+      await goToTab(tester, 'Confirm code');
       await tester.enterText(find.byKey(const Key('codeInput')), typed);
       await tester.tap(find.byKey(const Key('checkCode')));
       await tester.pumpAndSettle();
@@ -398,4 +400,195 @@ void main() {
       expect(find.byKey(const Key('submit')), findsOneWidget);
     });
   });
+  group('customers\' requests', () {
+    Future<FakeVenueRepository> openRequests(WidgetTester tester, {bool owner = false}) async {
+      final (_, venue) = await open(tester, owner: owner);
+      venue.reservations['OLDER1'] = reservationOf('OLDER1', status: ReservationState.pending, expiresIn: const Duration(minutes: 10), age: const Duration(minutes: 5), phone: '+994501110001');
+      venue.reservations['NEWER2'] = reservationOf('NEWER2', status: ReservationState.pending, expiresIn: const Duration(minutes: 14), age: const Duration(minutes: 1), phone: '+994501110002');
+
+      return venue;
+    }
+
+    /// The screens fetch the waiting requests again every 10 seconds; let that happen.
+    Future<void> reload(WidgetTester tester) async {
+      await tester.pump(const Duration(seconds: 11));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the first tab shows requests waiting for an answer, oldest first', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.reservations['OLDER1'] = reservationOf('OLDER1', status: ReservationState.pending, age: const Duration(minutes: 5), phone: '+994501110001');
+      venue.reservations['NEWER2'] = reservationOf('NEWER2', status: ReservationState.pending, age: const Duration(minutes: 1), phone: '+994501110002');
+      await reload(tester);
+
+      expect(find.byKey(const Key('request-OLDER1')), findsOneWidget);
+      expect(find.byKey(const Key('request-NEWER2')), findsOneWidget);
+      expect(find.text('+994501110001'), findsOneWidget);
+      expect(find.textContaining('Answer within'), findsNWidgets(2));
+      final older = tester.getTopLeft(find.byKey(const Key('request-OLDER1'))).dy;
+      final newer = tester.getTopLeft(find.byKey(const Key('request-NEWER2'))).dy;
+      expect(older, lessThan(newer), reason: 'whoever asked first is answered first');
+    });
+
+    testWidgets('with nothing waiting it says so', (tester) async {
+      await open(tester);
+
+      expect(find.byKey(const Key('noRequests')), findsOneWidget);
+    });
+
+    testWidgets('requests that are already answered, cancelled or out of time are not listed', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.reservations['LIVE11'] = reservationOf('LIVE11', status: ReservationState.pending);
+      venue.reservations['DONE22'] = reservationOf('DONE22');
+      venue.reservations['CANC33'] = reservationOf('CANC33', status: ReservationState.cancelled);
+      venue.reservations['LATE44'] = reservationOf('LATE44', status: ReservationState.pending, expiresIn: const Duration(minutes: -1));
+      await reload(tester);
+
+      expect(find.byKey(const Key('request-LIVE11')), findsOneWidget);
+      expect(find.byKey(const Key('request-DONE22')), findsNothing);
+      expect(find.byKey(const Key('request-CANC33')), findsNothing);
+      expect(find.byKey(const Key('request-LATE44')), findsNothing);
+    });
+
+    testWidgets('a badge on the tab counts the waiting requests', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.reservations['OLDER1'] = reservationOf('OLDER1', status: ReservationState.pending);
+      venue.reservations['NEWER2'] = reservationOf('NEWER2', status: ReservationState.pending);
+      await reload(tester);
+
+      expect(find.byKey(const Key('badge-Requests')), findsOneWidget);
+      expect(find.descendant(of: find.byKey(const Key('badge-Requests')), matching: find.text('2')), findsOneWidget);
+    });
+
+    testWidgets('a new request shows up by itself within seconds, even from another tab', (tester) async {
+      final (_, venue) = await open(tester);
+      await goToTab(tester, 'Reservations');
+      expect(find.byKey(const Key('badge-Requests')), findsNothing);
+
+      venue.reservations['NEWER2'] = reservationOf('NEWER2', status: ReservationState.pending);
+      await tester.pump(const Duration(seconds: 11));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('badge-Requests')), findsOneWidget);
+      await goToTab(tester, 'Requests');
+      expect(find.byKey(const Key('request-NEWER2')), findsOneWidget);
+    });
+
+    testWidgets('accepting starts the customer\'s 30 minutes and takes the request off the list', (tester) async {
+      final venue = await openRequests(tester);
+      await reload(tester);
+
+      await tester.tap(find.byKey(const Key('accept-OLDER1')));
+      await tester.pumpAndSettle();
+
+      expect(venue.accepted, ['OLDER1']);
+      expect(find.text('Accepted. The customer\'s 30 minutes have started.'), findsOneWidget);
+      expect(find.byKey(const Key('request-OLDER1')), findsNothing);
+      expect(find.byKey(const Key('request-NEWER2')), findsOneWidget);
+      expect(venue.reservations['OLDER1']!.status, ReservationState.active);
+    });
+
+    testWidgets('declining takes the request off the list', (tester) async {
+      final venue = await openRequests(tester);
+      await reload(tester);
+
+      await tester.tap(find.byKey(const Key('decline-NEWER2')));
+      await tester.pumpAndSettle();
+
+      expect(venue.declined, ['NEWER2']);
+      expect(find.text('Declined.'), findsOneWidget);
+      expect(find.byKey(const Key('request-NEWER2')), findsNothing);
+    });
+
+    testWidgets('if the server refuses, the reason shows and the request stays', (tester) async {
+      final venue = await openRequests(tester);
+      venue.answerError = serverFailure(400, {
+        'title': 'Validation failed',
+        'errors': {
+          'code': ['This request is no longer waiting for an answer.'],
+        },
+      });
+      await reload(tester);
+
+      await tester.tap(find.byKey(const Key('accept-OLDER1')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('This request is no longer waiting for an answer.'), findsOneWidget);
+      expect(find.byKey(const Key('request-OLDER1')), findsOneWidget);
+    });
+
+    testWidgets('a waiter and an owner both answer', (tester) async {
+      final venue = await openRequests(tester, owner: true);
+      await reload(tester);
+
+      await tester.tap(find.byKey(const Key('accept-OLDER1')));
+      await tester.pumpAndSettle();
+
+      expect(venue.accepted, ['OLDER1']);
+    });
+
+    testWidgets('a waiting request cannot be confirmed at the venue, it must be accepted first', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.reservations['WAIT11'] = reservationOf('WAIT11', status: ReservationState.pending, expiresIn: const Duration(minutes: 9));
+      await goToTab(tester, 'Confirm code');
+
+      await tester.enterText(find.byKey(const Key('codeInput')), 'wait11');
+      await tester.tap(find.byKey(const Key('checkCode')));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<Text>(find.byKey(const Key('detailStatus'))).data, 'Waiting for your answer');
+      expect(find.byKey(const Key('confirmCode')), findsNothing);
+      expect(find.byKey(const Key('acceptRequest')), findsOneWidget);
+      expect(find.byKey(const Key('declineRequest')), findsOneWidget);
+      expect(find.textContaining('off the bill'), findsNothing);
+    });
+
+    testWidgets('accepting from the code card turns it into a confirmable reservation', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.reservations['WAIT11'] = reservationOf('WAIT11', status: ReservationState.pending, expiresIn: const Duration(minutes: 9), discountPercent: 12);
+      await goToTab(tester, 'Confirm code');
+      await tester.enterText(find.byKey(const Key('codeInput')), 'wait11');
+      await tester.tap(find.byKey(const Key('checkCode')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('acceptRequest')));
+      await tester.pumpAndSettle();
+
+      expect(venue.accepted, ['WAIT11']);
+      expect(find.byKey(const Key('acceptedNote')), findsOneWidget);
+      expect(tester.widget<Text>(find.byKey(const Key('detailStatus'))).data, 'Valid');
+      expect(find.text('Give 12% off the bill.'), findsOneWidget);
+      expect(find.byKey(const Key('confirmCode')), findsOneWidget, reason: 'ready for when the customer arrives');
+      expect(find.byKey(const Key('acceptRequest')), findsNothing);
+    });
+
+    testWidgets('a request whose time to answer ran out cannot be accepted any more', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.reservations['LATE44'] = reservationOf('LATE44', status: ReservationState.pending, expiresIn: const Duration(minutes: -1));
+      await goToTab(tester, 'Confirm code');
+
+      await tester.enterText(find.byKey(const Key('codeInput')), 'late44');
+      await tester.tap(find.byKey(const Key('checkCode')));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<Text>(find.byKey(const Key('detailStatus'))).data, 'Not answered in time');
+      expect(find.byKey(const Key('acceptRequest')), findsNothing);
+      expect(find.byKey(const Key('confirmCode')), findsNothing);
+    });
+
+    testWidgets('a declined request shows as declined and offers nothing', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.reservations['NOPE55'] = reservationOf('NOPE55', status: ReservationState.declined);
+      await goToTab(tester, 'Confirm code');
+
+      await tester.enterText(find.byKey(const Key('codeInput')), 'nope55');
+      await tester.tap(find.byKey(const Key('checkCode')));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<Text>(find.byKey(const Key('detailStatus'))).data, 'Declined');
+      expect(find.byKey(const Key('acceptRequest')), findsNothing);
+      expect(find.byKey(const Key('confirmCode')), findsNothing);
+    });
+  });
+
 }

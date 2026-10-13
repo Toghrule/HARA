@@ -34,13 +34,14 @@ VenueReservation reservationOf(
   Duration expiresIn = const Duration(minutes: 20),
   int discountPercent = 10,
   String phone = '+994501112233',
+  Duration age = const Duration(minutes: 5),
 }) =>
     VenueReservation(
       id: 'id-$code',
       code: code,
       phoneNumber: phone,
       durationMinutes: 30,
-      createdAt: DateTime.now().subtract(const Duration(minutes: 5)),
+      createdAt: DateTime.now().subtract(age),
       expiresAt: DateTime.now().add(expiresIn),
       status: status,
       discountPercent: discountPercent,
@@ -69,6 +70,11 @@ class FakeVenueRepository extends VenueRepository {
   final List<String> redeemed = [];
   Object? redeemError;
 
+  /// Requests the restaurant accepted or declined, in order.
+  final List<String> accepted = [];
+  final List<String> declined = [];
+  Object? answerError;
+
   final List<String> deleteAttempts = [];
   Object? deleteError;
 
@@ -90,14 +96,55 @@ class FakeVenueRepository extends VenueRepository {
   }
 
   @override
-  Future<List<VenueReservation>> getReservations({ReservationState? status}) async =>
-      reservations.values.where((r) => status == null || r.effectiveStatus == status).toList();
+  Future<List<VenueReservation>> getReservations({ReservationState? status}) async {
+    final found = reservations.values.where((r) => status == null || r.effectiveStatus == status).toList();
+    // Requests waiting for an answer come oldest first, like on the server.
+    if (status == ReservationState.pending) found.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+    return found;
+  }
 
   @override
   Future<VenueReservation> lookup(String code) async {
     lookups.add(code);
 
     return reservations[code] ?? (throw serverFailure(404));
+  }
+
+  VenueReservation _changed(String code, ReservationState status, {DateTime? expiresAt}) {
+    final before = reservations[code]!;
+    final after = VenueReservation(
+      id: before.id,
+      code: code,
+      phoneNumber: before.phoneNumber,
+      durationMinutes: 30,
+      createdAt: before.createdAt,
+      expiresAt: expiresAt ?? before.expiresAt,
+      status: status,
+      discountPercent: before.discountPercent,
+    );
+    reservations[code] = after;
+
+    return after;
+  }
+
+  @override
+  Future<VenueReservation> accept(String code) async {
+    if (answerError != null) throw answerError!;
+    if (!reservations.containsKey(code)) throw serverFailure(404);
+    accepted.add(code);
+
+    // The hold timer starts now.
+    return _changed(code, ReservationState.active, expiresAt: DateTime.now().add(const Duration(minutes: 30)));
+  }
+
+  @override
+  Future<VenueReservation> decline(String code) async {
+    if (answerError != null) throw answerError!;
+    if (!reservations.containsKey(code)) throw serverFailure(404);
+    declined.add(code);
+
+    return _changed(code, ReservationState.declined);
   }
 
   @override

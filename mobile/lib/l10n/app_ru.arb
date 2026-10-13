@@ -26,7 +26,6 @@
   "reserveSheetFreeWithDiscount": "Бесплатно. Покажите код в заведении, чтобы получить скидку {percent}% на счёт.",
   "reserveSheetFree": "Бесплатно. Покажите код в заведении по приходе.",
   "phoneNumber": "Номер телефона",
-  "tableHeldFor": "Столик удерживается {duration}.",
   "minutesShort": "{count} мин",
   "invalidPhone": "Введите корректный номер телефона, например +994 50 123 45 67.",
 
@@ -180,5 +179,34 @@
   "deleteAccountConfirm": "Удалить аккаунт",
   "wrongPassword": "Неверный пароль.",
   "tooManyWrongPasswords": "Слишком много неверных попыток. Попробуйте позже.",
-  "accountDeleted": "Ваш аккаунт удалён."
+  "accountDeleted": "Ваш аккаунт удалён.",
+
+  "requestNotice": "Сначала ресторан подтверждает вашу заявку. После этого мы удерживаем столик {duration}.",
+  "waitingTitle": "Ждём ответ ресторана",
+  "waitingText": "Мы отправили заявку в «{restaurant}». Как только ресторан подтвердит её, здесь появится ваш код и начнутся {minutes} минут.",
+  "waitingCountdown": "У ресторана есть {countdown}, чтобы ответить",
+  "cancelRequest": "Отменить заявку",
+  "cancelRequestTitle": "Отменить заявку?",
+  "cancelRequestBody": "Ресторан её больше не увидит, а вы сможете отправить новую.",
+  "requestCancelled": "Заявка отменена",
+  "confirmedByRestaurant": "Ресторан подтвердил ваш столик",
+  "declinedTitle": "Ресторан отклонил вашу заявку",
+  "declinedText": "Вы можете выбрать другой ресторан или попробовать позже.",
+  "unansweredTitle": "Ресторан не ответил",
+  "unansweredText": "Ресторан не ответил вовремя. Вы можете отправить новую заявку.",
+  "bannerWaiting": "Ждём ответ ресторана · {countdown}",
+  "bannerDeclined": "{restaurant}: заявка отклонена",
+  "bannerUnanswered": "{restaurant} не ответил",
+  "closeNotice": "Закрыть",
+
+  "tabRequests": "Заявки",
+  "reservationStatusPending": "Ждёт вашего ответа",
+  "reservationStatusDeclined": "Отклонена",
+  "reservationStatusUnanswered": "Без ответа",
+  "noRequestsWaiting": "Нет ожидающих заявок.",
+  "acceptRequest": "Принять",
+  "sentAt": "Отправлена: {time}",
+  "answerWithin": "На ответ осталось: {countdown}",
+  "requestAccepted": "Принято. У клиента пошли {minutes} минут.",
+  "requestDeclinedDone": "Отклонено."
 }

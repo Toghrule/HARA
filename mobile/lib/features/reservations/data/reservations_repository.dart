@@ -27,12 +27,15 @@ class ReservationsRepository {
     return Reservation.fromJson(response.data!);
   }
 
-  /// Whether the code can still be used, or `null` when the server no longer knows it.
-  Future<ReservationState?> getStatus(String code) async {
+  /// Where the reservation stands and its current deadline, or `null` when the server no longer knows it.
+  Future<ReservationStatusInfo?> getStatus(String code) async {
     try {
       final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/reservations/$code/status');
 
-      return ReservationState.fromApi((response.data!['status'] as num).toInt());
+      return ReservationStatusInfo(
+        state: ReservationState.fromApi((response.data!['status'] as num).toInt()),
+        expiresAt: DateTime.parse(response.data!['expiresAt'] as String),
+      );
     } on DioException catch (error) {
       if (error.response?.statusCode == 404) return null;
       rethrow;
@@ -48,3 +51,12 @@ class ReservationsRepository {
 final reservationsRepositoryProvider = Provider<ReservationsRepository>((ref) {
   return ReservationsRepository(ref.watch(apiClientProvider));
 });
+
+/// The server's answer to "how is this reservation doing": its state, and the deadline that applies now (the
+/// restaurant's time to answer while waiting; the end of the hold time once accepted).
+class ReservationStatusInfo {
+  const ReservationStatusInfo({required this.state, required this.expiresAt});
+
+  final ReservationState state;
+  final DateTime expiresAt;
+}

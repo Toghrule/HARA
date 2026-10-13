@@ -20,6 +20,8 @@ final venueMeProvider = FutureProvider.autoDispose<VenueMe>((ref) {
 
 /// Which reservations the list shows.
 enum ReservationFilter {
+  /// Customer requests waiting for the restaurant's answer (the Requests tab).
+  pending(ReservationState.pending),
   active(ReservationState.active),
   used(ReservationState.redeemed),
   all(null);

@@ -36,10 +36,20 @@ class VenueReservation {
   final int discountPercent;
   final DateTime? redeemedAt;
 
-  /// What the reservation is now: the server may have said active a moment ago, but the window can close
-  /// while the waiter is looking at it.
-  ReservationState get effectiveStatus =>
-      status == ReservationState.active && !expiresAt.isAfter(DateTime.now()) ? ReservationState.expired : status;
+  /// What the reservation is now: the server may have said active (or pending) a moment ago, but the deadline can
+  /// pass while the waiter is looking at it.
+  ReservationState get effectiveStatus {
+    if (expiresAt.isAfter(DateTime.now())) return status;
+
+    return switch (status) {
+      ReservationState.active => ReservationState.expired,
+      ReservationState.pending => ReservationState.unanswered,
+      _ => status,
+    };
+  }
+
+  /// A request still waiting for the restaurant's answer.
+  bool get isWaitingForAnswer => effectiveStatus == ReservationState.pending;
 
   /// Usable right now.
   bool get isUsable => effectiveStatus == ReservationState.active;

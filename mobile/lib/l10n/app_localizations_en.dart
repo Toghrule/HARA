@@ -88,11 +88,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneNumber => 'Phone number';
 
   @override
-  String tableHeldFor(String duration) {
-    return 'We hold your table for $duration.';
-  }
-
-  @override
   String minutesShort(int count) {
     return '$count min';
   }
@@ -578,4 +573,106 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountDeleted => 'Your account was deleted.';
+
+  @override
+  String requestNotice(String duration) {
+    return 'The restaurant confirms your request first. After that we hold your table for $duration.';
+  }
+
+  @override
+  String get waitingTitle => 'Waiting for the restaurant';
+
+  @override
+  String waitingText(String restaurant, int minutes) {
+    return 'We sent your request to $restaurant. As soon as they confirm it, your code appears here and the $minutes minutes start.';
+  }
+
+  @override
+  String waitingCountdown(String countdown) {
+    return 'The restaurant has $countdown to answer';
+  }
+
+  @override
+  String get cancelRequest => 'Cancel request';
+
+  @override
+  String get cancelRequestTitle => 'Cancel your request?';
+
+  @override
+  String get cancelRequestBody =>
+      'The restaurant will no longer see it and you can send a new one.';
+
+  @override
+  String get requestCancelled => 'Request cancelled';
+
+  @override
+  String get confirmedByRestaurant => 'The restaurant confirmed your table';
+
+  @override
+  String get declinedTitle => 'The restaurant declined your request';
+
+  @override
+  String get declinedText =>
+      'You can try another restaurant or try again later.';
+
+  @override
+  String get unansweredTitle => 'No answer from the restaurant';
+
+  @override
+  String get unansweredText =>
+      'The restaurant did not answer in time. You can send a new request.';
+
+  @override
+  String bannerWaiting(String countdown) {
+    return 'Waiting for the restaurant · $countdown';
+  }
+
+  @override
+  String bannerDeclined(String restaurant) {
+    return '$restaurant declined your request';
+  }
+
+  @override
+  String bannerUnanswered(String restaurant) {
+    return '$restaurant did not answer';
+  }
+
+  @override
+  String get closeNotice => 'Close';
+
+  @override
+  String get tabRequests => 'Requests';
+
+  @override
+  String get reservationStatusPending => 'Waiting for your answer';
+
+  @override
+  String get reservationStatusDeclined => 'Declined';
+
+  @override
+  String get reservationStatusUnanswered => 'Not answered in time';
+
+  @override
+  String get noRequestsWaiting => 'No requests waiting.';
+
+  @override
+  String get acceptRequest => 'Accept';
+
+  @override
+  String sentAt(String time) {
+    return 'Sent $time';
+  }
+
+  @override
+  String answerWithin(String countdown) {
+    return 'Answer within $countdown';
+  }
+
+  @override
+  String requestAccepted(int minutes) {
+    return 'Accepted. The customer\'s $minutes minutes have started.';
+  }
+
+  @override
+  String get requestDeclinedDone => 'Declined.';
 }

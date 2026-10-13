@@ -87,11 +87,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get phoneNumber => 'Номер телефона';
 
   @override
-  String tableHeldFor(String duration) {
-    return 'Столик удерживается $duration.';
-  }
-
-  @override
   String minutesShort(int count) {
     return '$count мин';
   }
@@ -576,4 +571,106 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get accountDeleted => 'Ваш аккаунт удалён.';
+
+  @override
+  String requestNotice(String duration) {
+    return 'Сначала ресторан подтверждает вашу заявку. После этого мы удерживаем столик $duration.';
+  }
+
+  @override
+  String get waitingTitle => 'Ждём ответ ресторана';
+
+  @override
+  String waitingText(String restaurant, int minutes) {
+    return 'Мы отправили заявку в «$restaurant». Как только ресторан подтвердит её, здесь появится ваш код и начнутся $minutes минут.';
+  }
+
+  @override
+  String waitingCountdown(String countdown) {
+    return 'У ресторана есть $countdown, чтобы ответить';
+  }
+
+  @override
+  String get cancelRequest => 'Отменить заявку';
+
+  @override
+  String get cancelRequestTitle => 'Отменить заявку?';
+
+  @override
+  String get cancelRequestBody =>
+      'Ресторан её больше не увидит, а вы сможете отправить новую.';
+
+  @override
+  String get requestCancelled => 'Заявка отменена';
+
+  @override
+  String get confirmedByRestaurant => 'Ресторан подтвердил ваш столик';
+
+  @override
+  String get declinedTitle => 'Ресторан отклонил вашу заявку';
+
+  @override
+  String get declinedText =>
+      'Вы можете выбрать другой ресторан или попробовать позже.';
+
+  @override
+  String get unansweredTitle => 'Ресторан не ответил';
+
+  @override
+  String get unansweredText =>
+      'Ресторан не ответил вовремя. Вы можете отправить новую заявку.';
+
+  @override
+  String bannerWaiting(String countdown) {
+    return 'Ждём ответ ресторана · $countdown';
+  }
+
+  @override
+  String bannerDeclined(String restaurant) {
+    return '$restaurant: заявка отклонена';
+  }
+
+  @override
+  String bannerUnanswered(String restaurant) {
+    return '$restaurant не ответил';
+  }
+
+  @override
+  String get closeNotice => 'Закрыть';
+
+  @override
+  String get tabRequests => 'Заявки';
+
+  @override
+  String get reservationStatusPending => 'Ждёт вашего ответа';
+
+  @override
+  String get reservationStatusDeclined => 'Отклонена';
+
+  @override
+  String get reservationStatusUnanswered => 'Без ответа';
+
+  @override
+  String get noRequestsWaiting => 'Нет ожидающих заявок.';
+
+  @override
+  String get acceptRequest => 'Принять';
+
+  @override
+  String sentAt(String time) {
+    return 'Отправлена: $time';
+  }
+
+  @override
+  String answerWithin(String countdown) {
+    return 'На ответ осталось: $countdown';
+  }
+
+  @override
+  String requestAccepted(int minutes) {
+    return 'Принято. У клиента пошли $minutes минут.';
+  }
+
+  @override
+  String get requestDeclinedDone => 'Отклонено.';
 }

@@ -105,7 +105,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Phone number'), findsOneWidget);
-    expect(find.text('We hold your table for 30 min.'), findsOneWidget);
+    expect(find.textContaining('we hold your table for 30 min'), findsOneWidget);
   });
 
   testWidgets('shows a friendly message when the restaurant no longer exists', (tester) async {

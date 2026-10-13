@@ -26,7 +26,6 @@
   "reserveSheetFreeWithDiscount": "Pulsuzdur. Hesabdan {percent}% endirim almaq üçün məkanda kodunuzu göstərin.",
   "reserveSheetFree": "Pulsuzdur. Məkana çatanda kodunuzu göstərin.",
   "phoneNumber": "Telefon nömrəsi",
-  "tableHeldFor": "Masanız {duration} saxlanılır.",
   "minutesShort": "{count} dəq",
   "invalidPhone": "Düzgün telefon nömrəsi daxil edin, məsələn +994 50 123 45 67.",
 
@@ -180,5 +179,34 @@
   "deleteAccountConfirm": "Hesabı sil",
   "wrongPassword": "Parol yanlışdır.",
   "tooManyWrongPasswords": "Çox yanlış cəhd edildi. Bir az sonra yenidən yoxlayın.",
-  "accountDeleted": "Hesabınız silindi."
+  "accountDeleted": "Hesabınız silindi.",
+
+  "requestNotice": "Restoran əvvəlcə sorğunuzu təsdiqləyir. Bundan sonra masanız {duration} saxlanılır.",
+  "waitingTitle": "Restoranın cavabı gözlənilir",
+  "waitingText": "Sorğunuz {restaurant} restoranına göndərildi. O təsdiq edən kimi kodunuz burada görünəcək və {minutes} dəqiqə başlayacaq.",
+  "waitingCountdown": "Restoranın cavab verməsinə {countdown} qalıb",
+  "cancelRequest": "Sorğunu ləğv et",
+  "cancelRequestTitle": "Sorğu ləğv edilsin?",
+  "cancelRequestBody": "Restoran onu artıq görməyəcək, siz yenisini göndərə bilərsiniz.",
+  "requestCancelled": "Sorğu ləğv edildi",
+  "confirmedByRestaurant": "Restoran masanızı təsdiq etdi",
+  "declinedTitle": "Restoran sorğunuzu qəbul etmədi",
+  "declinedText": "Başqa restorana müraciət edə və ya bir az sonra yenidən cəhd edə bilərsiniz.",
+  "unansweredTitle": "Restoran cavab vermədi",
+  "unansweredText": "Restoran vaxtında cavab vermədi. Yeni sorğu göndərə bilərsiniz.",
+  "bannerWaiting": "Restoranın cavabı gözlənilir · {countdown}",
+  "bannerDeclined": "{restaurant} sorğunuzu qəbul etmədi",
+  "bannerUnanswered": "{restaurant} cavab vermədi",
+  "closeNotice": "Bağla",
+
+  "tabRequests": "Sorğular",
+  "reservationStatusPending": "Cavabınızı gözləyir",
+  "reservationStatusDeclined": "Rədd edilib",
+  "reservationStatusUnanswered": "Vaxtında cavab verilməyib",
+  "noRequestsWaiting": "Gözləyən sorğu yoxdur.",
+  "acceptRequest": "Qəbul et",
+  "sentAt": "Göndərilib: {time}",
+  "answerWithin": "Cavab üçün qalıb: {countdown}",
+  "requestAccepted": "Qəbul edildi. Müştərinin {minutes} dəqiqəsi başladı.",
+  "requestDeclinedDone": "Rədd edildi."
 }

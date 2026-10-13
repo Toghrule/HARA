@@ -232,12 +232,6 @@ abstract class AppLocalizations {
   /// **'Phone number'**
   String get phoneNumber;
 
-  /// No description provided for @tableHeldFor.
-  ///
-  /// In en, this message translates to:
-  /// **'We hold your table for {duration}.'**
-  String tableHeldFor(String duration);
-
   /// No description provided for @minutesShort.
   ///
   /// In en, this message translates to:
@@ -1125,6 +1119,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your account was deleted.'**
   String get accountDeleted;
+
+  /// No description provided for @requestNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant confirms your request first. After that we hold your table for {duration}.'**
+  String requestNotice(String duration);
+
+  /// No description provided for @waitingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the restaurant'**
+  String get waitingTitle;
+
+  /// No description provided for @waitingText.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent your request to {restaurant}. As soon as they confirm it, your code appears here and the {minutes} minutes start.'**
+  String waitingText(String restaurant, int minutes);
+
+  /// No description provided for @waitingCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant has {countdown} to answer'**
+  String waitingCountdown(String countdown);
+
+  /// No description provided for @cancelRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel request'**
+  String get cancelRequest;
+
+  /// No description provided for @cancelRequestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel your request?'**
+  String get cancelRequestTitle;
+
+  /// No description provided for @cancelRequestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant will no longer see it and you can send a new one.'**
+  String get cancelRequestBody;
+
+  /// No description provided for @requestCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Request cancelled'**
+  String get requestCancelled;
+
+  /// No description provided for @confirmedByRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant confirmed your table'**
+  String get confirmedByRestaurant;
+
+  /// No description provided for @declinedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant declined your request'**
+  String get declinedTitle;
+
+  /// No description provided for @declinedText.
+  ///
+  /// In en, this message translates to:
+  /// **'You can try another restaurant or try again later.'**
+  String get declinedText;
+
+  /// No description provided for @unansweredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No answer from the restaurant'**
+  String get unansweredTitle;
+
+  /// No description provided for @unansweredText.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant did not answer in time. You can send a new request.'**
+  String get unansweredText;
+
+  /// No description provided for @bannerWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the restaurant · {countdown}'**
+  String bannerWaiting(String countdown);
+
+  /// No description provided for @bannerDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'{restaurant} declined your request'**
+  String bannerDeclined(String restaurant);
+
+  /// No description provided for @bannerUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'{restaurant} did not answer'**
+  String bannerUnanswered(String restaurant);
+
+  /// No description provided for @closeNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get closeNotice;
+
+  /// No description provided for @tabRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests'**
+  String get tabRequests;
+
+  /// No description provided for @reservationStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for your answer'**
+  String get reservationStatusPending;
+
+  /// No description provided for @reservationStatusDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get reservationStatusDeclined;
+
+  /// No description provided for @reservationStatusUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Not answered in time'**
+  String get reservationStatusUnanswered;
+
+  /// No description provided for @noRequestsWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests waiting.'**
+  String get noRequestsWaiting;
+
+  /// No description provided for @acceptRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get acceptRequest;
+
+  /// No description provided for @sentAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent {time}'**
+  String sentAt(String time);
+
+  /// No description provided for @answerWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer within {countdown}'**
+  String answerWithin(String countdown);
+
+  /// No description provided for @requestAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted. The customer\'s {minutes} minutes have started.'**
+  String requestAccepted(int minutes);
+
+  /// No description provided for @requestDeclinedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined.'**
+  String get requestDeclinedDone;
 }
 
 class _AppLocalizationsDelegate

@@ -87,11 +87,6 @@ class AppLocalizationsAz extends AppLocalizations {
   String get phoneNumber => 'Telefon nömrəsi';
 
   @override
-  String tableHeldFor(String duration) {
-    return 'Masanız $duration saxlanılır.';
-  }
-
-  @override
   String minutesShort(int count) {
     return '$count dəq';
   }
@@ -577,4 +572,106 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get accountDeleted => 'Hesabınız silindi.';
+
+  @override
+  String requestNotice(String duration) {
+    return 'Restoran əvvəlcə sorğunuzu təsdiqləyir. Bundan sonra masanız $duration saxlanılır.';
+  }
+
+  @override
+  String get waitingTitle => 'Restoranın cavabı gözlənilir';
+
+  @override
+  String waitingText(String restaurant, int minutes) {
+    return 'Sorğunuz $restaurant restoranına göndərildi. O təsdiq edən kimi kodunuz burada görünəcək və $minutes dəqiqə başlayacaq.';
+  }
+
+  @override
+  String waitingCountdown(String countdown) {
+    return 'Restoranın cavab verməsinə $countdown qalıb';
+  }
+
+  @override
+  String get cancelRequest => 'Sorğunu ləğv et';
+
+  @override
+  String get cancelRequestTitle => 'Sorğu ləğv edilsin?';
+
+  @override
+  String get cancelRequestBody =>
+      'Restoran onu artıq görməyəcək, siz yenisini göndərə bilərsiniz.';
+
+  @override
+  String get requestCancelled => 'Sorğu ləğv edildi';
+
+  @override
+  String get confirmedByRestaurant => 'Restoran masanızı təsdiq etdi';
+
+  @override
+  String get declinedTitle => 'Restoran sorğunuzu qəbul etmədi';
+
+  @override
+  String get declinedText =>
+      'Başqa restorana müraciət edə və ya bir az sonra yenidən cəhd edə bilərsiniz.';
+
+  @override
+  String get unansweredTitle => 'Restoran cavab vermədi';
+
+  @override
+  String get unansweredText =>
+      'Restoran vaxtında cavab vermədi. Yeni sorğu göndərə bilərsiniz.';
+
+  @override
+  String bannerWaiting(String countdown) {
+    return 'Restoranın cavabı gözlənilir · $countdown';
+  }
+
+  @override
+  String bannerDeclined(String restaurant) {
+    return '$restaurant sorğunuzu qəbul etmədi';
+  }
+
+  @override
+  String bannerUnanswered(String restaurant) {
+    return '$restaurant cavab vermədi';
+  }
+
+  @override
+  String get closeNotice => 'Bağla';
+
+  @override
+  String get tabRequests => 'Sorğular';
+
+  @override
+  String get reservationStatusPending => 'Cavabınızı gözləyir';
+
+  @override
+  String get reservationStatusDeclined => 'Rədd edilib';
+
+  @override
+  String get reservationStatusUnanswered => 'Vaxtında cavab verilməyib';
+
+  @override
+  String get noRequestsWaiting => 'Gözləyən sorğu yoxdur.';
+
+  @override
+  String get acceptRequest => 'Qəbul et';
+
+  @override
+  String sentAt(String time) {
+    return 'Göndərilib: $time';
+  }
+
+  @override
+  String answerWithin(String countdown) {
+    return 'Cavab üçün qalıb: $countdown';
+  }
+
+  @override
+  String requestAccepted(int minutes) {
+    return 'Qəbul edildi. Müştərinin $minutes dəqiqəsi başladı.';
+  }
+
+  @override
+  String get requestDeclinedDone => 'Rədd edildi.';
 }

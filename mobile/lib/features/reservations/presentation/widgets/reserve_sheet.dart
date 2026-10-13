@@ -103,7 +103,7 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    l10n.tableHeldFor(l10n.minutesShort(reservationHoldMinutes)),
+                    l10n.requestNotice(l10n.minutesShort(reservationHoldMinutes)),
                     key: const Key('holdNotice'),
                     style: textTheme.bodyMedium,
                   ),
@@ -126,7 +126,7 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(l10n.reserve),
+                  : Text(l10n.sendRequest),
             ),
           ],
         ),

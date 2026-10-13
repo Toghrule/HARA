@@ -20,6 +20,7 @@ class _ReservationsTabState extends ConsumerState<ReservationsTab> {
   ReservationFilter _filter = ReservationFilter.active;
 
   String _label(AppLocalizations l10n, ReservationFilter filter) => switch (filter) {
+        ReservationFilter.pending => l10n.tabRequests,
         ReservationFilter.active => l10n.filterActive,
         ReservationFilter.used => l10n.filterUsed,
         ReservationFilter.all => l10n.filterAll,
@@ -49,7 +50,7 @@ class _ReservationsTabState extends ConsumerState<ReservationsTab> {
           child: SegmentedButton<ReservationFilter>(
             key: const Key('reservationFilter'),
             segments: [
-              for (final filter in ReservationFilter.values)
+              for (final filter in const [ReservationFilter.active, ReservationFilter.used, ReservationFilter.all])
                 ButtonSegment(value: filter, label: Text(_label(l10n, filter))),
             ],
             selected: {_filter},

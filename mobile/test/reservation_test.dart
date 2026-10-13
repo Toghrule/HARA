@@ -84,6 +84,9 @@ void main() {
       Object? cancelError,
     }) async {
       final repository = _FakeReservationsRepository(cancelError: cancelError);
+      tester.view.physicalSize = const Size(800, 2400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
       final router = GoRouter(
         initialLocation: '/reservation',
         initialExtra: reservation,
@@ -242,7 +245,7 @@ void main() {
       await openSheet(tester);
 
       await tester.enterText(find.byType(TextField), 'abc');
-      await tester.tap(find.widgetWithText(FilledButton, 'Reserve'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Send request'));
       await tester.pumpAndSettle();
 
       expect(find.textContaining('valid phone number'), findsOneWidget);
@@ -256,7 +259,7 @@ void main() {
       expect(find.byType(SegmentedButton<int>), findsNothing);
       expect(find.text('60 min'), findsNothing);
       expect(find.byKey(const Key('holdNotice')), findsOneWidget);
-      expect(find.text('We hold your table for 30 min.'), findsOneWidget);
+      expect(find.textContaining('we hold your table for 30 min'), findsOneWidget);
     });
 
     testWidgets('creates a 30-minute reservation and returns it', (tester) async {
@@ -264,7 +267,7 @@ void main() {
 
       await tester.enterText(find.byType(TextField), '+994 50 123 45 67');
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(FilledButton, 'Reserve'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Send request'));
       await tester.pumpAndSettle();
 
       expect(repository.calls, hasLength(1));
@@ -294,12 +297,12 @@ void main() {
       );
 
       await tester.enterText(find.byType(TextField), '+994 50 123 45 67');
-      await tester.tap(find.widgetWithText(FilledButton, 'Reserve'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Send request'));
       await tester.pumpAndSettle();
 
       expect(find.text('This phone number already has an active reservation.'), findsOneWidget);
       expect(result, isNull);
-      expect(tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Reserve')).onPressed, isNotNull);
+      expect(tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Send request')).onPressed, isNotNull);
     });
   });
 }

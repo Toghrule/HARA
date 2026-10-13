@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,9 +11,11 @@ import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/venue_me.dart';
+import '../../data/venue_models.dart';
 import '../providers/venue_providers.dart';
 import '../widgets/code_confirm_tab.dart';
 import '../widgets/delete_account_dialog.dart';
+import '../widgets/requests_tab.dart';
 import '../widgets/reservations_tab.dart';
 import '../widgets/restaurant_tab.dart';
 import '../widgets/team_tab.dart';
@@ -101,32 +106,80 @@ class _AccountActions extends ConsumerWidget {
 
 /// The working screens: confirm a customer's code and see the reservations; the owner also manages the
 /// team and asks HARA for changes.
-class _ApprovedVenue extends StatelessWidget {
+class _ApprovedVenue extends ConsumerStatefulWidget {
   const _ApprovedVenue({required this.me, required this.restaurant});
 
   final VenueMe me;
   final VenueRestaurant restaurant;
 
   @override
+  ConsumerState<_ApprovedVenue> createState() => _ApprovedVenueState();
+}
+
+class _ApprovedVenueState extends ConsumerState<_ApprovedVenue> {
+  /// How often the list of waiting requests is fetched again while these screens are open.
+  static const _requestsCheck = Duration(seconds: 10);
+
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(_requestsCheck, (_) {
+      ref.invalidate(venueReservationsProvider(ReservationFilter.pending));
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final me = widget.me;
 
-    final tabs = <({String label, IconData icon, Widget body})>[
-      (label: l10n.tabConfirmCode, icon: Icons.qr_code_2, body: const CodeConfirmTab()),
-      (label: l10n.tabReservations, icon: Icons.event_seat_outlined, body: const ReservationsTab()),
-      if (me.isOwner) (label: l10n.tabTeam, icon: Icons.groups_outlined, body: const TeamTab()),
-      if (me.isOwner) (label: l10n.tabRestaurant, icon: Icons.storefront_outlined, body: RestaurantTab(restaurant: restaurant)),
+    // A new request: a sound and a buzz, since the waiter may be looking elsewhere.
+    ref.listen<AsyncValue<List<VenueReservation>>>(venueReservationsProvider(ReservationFilter.pending), (previous, next) {
+      final before = previous?.valueOrNull?.length;
+      final now = next.valueOrNull?.length;
+      if (before != null && now != null && now > before) {
+        unawaited(SystemSound.play(SystemSoundType.alert));
+        unawaited(HapticFeedback.heavyImpact());
+      }
+    });
+    final waiting = ref.watch(venueReservationsProvider(ReservationFilter.pending)).valueOrNull?.length ?? 0;
+
+    final tabs = <({String label, IconData icon, int badge, Widget body})>[
+      (label: l10n.tabRequests, icon: Icons.notifications_active_outlined, badge: waiting, body: const RequestsTab()),
+      (label: l10n.tabConfirmCode, icon: Icons.qr_code_2, badge: 0, body: const CodeConfirmTab()),
+      (label: l10n.tabReservations, icon: Icons.event_seat_outlined, badge: 0, body: const ReservationsTab()),
+      if (me.isOwner) (label: l10n.tabTeam, icon: Icons.groups_outlined, badge: 0, body: const TeamTab()),
+      if (me.isOwner) (label: l10n.tabRestaurant, icon: Icons.storefront_outlined, badge: 0, body: RestaurantTab(restaurant: widget.restaurant)),
     ];
 
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(restaurant.name),
+          title: Text(widget.restaurant.name),
           actions: const [_AccountActions()],
           bottom: TabBar(
             isScrollable: tabs.length > 3,
-            tabs: [for (final tab in tabs) Tab(text: tab.label, icon: Icon(tab.icon))],
+            tabs: [
+              for (final tab in tabs)
+                Tab(
+                  text: tab.label,
+                  icon: Badge(
+                    key: tab.badge > 0 ? Key('badge-${tab.label}') : null,
+                    isLabelVisible: tab.badge > 0,
+                    label: Text('${tab.badge}'),
+                    child: Icon(tab.icon),
+                  ),
+                ),
+            ],
           ),
         ),
         body: TabBarView(children: [for (final tab in tabs) tab.body]),

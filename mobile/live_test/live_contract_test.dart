@@ -79,25 +79,46 @@ void main() {
     expect(me.restaurant?.name, 'ZZ Live Cafe');
     expect(me.restaurant?.discountPercent, 8);
 
-    // --- a customer reserves with the real customer code ---
+    // --- a customer sends a request; it waits for the restaurant, and no timer runs yet ---
     final customer = ReservationsRepository(ApiClient());
     final reservation = await customer.create(restaurantId: restaurantId, phoneNumber: '+994501234567', durationMinutes: 30);
-    expect(await customer.getStatus(reservation.code), ReservationState.active);
+    expect(reservation.status, ReservationState.pending);
+    final waiting = await customer.getStatus(reservation.code);
+    expect(waiting?.state, ReservationState.pending);
+    final answerLeft = waiting!.expiresAt.difference(DateTime.now());
+    expect(answerLeft, greaterThan(const Duration(minutes: 14)), reason: 'the restaurant has about 15 minutes to answer');
+    expect(answerLeft, lessThanOrEqualTo(const Duration(minutes: 15)));
 
-    // --- the owner looks the code up and confirms it ---
+    // --- the owner sees it, cannot confirm it yet, then accepts: the 30 minutes start NOW ---
     final found = await owner.lookup(reservation.code.toLowerCase());
     expect(found.code, reservation.code);
     expect(found.phoneNumber, '+994501234567');
     expect(found.discountPercent, 8);
-    expect(found.status, ReservationState.active);
-    expect(found.isUsable, isTrue);
+    expect(found.status, ReservationState.pending);
+    expect(found.isWaitingForAnswer, isTrue);
+    expect(found.isUsable, isFalse);
+
+    expect((await owner.getReservations(status: ReservationState.pending)).map((r) => r.code), contains(reservation.code));
+    await expectLater(owner.redeem(reservation.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 400)));
+
+    final accepted = await owner.accept(reservation.code);
+    expect(accepted.status, ReservationState.active);
+    expect(accepted.isUsable, isTrue);
+    final holdLeft = accepted.expiresAt.difference(DateTime.now());
+    expect(holdLeft, greaterThan(const Duration(minutes: 29)), reason: 'a fresh 30 minutes from the moment of accepting');
+    expect(holdLeft, lessThanOrEqualTo(const Duration(minutes: 30)));
+
+    final held = await customer.getStatus(reservation.code);
+    expect(held?.state, ReservationState.active, reason: 'the customer sees it was accepted');
+    expect(held!.expiresAt.difference(accepted.expiresAt).abs(), lessThan(const Duration(seconds: 1)), reason: 'and gets the same new deadline');
+    await expectLater(owner.accept(reservation.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 400)));
 
     expect((await owner.getReservations(status: ReservationState.active)).map((r) => r.code), contains(reservation.code));
 
     final confirmed = await owner.redeem(reservation.code);
     expect(confirmed.status, ReservationState.redeemed);
     expect(confirmed.redeemedAt, isNotNull);
-    expect(await customer.getStatus(reservation.code), ReservationState.redeemed, reason: 'the customer card sees it');
+    expect((await customer.getStatus(reservation.code))?.state, ReservationState.redeemed, reason: 'the customer card sees it');
     await expectLater(owner.redeem(reservation.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 400)));
     expect((await owner.getReservations(status: ReservationState.redeemed)).map((r) => r.code), contains(reservation.code));
 
@@ -109,7 +130,9 @@ void main() {
     final foreign = await customer.create(restaurantId: other.data!['id'] as String, phoneNumber: '+994507654321', durationMinutes: 30);
     await expectLater(owner.lookup(foreign.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 404)));
     await expectLater(owner.redeem(foreign.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 404)));
-    expect(await customer.getStatus(foreign.code), ReservationState.active, reason: 'untouched');
+    await expectLater(owner.accept(foreign.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 404)));
+    await expectLater(owner.decline(foreign.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 404)));
+    expect((await customer.getStatus(foreign.code))?.state, ReservationState.pending, reason: 'untouched');
 
     // --- a waiter registers; the owner approves ---
     final waiterSession = await authRepo.registerStaff(
@@ -140,6 +163,25 @@ void main() {
     final waiterFind = await waiter.lookup(reservation.code);
     expect(waiterFind.status, ReservationState.redeemed);
     await expectLater(waiter.getStaff(), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 403)), reason: 'owners only');
+
+    // --- a waiter declines a request; a customer cancels another while it waits ---
+    final toDecline = await customer.create(restaurantId: restaurantId, phoneNumber: '+994502220001', durationMinutes: 30);
+    final declined = await waiter.decline(toDecline.code);
+    expect(declined.status, ReservationState.declined);
+    expect((await customer.getStatus(toDecline.code))?.state, ReservationState.declined, reason: 'the customer is told');
+    await expectLater(waiter.redeem(toDecline.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 400)));
+    await customer.cancel(toDecline.code); // harmless
+    expect((await customer.getStatus(toDecline.code))?.state, ReservationState.declined);
+
+    final toCancel = await customer.create(restaurantId: restaurantId, phoneNumber: '+994502220001', durationMinutes: 30);
+    await expectLater(
+      customer.create(restaurantId: restaurantId, phoneNumber: '+994502220001', durationMinutes: 30),
+      throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 400)),
+      reason: 'one request in progress per phone',
+    );
+    await customer.cancel(toCancel.code);
+    expect((await customer.getStatus(toCancel.code))?.state, ReservationState.cancelled);
+    await expectLater(waiter.accept(toCancel.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 400)));
 
     // --- sessions renew themselves ---
     final expired = AuthSession(
