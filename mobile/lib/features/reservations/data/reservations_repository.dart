@@ -42,6 +42,11 @@ class ReservationsRepository {
     }
   }
 
+  /// This phone should be notified of the restaurant's answer to the request with this code.
+  Future<void> registerDevice(String code, String token, String language) async {
+    await _apiClient.dio.post<void>('/api/reservations/$code/device', data: {'token': token, 'language': language});
+  }
+
   /// Gives up a reservation before it's used, which lets the same phone book again.
   Future<void> cancel(String code) async {
     await _apiClient.dio.post<void>('/api/reservations/$code/cancel');

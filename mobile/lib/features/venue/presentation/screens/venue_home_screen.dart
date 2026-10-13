@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_controller.dart';
+import '../../../../core/l10n/locale_provider.dart';
 import '../../../../core/network/api_error.dart';
+import '../../../../core/push/push_registrar.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -80,6 +82,7 @@ class _AccountActions extends ConsumerWidget {
             }
 
             final deleted = await showDialog<bool>(context: context, builder: (_) => const DeleteAccountDialog());
+            if (deleted == true) unawaited(ref.read(pushRegistrarProvider).unregisterVenue());
             if (deleted == true && context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.accountDeleted)));
               context.go('/');
@@ -95,6 +98,8 @@ class _AccountActions extends ConsumerWidget {
           tooltip: l10n.signOut,
           icon: const Icon(Icons.logout),
           onPressed: () async {
+            // While still signed in, so the server knows whose notifications to stop on this phone.
+            await ref.read(pushRegistrarProvider).unregisterVenue();
             await ref.read(authControllerProvider.notifier).signOut();
             if (context.mounted) context.go('/');
           },
@@ -125,6 +130,8 @@ class _ApprovedVenueState extends ConsumerState<_ApprovedVenue> {
   @override
   void initState() {
     super.initState();
+    // This phone is told about new requests even when the app is closed.
+    unawaited(ref.read(pushRegistrarProvider).registerVenue());
     _timer = Timer.periodic(_requestsCheck, (_) {
       ref.invalidate(venueReservationsProvider(ReservationFilter.pending));
     });
@@ -140,6 +147,9 @@ class _ApprovedVenueState extends ConsumerState<_ApprovedVenue> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final me = widget.me;
+
+    // Notifications are written in the app's language, so the server is told when it changes.
+    ref.listen(localeProvider, (previous, next) => unawaited(ref.read(pushRegistrarProvider).registerVenue()));
 
     // A new request: a sound and a buzz, since the waiter may be looking elsewhere.
     ref.listen<AsyncValue<List<VenueReservation>>>(venueReservationsProvider(ReservationFilter.pending), (previous, next) {

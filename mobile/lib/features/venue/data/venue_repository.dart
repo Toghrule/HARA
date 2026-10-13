@@ -55,6 +55,16 @@ class VenueRepository {
     return VenueReservation.fromJson(response.data!);
   }
 
+  /// This phone should be notified about new requests while the signed-in person is on it.
+  Future<void> registerDevice(String token, String language) async {
+    await _apiClient.dio.post<void>('/api/venue/devices', data: {'token': token, 'language': language});
+  }
+
+  /// This phone should no longer get the signed-in person's notifications (they are signing out).
+  Future<void> unregisterDevice(String token) async {
+    await _apiClient.dio.post<void>('/api/venue/devices/unregister', data: {'token': token});
+  }
+
   /// Deletes the signed-in person's own account. The password is asked for again.
   Future<void> deleteAccount(String password) async {
     await _apiClient.dio.post<void>('/api/auth/delete-account', data: {'password': password});

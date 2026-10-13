@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/auth/auth_controller.dart';
 import 'core/auth/session_storage.dart';
 import 'core/l10n/locale_provider.dart';
+import 'core/push/firebase_push_service.dart';
+import 'core/push/push_events.dart';
+import 'core/push/push_service.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/data/customer_choice.dart';
@@ -16,10 +19,12 @@ Future<void> main() async {
   const sessionStorage = SecureSessionStorage();
   final initialSession = await sessionStorage.read();
   final continuedAsCustomer = await loadContinuedAsCustomer();
+  final pushService = await FirebasePushService.start();
 
   runApp(
     ProviderScope(
       overrides: [
+        pushServiceProvider.overrideWithValue(pushService),
         localeProvider.overrideWith((ref) => LocaleController(initialLocale)),
         customerChoiceProvider.overrideWith((ref) => CustomerChoice(continuedAsCustomer)),
         authControllerProvider.overrideWith(
@@ -37,6 +42,7 @@ class HaraApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
+    ref.watch(pushEventsProvider);
     final locale = ref.watch(localeProvider);
 
     return MaterialApp.router(

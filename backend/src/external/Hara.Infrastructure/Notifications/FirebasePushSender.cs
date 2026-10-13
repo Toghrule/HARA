@@ -71,7 +71,7 @@ public sealed class FirebasePushSender : IPushSender
                         Android = new AndroidConfig
                         {
                             Priority = Priority.High,
-                            Notification = new AndroidNotification { ChannelId = "hara_default", Sound = "default" }
+                            Notification = new AndroidNotification { Sound = "default" }
                         }
                     },
                     cancellationToken);

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/push/push_registrar.dart';
 import '../../restaurants/data/restaurant.dart';
 import '../data/reservation.dart';
 import 'providers/active_reservations_provider.dart';
@@ -18,7 +21,10 @@ Future<void> startReservation(BuildContext context, Restaurant restaurant) async
   );
 
   if (reservation != null && context.mounted) {
-    ProviderScope.containerOf(context).read(activeReservationsProvider.notifier).add(reservation);
+    final container = ProviderScope.containerOf(context);
+    container.read(activeReservationsProvider.notifier).add(reservation);
+    // So the phone is told when the restaurant answers, even with the app closed.
+    unawaited(container.read(pushRegistrarProvider).registerReservation(reservation.code));
     await context.push('/reservation', extra: reservation);
   }
 }

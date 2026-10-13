@@ -75,6 +75,20 @@ class FakeVenueRepository extends VenueRepository {
   final List<String> declined = [];
   Object? answerError;
 
+  /// Phones told to be notified (token, language), and phones told to stop.
+  final List<(String, String)> registeredDevices = [];
+  final List<String> unregisteredDevices = [];
+  void Function()? onUnregister;
+
+  @override
+  Future<void> registerDevice(String token, String language) async => registeredDevices.add((token, language));
+
+  @override
+  Future<void> unregisterDevice(String token) async {
+    onUnregister?.call();
+    unregisteredDevices.add(token);
+  }
+
   final List<String> deleteAttempts = [];
   Object? deleteError;
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "464617544539",
+    "project_id": "hara1st",
+    "storage_bucket": "hara1st.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464617544539:android:10ac41d17f3b362701987e",
+        "android_client_info": {
+          "package_name": "com.hara.hara"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvUAEgYLaKrd_C-Ahu_kmVLGRE2fneyW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,6 +9,7 @@ import 'package:hara/core/auth/auth_session.dart';
 import 'package:hara/core/auth/session_storage.dart';
 import 'package:hara/core/l10n/locale_provider.dart';
 import 'package:hara/core/network/api_client.dart';
+import 'package:hara/core/push/push_service.dart';
 import 'package:hara/core/router/app_router.dart';
 import 'package:hara/features/auth/data/customer_choice.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
@@ -169,6 +170,7 @@ class AppHarness {
     this.continuedAsCustomer = false,
     List<Restaurant>? restaurants,
     this.venueRepository,
+    this.pushService,
   })  : auth = FakeAuthRepository(),
         storage = MemorySessionStorage(session),
         restaurants = FakeRestaurantsRepository(restaurants ?? const [cafeOne, cafeTwo]);
@@ -176,6 +178,7 @@ class AppHarness {
   final AuthSession? session;
   final bool continuedAsCustomer;
   final VenueRepository? venueRepository;
+  final PushService? pushService;
   final FakeAuthRepository auth;
   final MemorySessionStorage storage;
   final FakeRestaurantsRepository restaurants;
@@ -193,6 +196,7 @@ class AppHarness {
           authControllerProvider.overrideWith((ref) => AuthController(auth, storage, session)),
           restaurantsRepositoryProvider.overrideWithValue(restaurants),
           if (venueRepository != null) venueRepositoryProvider.overrideWithValue(venueRepository!),
+          if (pushService != null) pushServiceProvider.overrideWithValue(pushService!),
         ],
         child: const HaraApp(),
       ),
