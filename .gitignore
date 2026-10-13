@@ -538,3 +538,7 @@ app.*.map.json
 
 # Claude Code local tooling config (per-machine, not app code)
 .claude/
+
+# Firebase service account key (secret)
+backend/secrets/
+*firebase-adminsdk*.json

@@ -1,6 +1,7 @@
 using Hara.Application.Common;
 using Hara.Application.Common.Exceptions;
 using Hara.Application.Common.Interfaces;
+using Hara.Application.Notifications;
 using Hara.Domain.Reservations;
 using Hara.Domain.Restaurants;
 using MediatR;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hara.Application.Reservations.Commands.CreateReservation;
 
-public class CreateReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateReservationCommand, ReservationDto>
+public class CreateReservationCommandHandler(IUnitOfWork unitOfWork, ReservationNotifier notifier) : IRequestHandler<CreateReservationCommand, ReservationDto>
 {
     private const int MaxCodeAttempts = 5;
 
@@ -44,6 +45,7 @@ public class CreateReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
 
         await repository.AddAsync(reservation, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await notifier.NewRequestAsync(reservation);
 
         return ReservationDto.FromEntity(reservation, now);
     }

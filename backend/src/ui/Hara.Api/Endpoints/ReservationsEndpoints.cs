@@ -1,4 +1,5 @@
 using Hara.Api.RateLimiting;
+using Hara.Application.Devices;
 using Hara.Application.Reservations.Commands.CancelReservation;
 using Hara.Application.Reservations.Commands.CreateReservation;
 using Hara.Application.Reservations.Queries.GetReservations;
@@ -7,6 +8,9 @@ using Hara.Domain.Reservations;
 using MediatR;
 
 namespace Hara.Api.Endpoints;
+
+/// <summary>A phone's Firebase notification token and the language to write its notifications in.</summary>
+public sealed record DeviceBody(string Token, string? Language);
 
 public static class ReservationsEndpoints
 {
@@ -35,6 +39,17 @@ public static class ReservationsEndpoints
             .WithName("CancelReservation")
             .AllowAnonymous()
             .RequireRateLimiting(RateLimitPolicies.ReservationCancels);
+
+        // The phone that sent the request asks to be notified of the restaurant's answer. The code is the proof of ownership.
+        app.MapPost("/api/reservations/{code}/device", async (string code, DeviceBody body, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(new RegisterReservationDeviceCommand(code, body.Token, body.Language), cancellationToken);
+                return Results.NoContent();
+            })
+            .WithTags("Reservations")
+            .WithName("RegisterReservationDevice")
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.Devices);
 
         var admin = app.MapGroup("/api/admin/reservations")
             .WithTags("Admin.Reservations")

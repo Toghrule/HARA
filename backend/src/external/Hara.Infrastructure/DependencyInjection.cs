@@ -1,5 +1,7 @@
 using Hara.Application.Common.Interfaces;
+using Hara.Application.Notifications;
 using Hara.Infrastructure.Files;
+using Hara.Infrastructure.Notifications;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +13,9 @@ public static class DependencyInjection
     {
         services.Configure<FileStorageOptions>(configuration.GetSection(FileStorageOptions.SectionName));
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
+        services.Configure<FirebaseOptions>(configuration.GetSection(FirebaseOptions.SectionName));
+        services.AddSingleton<IPushSender, FirebasePushSender>();
 
         return services;
     }

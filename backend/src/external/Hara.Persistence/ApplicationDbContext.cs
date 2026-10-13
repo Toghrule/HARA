@@ -2,6 +2,7 @@ using System.Reflection;
 using Hara.Domain.Advertisements;
 using Hara.Domain.CompanyInfo;
 using Hara.Domain.Common;
+using Hara.Domain.Devices;
 using Hara.Domain.Faq;
 using Hara.Domain.Members;
 using Hara.Domain.Reservations;
@@ -43,6 +44,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<RestaurantMember> RestaurantMembers => Set<RestaurantMember>();
 
     public DbSet<RestaurantChangeRequest> RestaurantChangeRequests => Set<RestaurantChangeRequest>();
+
+    public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

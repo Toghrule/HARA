@@ -1,5 +1,6 @@
 using Hara.Application.ChangeRequests.Commands.CreateChangeRequest;
 using Hara.Application.ChangeRequests.Queries.GetVenueChangeRequests;
+using Hara.Application.Devices;
 using Hara.Application.Venue.Commands.RedeemVenueReservation;
 using Hara.Application.Venue.Commands.RemoveStaff;
 using Hara.Application.Venue.Commands.RespondToReservation;
@@ -28,6 +29,21 @@ public static class VenueEndpoints
         venue.MapGet("/me", async (ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new GetMyVenueStatusQuery(), cancellationToken)))
             .WithName("GetMyVenueStatus");
+
+        // This phone wants to hear about new requests while this person is signed in on it.
+        venue.MapPost("/devices", async (DeviceBody body, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(new RegisterVenueDeviceCommand(body.Token, body.Language), cancellationToken);
+                return Results.NoContent();
+            })
+            .WithName("RegisterVenueDevice");
+
+        venue.MapPost("/devices/unregister", async (DeviceBody body, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(new UnregisterVenueDeviceCommand(body.Token), cancellationToken);
+                return Results.NoContent();
+            })
+            .WithName("UnregisterVenueDevice");
 
         venue.MapGet("/reservations", async (ReservationStatus? status, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new GetVenueReservationsQuery(status), cancellationToken)))

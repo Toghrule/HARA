@@ -1,12 +1,13 @@
 using Hara.Application.Common.Exceptions;
 using Hara.Application.Common.Interfaces;
+using Hara.Application.Notifications;
 using Hara.Domain.Reservations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hara.Application.Venue.Commands.RespondToReservation;
 
-public class RespondToReservationCommandHandler(VenueAccess access, IUnitOfWork unitOfWork, ICurrentUserService currentUser)
+public class RespondToReservationCommandHandler(VenueAccess access, IUnitOfWork unitOfWork, ICurrentUserService currentUser, ReservationNotifier notifier)
     : IRequestHandler<RespondToReservationCommand, VenueReservationDto>
 {
     public async Task<VenueReservationDto> Handle(RespondToReservationCommand request, CancellationToken cancellationToken)
@@ -53,6 +54,7 @@ public class RespondToReservationCommandHandler(VenueAccess access, IUnitOfWork 
 
         repository.Update(reservation);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await notifier.AnsweredAsync(reservation, member.Restaurant!.Name, request.Accept);
 
         return VenueReservationDto.FromEntity(reservation, member.Restaurant!.DiscountPercent, now);
     }
