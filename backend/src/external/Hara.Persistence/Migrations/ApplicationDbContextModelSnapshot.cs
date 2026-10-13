@@ -310,6 +310,12 @@ namespace Hara.Persistence.Migrations
                     b.Property<Guid?>("RedeemedByUserId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTimeOffset?>("RespondedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("RespondedByUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("RestaurantId")
                         .HasColumnType("uuid");
 
@@ -324,6 +330,8 @@ namespace Hara.Persistence.Migrations
                         .IsUnique();
 
                     b.HasIndex("RedeemedByUserId");
+
+                    b.HasIndex("RespondedByUserId");
 
                     b.HasIndex("RestaurantId", "Status");
 
@@ -786,6 +794,11 @@ namespace Hara.Persistence.Migrations
                     b.HasOne("Hara.Persistence.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("RedeemedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Hara.Persistence.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("RespondedByUserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Hara.Domain.Restaurants.Restaurant", "Restaurant")

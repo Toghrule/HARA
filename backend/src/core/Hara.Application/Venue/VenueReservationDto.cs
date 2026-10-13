@@ -12,7 +12,7 @@ namespace Hara.Application.Venue;
 /// <param name="DurationMinutes">How long the table is held for (30 for new reservations; older ones may be 60).</param>
 /// <param name="CreatedAt">When the customer reserved.</param>
 /// <param name="ExpiresAt">When the reservation window ends.</param>
-/// <param name="Status">Effective state — <see cref="ReservationStatus.Expired"/> once an active reservation's window has elapsed.</param>
+/// <param name="Status">Effective state: pending, active, redeemed, cancelled, declined, or expired/unanswered once its deadline has passed.</param>
 /// <param name="RedeemedAt">When the code was confirmed, if it was.</param>
 /// <param name="DiscountPercent">The restaurant's discount (0–100) the customer is entitled to.</param>
 public sealed record VenueReservationDto(

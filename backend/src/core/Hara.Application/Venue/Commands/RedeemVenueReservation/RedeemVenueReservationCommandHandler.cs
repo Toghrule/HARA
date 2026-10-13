@@ -29,6 +29,9 @@ public class RedeemVenueReservationCommandHandler(VenueAccess access, IUnitOfWor
             ReservationStatus.Redeemed => "This code has already been used.",
             ReservationStatus.Cancelled => "The customer cancelled this reservation.",
             ReservationStatus.Expired => "This reservation has expired.",
+            ReservationStatus.Pending => "This request has not been accepted yet. Accept it first.",
+            ReservationStatus.Declined => "This request was declined.",
+            ReservationStatus.Unanswered => "This request was not answered in time.",
             _ => null
         };
 

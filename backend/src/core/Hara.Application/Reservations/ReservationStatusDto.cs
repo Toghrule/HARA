@@ -7,7 +7,7 @@ namespace Hara.Application.Reservations;
 /// number or restaurant — so a guessed code reveals nothing about the customer.
 /// </summary>
 /// <param name="Code">The reservation code that was asked about.</param>
-/// <param name="Status">Effective state — <see cref="ReservationStatus.Expired"/> once an active reservation's window has elapsed.</param>
+/// <param name="Status">Effective state: pending, active, redeemed, cancelled, declined, or expired/unanswered once its deadline has passed.</param>
 /// <param name="ExpiresAt">When the reservation window ends.</param>
 /// <param name="RedeemedAt">When staff redeemed the code, if they did.</param>
 public sealed record ReservationStatusDto(

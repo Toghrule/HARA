@@ -2,6 +2,7 @@ using Hara.Application.ChangeRequests.Commands.CreateChangeRequest;
 using Hara.Application.ChangeRequests.Queries.GetVenueChangeRequests;
 using Hara.Application.Venue.Commands.RedeemVenueReservation;
 using Hara.Application.Venue.Commands.RemoveStaff;
+using Hara.Application.Venue.Commands.RespondToReservation;
 using Hara.Application.Venue.Commands.ReviewStaff;
 using Hara.Application.Venue.Queries.GetMyVenueStatus;
 using Hara.Application.Venue.Queries.GetVenueReservation;
@@ -35,6 +36,14 @@ public static class VenueEndpoints
         venue.MapGet("/reservations/{code}", async (string code, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new GetVenueReservationQuery(code), cancellationToken)))
             .WithName("GetVenueReservation");
+
+        venue.MapPost("/reservations/{code}/accept", async (string code, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new RespondToReservationCommand(code, Accept: true), cancellationToken)))
+            .WithName("AcceptVenueReservation");
+
+        venue.MapPost("/reservations/{code}/decline", async (string code, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new RespondToReservationCommand(code, Accept: false), cancellationToken)))
+            .WithName("DeclineVenueReservation");
 
         venue.MapPost("/reservations/{code}/redeem", async (string code, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new RedeemVenueReservationCommand(code), cancellationToken)))

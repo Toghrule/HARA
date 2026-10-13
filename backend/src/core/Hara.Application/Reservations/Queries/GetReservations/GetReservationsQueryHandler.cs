@@ -20,15 +20,7 @@ public class GetReservationsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandl
             query = query.Where(r => r.Code.Contains(code));
         }
 
-        // "Expired" and "Active" are both stored as Active; the window decides which one a row is.
-        query = request.Status switch
-        {
-            ReservationStatus.Active => query.Where(r => r.Status == ReservationStatus.Active && r.ExpiresAt > now),
-            ReservationStatus.Expired => query.Where(r => r.Status == ReservationStatus.Active && r.ExpiresAt <= now),
-            ReservationStatus.Redeemed => query.Where(r => r.Status == ReservationStatus.Redeemed),
-            ReservationStatus.Cancelled => query.Where(r => r.Status == ReservationStatus.Cancelled),
-            _ => query
-        };
+        query = query.WithEffectiveStatus(request.Status, now);
 
         var reservations = await query
             .OrderByDescending(r => r.CreatedAt)

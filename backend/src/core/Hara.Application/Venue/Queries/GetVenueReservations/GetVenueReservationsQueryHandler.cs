@@ -1,4 +1,5 @@
 using Hara.Application.Common.Interfaces;
+using Hara.Application.Reservations;
 using Hara.Domain.Reservations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,22 +16,16 @@ public class GetVenueReservationsQueryHandler(VenueAccess access, IUnitOfWork un
         var member = await access.RequireApprovedMemberAsync(cancellationToken);
         var now = DateTimeOffset.UtcNow;
 
-        var query = unitOfWork.Repository<Reservation>().Query().Where(r => r.RestaurantId == member.RestaurantId);
+        var query = unitOfWork.Repository<Reservation>().Query()
+            .Where(r => r.RestaurantId == member.RestaurantId)
+            .WithEffectiveStatus(request.Status, now);
 
-        // "Expired" and "Active" are both stored as Active; the window decides which one a row is.
-        query = request.Status switch
-        {
-            ReservationStatus.Active => query.Where(r => r.Status == ReservationStatus.Active && r.ExpiresAt > now),
-            ReservationStatus.Expired => query.Where(r => r.Status == ReservationStatus.Active && r.ExpiresAt <= now),
-            ReservationStatus.Redeemed => query.Where(r => r.Status == ReservationStatus.Redeemed),
-            ReservationStatus.Cancelled => query.Where(r => r.Status == ReservationStatus.Cancelled),
-            _ => query
-        };
+        // Requests waiting for an answer are worked through in the order they came in; everything else newest first.
+        var ordered = request.Status == ReservationStatus.Pending
+            ? query.OrderBy(r => r.CreatedAt)
+            : query.OrderByDescending(r => r.CreatedAt);
 
-        var reservations = await query
-            .OrderByDescending(r => r.CreatedAt)
-            .Take(MaxResults)
-            .ToListAsync(cancellationToken);
+        var reservations = await ordered.Take(MaxResults).ToListAsync(cancellationToken);
 
         return reservations
             .Select(r => VenueReservationDto.FromEntity(r, member.Restaurant!.DiscountPercent, now))

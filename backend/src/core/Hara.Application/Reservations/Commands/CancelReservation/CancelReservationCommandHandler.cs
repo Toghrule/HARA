@@ -26,7 +26,10 @@ public class CancelReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
             case ReservationStatus.Expired:
                 throw new ValidationException("code", "This reservation has already expired.");
             case ReservationStatus.Cancelled:
-                // Cancelling twice (e.g. a retry after a dropped connection) is not an error.
+            case ReservationStatus.Declined:
+            case ReservationStatus.Unanswered:
+                // Nothing is left to cancel (the customer already did, the restaurant declined, or nobody answered in
+                // time). Cancelling again, e.g. a retry after a dropped connection, is not an error.
                 return ReservationDto.FromEntity(reservation, now);
         }
 

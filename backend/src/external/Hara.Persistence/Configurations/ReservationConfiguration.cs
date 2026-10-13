@@ -23,6 +23,11 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
             .HasForeignKey(r => r.RedeemedByUserId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        builder.HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(r => r.RespondedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.HasIndex(r => r.Code).IsUnique();
         builder.HasIndex(r => new { r.RestaurantId, r.Status });
     }

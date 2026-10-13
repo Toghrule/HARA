@@ -12,7 +12,7 @@ namespace Hara.Application.Reservations;
 /// <param name="DurationMinutes">How long the table is held for (30 for new reservations; older ones may be 60).</param>
 /// <param name="CreatedAt">When the reservation was made.</param>
 /// <param name="ExpiresAt">When the reservation window ends.</param>
-/// <param name="Status">Effective state — <see cref="ReservationStatus.Expired"/> once an active reservation's window has elapsed.</param>
+/// <param name="Status">Effective state: pending, active, redeemed, cancelled, declined, or expired/unanswered once its deadline has passed.</param>
 /// <param name="RedeemedAt">When staff redeemed the code, if they did.</param>
 public sealed record ReservationDto(
     Guid Id,

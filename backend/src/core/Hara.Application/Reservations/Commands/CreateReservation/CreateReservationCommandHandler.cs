@@ -37,7 +37,9 @@ public class CreateReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
             PhoneNumber = phoneNumber,
             DurationMinutes = Reservation.HoldMinutes,
             Code = await GenerateUniqueCodeAsync(repository, cancellationToken),
-            ExpiresAt = now.AddMinutes(Reservation.HoldMinutes)
+            // A request waits for the restaurant; the hold time starts only when it accepts.
+            Status = ReservationStatus.Pending,
+            ExpiresAt = now.AddMinutes(Reservation.AnswerWithinMinutes)
         };
 
         await repository.AddAsync(reservation, cancellationToken);
@@ -56,15 +58,18 @@ public class CreateReservationCommandHandler(IUnitOfWork unitOfWork) : IRequestH
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {
+        // One request in progress per phone: waiting for an answer, or accepted and not over yet.
         var hasLiveReservation = await repository.Query().AnyAsync(
-            r => r.PhoneNumber == phoneNumber && r.Status == ReservationStatus.Active && r.ExpiresAt > now,
+            r => r.PhoneNumber == phoneNumber
+                 && (r.Status == ReservationStatus.Active || r.Status == ReservationStatus.Pending)
+                 && r.ExpiresAt > now,
             cancellationToken);
 
         if (hasLiveReservation)
         {
             throw new ValidationException(
                 "PhoneNumber",
-                "This phone number already has an active reservation. Use its code, or wait until it expires to book another.");
+                "This phone number already has a reservation in progress. Wait for its answer or cancel it before sending another.");
         }
 
         var since = now.AddHours(-24);
