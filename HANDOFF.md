@@ -10,7 +10,8 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 **HARA** ("hara" = "where", şüar: *"Hara? deyə düşünmə"*) — məkan kəşfi + masa rezervasiyası tətbiqidir. Məqsəd: insanlar həmişə eyni tanış yerlərə getməsin, yeni məkanları kəşf etsin.
 
 **Müştəri tərəfi (pulsuz):**
-- Müştəri məkanı seçir, **telefon nömrəsi** ilə masanı **30 dəqiqəlik** rezerv edir (yalnız 30; 60 seçimi 2026-10-13-də götürüldü) (ödəniş yoxdur, hesab yoxdur).
+- Müştəri məkanı seçir, **telefon nömrəsi** ilə masa **sorğusu** göndərir (ödəniş yoxdur, hesab yoxdur). **Sorğunu restoran (sahibkar/ofisiant) 15 dəqiqə ərzində qəbul etməlidir; qəbul anından 30 dəqiqəlik taymer başlayır** (2026-10-13). Rədd edilərsə və ya 15 dəq cavab verilməzsə müştəriyə bildiriş çıxır. Bir telefon eyni anda yalnız **1 gözləyən və ya aktiv** sorğu saxlaya bilər. Bildiriş hələlik tətbiq açıqkən avtomatik yenilənmə (polling: müştəri 10 s gözləyəndə/30 s aktivdə, restoran 10 s) ilə; **push sonra**.
+- Rezerv statusları: bazada `Pending=4`, `Active=0`, `Redeemed=1`, `Cancelled=2`, `Declined=5`; oxunanda hesablanır: `Expired=3` (Active, vaxtı keçib), `Unanswered=6` (Pending, 15 dəq keçib). `ExpiresAt` = cari son tarix (gözləyəndə cavab müddəti, qəbuldan sonra +30 dəq). API: `POST /api/venue/reservations/{code}/accept|decline`. Son migration: `AddReservationResponse` (RespondedAt/RespondedByUserId). FAQ 1, 4, 5, 8 yeniləndi, 9 əlavə olundu (real bazada, 3 dil).
 - Rezervdən sonra qısa **kod** alır, bu müddət ərzində məkana çatıb kodu göstərir və məkanın təyin etdiyi **faiz endirimi** istəyir.
 - Gələcəkdə (v1 deyil): bal/loyallıq sistemi.
 
@@ -50,7 +51,7 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 - **Flutter** seçildi (React Native/native yox): `mobile/`-də artıq router, API klienti, tema var idi; Android + iOS üçün tək kod bazası. iOS build üçün **Mac** (və ya bulud Mac CI) lazımdır, Windows-da mümkün deyil.
 - **Clean Architecture backend** (`Domain` / `Application` / `Infrastructure` / `Persistence` / `Api`), CQRS (MediatR), doğrulama (FluentValidation). Yeni əməliyyat = `Commands|Queries/<Ad>/` qovluğunda Command/Query + Handler + Validator.
 - **Məkan sorğusu təsdiqi restoranı avtomatik yaratmır** (`SubmissionStatus.Approved` yalnız statusdur). Səbəb: sorğuda koordinat, şəkil, endirim yoxdur; avtomatik yaratmaq yarımçıq restoranı müştərilərə göstərərdi. Əvəzinə təsdiqlənmiş sorğuda **"Create restaurant"** düyməsi formanı əvvəlcədən doldurur. İstifadəçi **sadə variantı** seçdi: sorğu ilə yaranan restoran arasında **bağlantı yoxdur** (eyni sorğudan iki dəfə restoran yaratmaq olar).
-- **Rezervasiya "Expired" statusu bazada saxlanmır**, `ExpiresAt`-dan hesablanır (`Reservation.EffectiveStatus`). Bazada yalnız `Active/Redeemed/Cancelled`.
+- **"Expired" və "Unanswered" statusları bazada saxlanmır**, `ExpiresAt`-dan hesablanır (`Reservation.EffectiveStatus`). Bazada `Pending/Active/Redeemed/Cancelled/Declined`.
 - **Spam qoruması hesab olmadan:** hər IP üçün sürət limiti + telefon/əlaqə üzrə biznes qaydaları (bax §7). Telefonlar **təsdiqlənmir**, ona görə qərarlı təcavüzkarı saxlamaz; real həll SMS OTP-dir (hələ edilməyib, qərar/xərc lazımdır).
 - **Telefon nömrəsi yazılarkən normallaşdırılır** (`+994 50 123-45-67` → `+994501234567`; 7–15 rəqəm), ki, fərqli yazılış eyni nömrə sayılsın.
 - **Axtarış Azərbaycan hərflərini nəzərə alır** (`SearchText.Fold`: ə→e, ı/İ→i, ö→o, ü→u, ç→c, ş→s, ğ→g). Diqqət: `ə` → **`e`**-dir, `a` yox (`Əhmədli` = `ehmedli`). Axtarış/sıralama/səhifələmə **serverin yaddaşında** edilir (bütün aktiv restoranlar yüklənir) ki, nəticə verilənlər bazasının collation-undan asılı olmasın.
@@ -98,7 +99,7 @@ HARA/
 **API xülasəsi:**
 - Public: `GET /api/restaurants[?sort=name_asc|name_desc|nearest&lat&lng&search&pageSize&page]`, `GET /api/restaurants/{id}`, `POST /api/reservations`, `GET /api/reservations/{code}/status` (yalnız status, bitmə vaxtı; telefon/restoran qaytarmır), `POST /api/reservations/{code}/cancel`, `POST /api/submissions`, `GET /api/faq`, `GET /api/company-info/{about|contacts|social-links}`, `GET /api/advertisements`, `GET /health`, `POST /api/auth/login`.
 - Admin (JWT, rol `Admin`): `/api/admin/{restaurants|reservations|submissions|advertisements|faq|company-info/*|uploads/{category}}`.
-- **Sahibkar/ofisiant (rol `Owner`/`Staff`, hesab restorana təsdiqlənibsə):** `POST /api/auth/register-owner`, `POST /api/auth/register-staff` (ictimai, 5/saat), `POST /api/auth/refresh`, `POST /api/auth/logout`; `GET /api/venue/me`, `GET /api/venue/reservations[?status]`, `GET /api/venue/reservations/{code}`, `POST /api/venue/reservations/{code}/redeem`; yalnız `Owner`: `GET /api/venue/staff`, `POST /api/venue/staff/{id}/approve|reject`, `DELETE /api/venue/staff/{id}`, `GET|POST /api/venue/change-requests` (dəyişiklik sorğusu: ad, ünvan, telefon, 3 dildə təsvir, endirim; eyni anda ən çox 5 gözləyən). Admin: `POST /api/admin/restaurants` body-sində `fromSubmissionId` varsa sorğu təsdiqlənir və qeydiyyatdakı sahibkar həmin restoranın sahibi olur; `GET /api/admin/change-requests[?status]`, `PATCH /api/admin/change-requests/{id}/status` (`{decision: 1|2, adminNote}`; təsdiq dəyişiklikləri restorana tətbiq edir).
+- **Sahibkar/ofisiant (rol `Owner`/`Staff`, hesab restorana təsdiqlənibsə):** `POST /api/auth/register-owner`, `POST /api/auth/register-staff` (ictimai, 5/saat), `POST /api/auth/refresh`, `POST /api/auth/logout`; `GET /api/venue/me`, `GET /api/venue/reservations[?status]`, `GET /api/venue/reservations/{code}`, `POST /api/venue/reservations/{code}/accept|decline|redeem`; yalnız `Owner`: `GET /api/venue/staff`, `POST /api/venue/staff/{id}/approve|reject`, `DELETE /api/venue/staff/{id}`, `GET|POST /api/venue/change-requests` (dəyişiklik sorğusu: ad, ünvan, telefon, 3 dildə təsvir, endirim; eyni anda ən çox 5 gözləyən). Admin: `POST /api/admin/restaurants` body-sində `fromSubmissionId` varsa sorğu təsdiqlənir və qeydiyyatdakı sahibkar həmin restoranın sahibi olur; `GET /api/admin/change-requests[?status]`, `PATCH /api/admin/change-requests/{id}/status` (`{decision: 1|2, adminNote}`; təsdiq dəyişiklikləri restorana tətbiq edir).
 - Swagger Development-də açıqdır (`/swagger`).
 
 **Mobil route-lar:** `/` siyahı, `/restaurants/:id`, `/about`, `/contact`, `/faq`, `/submit-restaurant`, `/reservation` (kod ekranı, `extra` ilə).
@@ -112,14 +113,14 @@ HARA/
 - Mobil app: `http://localhost:5174` (ilk açılış 20–60 san, boş qara səhifə = gözləyin).
 - Admin panel: `http://localhost:5173`. Login: `admin@hara.local`, parol `backend/src/ui/Hara.Api/appsettings.Development.json`-da (`AdminUser`). **Repo ictimaidir — real serverə çıxmazdan əvvəl mütləq dəyişin.**
 
-**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddRestaurantChangeRequests`). Skript bunu etmir. Boş bazada əvvəl:
+**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddReservationResponse`). Skript bunu etmir. Boş bazada əvvəl:
 ```bash
 cd backend
 dotnet ef database update --project src/external/Hara.Persistence --startup-project src/ui/Hara.Api --context ApplicationDbContext
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (167 test, 13 fayl: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
+**Testlər:** `cd mobile && flutter analyze && flutter test` (198 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -171,7 +172,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 - İstifadəçinin öz test məlumatları var (məsələn restoran "Mixək Restoranı", sorğu "TEST Cafe 1" — təsdiqlənib, restoran yaradılmayıb, Mixək-də rezervasiya). **Aydın şəkildə sizin olmayan heç nəyi silməyin.** Test məlumatı yaradanda `ZZ` prefiksi işlədin və sonra silin.
 
 **Qaydalar (indi işləyən davranış)**
-- Rezervasiya: bir telefon eyni anda **1 aktiv** rezerv saxlaya bilər; 24 saatda ən çox **5** (ləğv olunanlar da sayılır); kod 6 simvoldur (0/O/1/I yoxdur); rezerv `ExpiresAt`-dan sonra redeem olunmur.
+- Rezervasiya: bir telefon eyni anda **1 gözləyən və ya aktiv** sorğu saxlaya bilər; 24 saatda ən çox **5** (ləğv olunanlar da sayılır); kod 6 simvoldur (0/O/1/I yoxdur); rezerv `ExpiresAt`-dan sonra redeem olunmur.
 - Sürət limitləri (hər IP, `RateLimiting` bölməsi): rezervasiya 5/saat, sorğu 3/saat, ləğv 10/saat, status yoxlaması 300/saat, admin login 10/10 dəq. **Development-də 100-ə yüksəldilib** (əl ilə sınaq bloklanmasın).
 - Sorğu: eyni əlaqədən eyni adlı gözləyən sorğu rədd edilir; bir əlaqədən ən çox 3 gözləyən sorğu.
 - Giriş (access) tokeni 60 dəqiqə yaşayır; `refreshToken` (60 gün, hər istifadədə yenisi verilir, köhnəsi ölür) ilə yenilənir. **Artıq istifadə olunmuş refresh token təkrar gələrsə həmin hesabın bütün sessiyaları bağlanır** (mobil klient yeniləməni bir-bir, paralel yox etməlidir). Admin panel hələ refresh istifadə etmir, saatda bir yenidən login. Parol qaydası: 8+ simvol, kiçik hərf və rəqəm.
