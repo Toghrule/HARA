@@ -129,6 +129,37 @@ public class IdentityService(
         }
     }
 
+    public async Task<PasswordCheck> CheckPasswordAsync(Guid userId, string password, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+        {
+            return PasswordCheck.NoSuchAccount;
+        }
+
+        if (await userManager.IsLockedOutAsync(user))
+        {
+            return PasswordCheck.LockedOut;
+        }
+
+        if (!await userManager.CheckPasswordAsync(user, password))
+        {
+            await userManager.AccessFailedAsync(user);
+            return PasswordCheck.Wrong;
+        }
+
+        await userManager.ResetAccessFailedCountAsync(user);
+
+        return PasswordCheck.Correct;
+    }
+
+    public async Task<IReadOnlyList<string>> GetRolesAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+
+        return user is null ? [] : (await userManager.GetRolesAsync(user)).ToList();
+    }
+
     private static AuthenticationResult Failed => new(false, null, null);
 
     private async Task<AuthenticationResult> IssueTokensAsync(ApplicationUser user, CancellationToken cancellationToken)

@@ -1,4 +1,5 @@
 using Hara.Api.RateLimiting;
+using Hara.Application.Auth.Commands.DeleteAccount;
 using Hara.Application.Auth.Commands.Login;
 using Hara.Application.Auth.Commands.Logout;
 using Hara.Application.Auth.Commands.RefreshToken;
@@ -35,6 +36,17 @@ public static class AuthEndpoints
             .WithName("RegisterStaff")
             .AllowAnonymous()
             .RequireRateLimiting(RateLimitPolicies.Registrations);
+
+        // POST rather than DELETE: a request body on DELETE is dropped by some proxies, and the password must arrive.
+        app.MapPost("/api/auth/delete-account", async (DeleteAccountCommand command, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(command, cancellationToken);
+                return Results.NoContent();
+            })
+            .WithTags("Auth")
+            .WithName("DeleteAccount")
+            .RequireAuthorization("VenueMember")
+            .RequireRateLimiting(RateLimitPolicies.Login);
 
         app.MapPost("/api/auth/refresh", async (RefreshTokenCommand command, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(command, cancellationToken)))

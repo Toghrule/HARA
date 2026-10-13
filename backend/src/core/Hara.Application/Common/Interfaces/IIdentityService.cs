@@ -28,6 +28,15 @@ public interface IIdentityService
 
     /// <summary>Deletes an account — used to undo a registration whose follow-up step failed.</summary>
     Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Checks a signed-in person's password again before something they can't undo. Wrong guesses count towards the
+    /// same lockout as signing in, so a stolen access token can't be used to guess the password.
+    /// </summary>
+    Task<PasswordCheck> CheckPasswordAsync(Guid userId, string password, CancellationToken cancellationToken = default);
+
+    /// <summary>The account's roles, or an empty list if it doesn't exist.</summary>
+    Task<IReadOnlyList<string>> GetRolesAsync(Guid userId, CancellationToken cancellationToken = default);
 }
 
 /// <summary>Outcome of an <see cref="IIdentityService"/> sign-in or refresh.</summary>
@@ -50,3 +59,14 @@ public sealed record AuthenticationResult(
 /// <param name="UserId">The new account, when <paramref name="Succeeded"/> is <c>true</c>.</param>
 /// <param name="Errors">Why it failed (e.g. the email is taken or the password is too weak), keyed by field.</param>
 public sealed record RegistrationResult(bool Succeeded, Guid? UserId, IReadOnlyDictionary<string, string[]> Errors);
+
+/// <summary>Outcome of <see cref="IIdentityService.CheckPasswordAsync"/>.</summary>
+public enum PasswordCheck
+{
+    Correct,
+    Wrong,
+
+    /// <summary>Too many wrong attempts recently; not even a correct password is accepted for a while.</summary>
+    LockedOut,
+    NoSuchAccount
+}
