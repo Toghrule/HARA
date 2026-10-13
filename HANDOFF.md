@@ -196,3 +196,43 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 - Kod yazmazdan əvvəl biznes məntiqi/TBD varsa soruşun (§1); spesifikasiya mesajını avtomatik "başla" kimi qəbul etməyin.
 - Dəyişikliyi **özünüz yoxlayın** (build, test, mümkünsə canlı) və yoxlanmayanı açıq yazın. Test üçün zəif/boş keçən testlərə qarşı mutasiya yoxlaması (qoruyucunu söndürüb testin uğursuz olduğunu görmək) faydalı oldu.
 - İstifadəçi öz serverlərini özü işlədir (`restart-dev-environment.bat`); dəyişiklikdən sonra onlara yenidən başlatmaq lazım olduğunu deyin.
+
+## 9. Biznes məntiqindəki boşluqlar (2026-10-13, MVP-dən SONRAYA saxlanılıb)
+
+İstifadəçi MVP-ni yüngül saxlamaq istəyir: bunlardan heç birini özü seçməyincə **başlamayın**. Qayıdanda əvvəl yalnız seçilən bəndə dair qısa qərar sualı verin, kod yox. (Eyni siyahı Claude yaddaşında `project_hara_business_gaps.md`-dədir.)
+
+**A. Gəlirə təhlükə**
+1. Restoranlara dəyər sübutu yoxdur: sayğaclar (rezerv, təsdiq, gəlməyən) nə adminə, nə sahibkara görünür. Hər restorana aylıq hesabat satış üçün ən güclü arqumentdir.
+2. Abunə modeli yoxdur: pulsuz dövr, haqq, dayandırma, ödəniş yolu (kart/köçürmə/e-qaimə); ödəməyən restoranı avtomatik gizlətmək olmur; premium/adi reklam səviyyələri yoxdur.
+3. Reklam admin paneldə var, mobil tətbiqdə heç göstərilmir.
+4. Kodu təsdiqləyəndə hesab məbləği qeyd olunmur (bonus "minimum hesab" qaydası və gələcək komissiya üçün lazımdır).
+
+**B. "Rezerv" real olandan çox vəd edir**
+5. Rezerv əslində endirim kuponudur: masa sayı, doluluq, nəfər sayı, gəliş vaxtı yoxdur. Ya "endirim kodu" deyin, ya real masa sistemi qurun (ən böyük məhsul qərarı).
+6. İş saatları yoxdur: gecə 3-də bağlı restoranda rezerv etmək olur.
+7. Restoran rezervi ləğv edə bilmir, sahibkarın "bu gün doluyuq, rezervləri dayandır" açarı yoxdur; hər dəyişiklik admindən keçir (yavaş).
+8. Gəlməyənə (no-show) nəticə yoxdur; telefon təsdiqlənmir (SMS təxirə salınıb): başqasının nömrəsini bloklamaq və ya spam mümkündür.
+9. 30/60 dəq yol vaxtını nəzərə almır; 31-ci dəqiqədə çatan endirimi itirir.
+
+**C. Restoran və hesab dövrü**
+10. Admin tərəfindən yaradılmış restoranların (məs. Mixək) sahibi YOXDUR: sahibkar qeydiyyatı həmişə YENİ restoran yaradır. "Bu mənim restoranımdır" (claim) axını və ya admin dəvəti lazımdır.
+11. Adminin sahibkarın həqiqətən restoranın sahibi olduğunu yoxlama qaydası təyin olunmayıb (zəng? VÖEN?); dublikat aşkarlanması (eyni ad+ünvan) yoxdur.
+12. Bir hesab = bir restoran: filiallar/şəbəkə sığmır.
+13. Sahibkarı dəyişmək və ya girişi itirəndə bərpa yolu yoxdur (parol sıfırlama hələ qurulmayıb).
+14. Endirim qaydaları yalnız bir faizdir: saat/gün məhdudiyyəti, gündə maksimum say, istisnalar (spirtli içki), digər kampaniya ilə birləşmə yoxdur.
+
+**D. Müştəri tərəfi**
+15. Heç bir bildiriş yoxdur: sahibkara ofisiant sorğusu, admin-ə yeni qeydiyyat/sorğu, müştəriyə "10 dəq qalıb" gəlmir; hamı tətbiqi özü açmalıdır.
+16. Kəşf zəifdir: yalnız A–Z; mətbəx növü, açıq/bağlı, məsafə (backend "ən yaxın"ı bilir, tətbiq yer icazəsi istəmir), şəkil qalereyası, qiymət səviyyəsi, reytinq/rəy, sevimlilər yoxdur.
+17. Hesabsız müştəri = planlaşdırılmış bal/loyallıq mümkün deyil (kimlik, yəni telefon təsdiqi lazımdır).
+18. Şikayət yolu yoxdur ("restoran endirim vermədi"), yalnız əlaqə e-poçtu.
+
+**E. Hüquqi və mağaza tələbləri**
+19. Restoran müştərinin telefonunu görür: məxfilik siyasəti, razılıq, saxlama müddəti (indi nömrələr əbədi saxlanılır), şəxsi məlumat qanunu.
+20. Apple/Google: hesab yaradılırsa tətbiq içində "hesabı sil" və məxfilik siyasəti linki məcburidir. Sahibkar/ofisiant hesabı var, silmə yoxdur.
+21. İstifadə şərtləri və restoranla müqavilə (endirimi vermək öhdəliyi, ödəniş şərtləri, mübahisə) yoxdur.
+
+**F. İdarəetmə**
+22. Bir ümumi admin girişi var: kimin nəyi təsdiqlədiyi görünmür (audit yoxdur).
+
+**Qayıdanda təklif olunan sıra:** əvvəl (kodsuz) qərar: rezerv masa tutur, yoxsa endirim kodudur? (№5, 6, 9). Sonra ilk real restoranlar üçün №10, №7, №1, №15. Pul üçün №2, №4. Mağazaya çıxmazdan əvvəl məcburi: №19, 20, 21.
