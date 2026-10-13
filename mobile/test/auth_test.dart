@@ -268,6 +268,17 @@ void main() {
       expect(bearer(adapter.seen[2]), isNull);
     });
 
+    test('deleting your own account carries the token, like the restaurant-side calls', () async {
+      final adapter = _ScriptedAdapter((_) => 200);
+      final client = clientWith(controller(_session(access: 'tok')), adapter);
+
+      await client.dio.post<dynamic>('/api/auth/delete-account', data: {'password': 'x'});
+      await client.dio.post<dynamic>('/api/auth/login', data: {'email': 'a@b.az', 'password': 'x'});
+
+      expect(bearer(adapter.seen[0]), 'Bearer tok');
+      expect(bearer(adapter.seen[1]), isNull, reason: 'signing in is not a signed-in call');
+    });
+
     test('a token about to expire is renewed before the request goes out', () async {
       repository.onRefresh = (_) => _session(access: 'fresh', refresh: 'refresh-2');
       final adapter = _ScriptedAdapter((_) => 200);

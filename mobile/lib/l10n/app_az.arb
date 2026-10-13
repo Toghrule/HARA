@@ -169,5 +169,16 @@
   "sendRequest": "Sorğunu göndər",
   "requestSent": "Sorğu göndərildi. HARA ona baxacaq.",
   "askForOneChange": "Ən azı bir xananı doldurun.",
-  "discountRange": "0-dan 100-ə qədər rəqəm yazın."
+  "discountRange": "0-dan 100-ə qədər rəqəm yazın.",
+
+  "privacyPolicy": "Məxfilik siyasəti",
+  "accountMenu": "Hesab menyusu",
+  "deleteAccount": "Hesabımı sil",
+  "deleteAccountTitle": "Hesabınız silinsin?",
+  "deleteAccountBody": "Adınız, e-poçtunuz və telefon nömrəniz silinəcək və girişiniz bağlanacaq. Restoran sahibisinizsə, restoran HARA-da qalır. Bunu geri qaytarmaq olmaz.",
+  "deleteAccountPasswordHint": "Təsdiq üçün parolunuzu yazın.",
+  "deleteAccountConfirm": "Hesabı sil",
+  "wrongPassword": "Parol yanlışdır.",
+  "tooManyWrongPasswords": "Çox yanlış cəhd edildi. Bir az sonra yenidən yoxlayın.",
+  "accountDeleted": "Hesabınız silindi."
 }

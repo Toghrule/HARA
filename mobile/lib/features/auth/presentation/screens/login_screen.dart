@@ -7,6 +7,7 @@ import '../../../../core/auth/auth_controller.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../legal/privacy_policy_screen.dart';
 import '../form_validators.dart';
 import '../password_field.dart';
 
@@ -110,6 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Center(child: Text(l10n.noAccountYet, style: theme.textTheme.bodyMedium)),
                   TextButton(onPressed: () => context.pushReplacement('/register-owner'), child: Text(l10n.registerAsOwner)),
                   TextButton(onPressed: () => context.pushReplacement('/register-staff'), child: Text(l10n.registerAsStaff)),
+                  const Center(child: PrivacyPolicyLink()),
                 ],
               ),
             ),

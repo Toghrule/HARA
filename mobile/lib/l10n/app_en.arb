@@ -188,5 +188,16 @@
   "sendRequest": "Send request",
   "requestSent": "Request sent. HARA will review it.",
   "askForOneChange": "Fill in at least one field.",
-  "discountRange": "Enter a number from 0 to 100."
+  "discountRange": "Enter a number from 0 to 100.",
+
+  "privacyPolicy": "Privacy policy",
+  "accountMenu": "Account menu",
+  "deleteAccount": "Delete my account",
+  "deleteAccountTitle": "Delete your account?",
+  "deleteAccountBody": "Your name, email and phone number will be removed and you will lose access. If you are a restaurant owner, the restaurant stays listed in HARA. This cannot be undone.",
+  "deleteAccountPasswordHint": "Enter your password to confirm.",
+  "deleteAccountConfirm": "Delete account",
+  "wrongPassword": "Wrong password.",
+  "tooManyWrongPasswords": "Too many wrong attempts. Please try again later.",
+  "accountDeleted": "Your account was deleted."
 }

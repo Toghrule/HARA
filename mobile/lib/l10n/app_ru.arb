@@ -169,5 +169,16 @@
   "sendRequest": "Отправить заявку",
   "requestSent": "Заявка отправлена. HARA её проверит.",
   "askForOneChange": "Заполните хотя бы одно поле.",
-  "discountRange": "Введите число от 0 до 100."
+  "discountRange": "Введите число от 0 до 100.",
+
+  "privacyPolicy": "Политика конфиденциальности",
+  "accountMenu": "Меню аккаунта",
+  "deleteAccount": "Удалить мой аккаунт",
+  "deleteAccountTitle": "Удалить аккаунт?",
+  "deleteAccountBody": "Ваши имя, e-mail и номер телефона будут удалены, а доступ закрыт. Если вы владелец ресторана, ресторан останется в HARA. Это нельзя отменить.",
+  "deleteAccountPasswordHint": "Для подтверждения введите пароль.",
+  "deleteAccountConfirm": "Удалить аккаунт",
+  "wrongPassword": "Неверный пароль.",
+  "tooManyWrongPasswords": "Слишком много неверных попыток. Попробуйте позже.",
+  "accountDeleted": "Ваш аккаунт удалён."
 }

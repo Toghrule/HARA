@@ -69,6 +69,9 @@ class FakeVenueRepository extends VenueRepository {
   final List<String> redeemed = [];
   Object? redeemError;
 
+  final List<String> deleteAttempts = [];
+  Object? deleteError;
+
   List<StaffMember> staff = [];
   final List<String> approved = [];
   final List<String> rejected = [];
@@ -115,6 +118,12 @@ class FakeVenueRepository extends VenueRepository {
     reservations[code] = done;
 
     return done;
+  }
+
+  @override
+  Future<void> deleteAccount(String password) async {
+    deleteAttempts.add(password);
+    if (deleteError != null) throw deleteError!;
   }
 
   @override

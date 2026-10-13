@@ -24,8 +24,9 @@ class ApiClient {
   final Dio dio;
 }
 
-/// Only the restaurant-side API needs (and should ever receive) the sign-in token.
-bool _needsSignIn(RequestOptions options) => options.path.startsWith('/api/venue');
+/// Only the restaurant-side API (and deleting one's own account) needs, and should ever receive, the sign-in token.
+bool _needsSignIn(RequestOptions options) =>
+    options.path.startsWith('/api/venue') || options.path == '/api/auth/delete-account';
 
 class _AuthInterceptor extends Interceptor {
   _AuthInterceptor(this._tokens, this._dio);

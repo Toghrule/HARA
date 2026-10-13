@@ -45,6 +45,12 @@ class AboutScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/faq'),
             ),
+            ListTile(
+              leading: const Icon(Icons.privacy_tip_outlined),
+              title: Text(l10n.privacyPolicy),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/privacy'),
+            ),
           ],
         ),
       ),

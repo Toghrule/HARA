@@ -542,4 +542,36 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get discountRange => 'Введите число от 0 до 100.';
+
+  @override
+  String get privacyPolicy => 'Политика конфиденциальности';
+
+  @override
+  String get accountMenu => 'Меню аккаунта';
+
+  @override
+  String get deleteAccount => 'Удалить мой аккаунт';
+
+  @override
+  String get deleteAccountTitle => 'Удалить аккаунт?';
+
+  @override
+  String get deleteAccountBody =>
+      'Ваши имя, e-mail и номер телефона будут удалены, а доступ закрыт. Если вы владелец ресторана, ресторан останется в HARA. Это нельзя отменить.';
+
+  @override
+  String get deleteAccountPasswordHint => 'Для подтверждения введите пароль.';
+
+  @override
+  String get deleteAccountConfirm => 'Удалить аккаунт';
+
+  @override
+  String get wrongPassword => 'Неверный пароль.';
+
+  @override
+  String get tooManyWrongPasswords =>
+      'Слишком много неверных попыток. Попробуйте позже.';
+
+  @override
+  String get accountDeleted => 'Ваш аккаунт удалён.';
 }

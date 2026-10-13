@@ -119,7 +119,7 @@ dotnet ef database update --project src/external/Hara.Persistence --startup-proj
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (149 test, 12 fayl: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
+**Testlər:** `cd mobile && flutter analyze && flutter test` (167 test, 13 fayl: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -228,8 +228,8 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 18. Şikayət yolu yoxdur ("restoran endirim vermədi"), yalnız əlaqə e-poçtu.
 
 **E. Hüquqi və mağaza tələbləri**
-19. Restoran müştərinin telefonunu görür: məxfilik siyasəti, razılıq, saxlama müddəti (indi nömrələr əbədi saxlanılır), şəxsi məlumat qanunu.
-20. Apple/Google: hesab yaradılırsa tətbiq içində "hesabı sil" və məxfilik siyasəti linki məcburidir. Sahibkar/ofisiant hesabı var, silmə yoxdur.
+19. Restoran müştərinin telefonunu görür: **məxfilik siyasəti mobildə var (2026-10-13, `/privacy`, 3 dildə, proqramın indiki davranışını təsvir edir — HÜQUQİ YOXLAMADAN KEÇMƏYİB)**. Qalan: saxlama müddəti qərarı (indi nömrələr əbədi saxlanılır, siyasət "lazım olduğu müddət" deyir), razılıq mətni, şəxsi məlumat qanununa uyğunluq, müştərinin nömrəsini silmə yolu (hələlik yalnız əlaqə e-poçtu ilə).
+20. ~~Apple/Google hesabı silmə~~ — **HAZIRDIR (2026-10-13):** sahibkar/ofisiant tətbiqdə "Hesabımı sil" (parol təsdiqi ilə, `POST /api/auth/delete-account`). Ofisiant tam silinir; sahibkarın ad/e-poçt/telefonu silinir, restoran qalır (sahibsiz qalır, bax №10). Admin hesabları silinmir. **Qalan:** mağazalar ictimai **URL** tələb edir (siyasət hələ yalnız tətbiqin içindədir, eyni mətni vebdə yerləşdirmək lazımdır).
 21. İstifadə şərtləri və restoranla müqavilə (endirimi vermək öhdəliyi, ödəniş şərtləri, mübahisə) yoxdur.
 
 **F. İdarəetmə**

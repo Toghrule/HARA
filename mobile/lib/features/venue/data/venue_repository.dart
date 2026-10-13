@@ -41,6 +41,11 @@ class VenueRepository {
     return VenueReservation.fromJson(response.data!);
   }
 
+  /// Deletes the signed-in person's own account. The password is asked for again.
+  Future<void> deleteAccount(String password) async {
+    await _apiClient.dio.post<void>('/api/auth/delete-account', data: {'password': password});
+  }
+
   // Owner only.
 
   Future<List<StaffMember>> getStaff() async {

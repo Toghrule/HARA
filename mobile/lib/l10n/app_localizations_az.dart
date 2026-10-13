@@ -543,4 +543,36 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get discountRange => '0-dan 100-ə qədər rəqəm yazın.';
+
+  @override
+  String get privacyPolicy => 'Məxfilik siyasəti';
+
+  @override
+  String get accountMenu => 'Hesab menyusu';
+
+  @override
+  String get deleteAccount => 'Hesabımı sil';
+
+  @override
+  String get deleteAccountTitle => 'Hesabınız silinsin?';
+
+  @override
+  String get deleteAccountBody =>
+      'Adınız, e-poçtunuz və telefon nömrəniz silinəcək və girişiniz bağlanacaq. Restoran sahibisinizsə, restoran HARA-da qalır. Bunu geri qaytarmaq olmaz.';
+
+  @override
+  String get deleteAccountPasswordHint => 'Təsdiq üçün parolunuzu yazın.';
+
+  @override
+  String get deleteAccountConfirm => 'Hesabı sil';
+
+  @override
+  String get wrongPassword => 'Parol yanlışdır.';
+
+  @override
+  String get tooManyWrongPasswords =>
+      'Çox yanlış cəhd edildi. Bir az sonra yenidən yoxlayın.';
+
+  @override
+  String get accountDeleted => 'Hesabınız silindi.';
 }

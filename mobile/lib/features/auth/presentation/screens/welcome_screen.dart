@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../legal/privacy_policy_screen.dart';
 import '../../data/customer_choice.dart';
 
 /// The registration screen: one screen, two parts. Customers just continue (no account); restaurant
@@ -69,6 +70,8 @@ class WelcomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 8),
+                const Center(child: PrivacyPolicyLink()),
               ],
             ),
           ),

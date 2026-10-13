@@ -10,6 +10,7 @@ import '../../features/auth/presentation/screens/welcome_screen.dart';
 import '../../features/company_info/presentation/screens/about_screen.dart';
 import '../../features/company_info/presentation/screens/contact_screen.dart';
 import '../../features/faq/presentation/screens/faq_screen.dart';
+import '../../features/legal/privacy_policy_screen.dart';
 import '../../features/reservations/data/reservation.dart';
 import '../../features/reservations/presentation/screens/reservation_code_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurant_detail_screen.dart';
@@ -93,6 +94,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/faq',
         builder: (context, state) => const FaqScreen(),
+      ),
+      GoRoute(
+        path: '/privacy',
+        builder: (context, state) => const PrivacyPolicyScreen(),
       ),
       GoRoute(
         path: '/reservation',

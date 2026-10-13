@@ -192,5 +192,24 @@ void main() {
     await owner2.removeStaff(teamNow.firstWhere((m) => !m.isOwner).id);
     await expectLater(waiter.getMe().then((m) => m.status), completion(VenueStatus.none), reason: 'the removed waiter has nothing on record');
     await expectLater(waiter.lookup(reservation.code), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 403)));
+
+    // --- deleting one's own account ---
+    final leaver = await authRepo.registerStaff(
+      email: 'live.leaver@cafe.az',
+      password: 'Passw0rd1',
+      fullName: 'Live Leaver',
+      restaurantId: restaurantId,
+    );
+    final leaverAuth = AuthController(authRepo, MemorySessionStorage(leaver), leaver);
+    final leaverApi = VenueRepository(ApiClient(tokens: leaverAuth));
+
+    await expectLater(leaverApi.deleteAccount('not-the-password1'), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 400)));
+    expect((await leaverApi.getMe()).status, VenueStatus.pending, reason: 'a wrong password deletes nothing');
+
+    await leaverApi.deleteAccount('Passw0rd1');
+    await leaverAuth.accountDeleted();
+    expect(leaverAuth.session, isNull);
+    await expectLater(authRepo.login(email: 'live.leaver@cafe.az', password: 'Passw0rd1'), throwsA(isA<DioException>().having((e) => e.response?.statusCode, 'status', 401)));
+    expect((await owner2.getStaff()).any((m) => m.email == 'live.leaver@cafe.az'), isFalse);
   });
 }

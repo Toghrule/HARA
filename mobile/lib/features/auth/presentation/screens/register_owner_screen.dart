@@ -6,6 +6,7 @@ import '../../../../core/auth/auth_controller.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../legal/privacy_policy_screen.dart';
 import '../form_validators.dart';
 import '../password_field.dart';
 
@@ -214,6 +215,7 @@ class _RegisterOwnerScreenState extends ConsumerState<RegisterOwnerScreen> {
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
                         : Text(l10n.createAccount),
                   ),
+                  const Center(child: PrivacyPolicyLink()),
                 ],
               ),
             ),

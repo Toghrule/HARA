@@ -10,6 +10,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../data/venue_me.dart';
 import '../providers/venue_providers.dart';
 import '../widgets/code_confirm_tab.dart';
+import '../widgets/delete_account_dialog.dart';
 import '../widgets/reservations_tab.dart';
 import '../widgets/restaurant_tab.dart';
 import '../widgets/team_tab.dart';
@@ -63,6 +64,26 @@ class _AccountActions extends ConsumerWidget {
           tooltip: l10n.browseAsCustomer,
           icon: const Icon(Icons.restaurant_menu),
           onPressed: () => context.go('/'),
+        ),
+        PopupMenuButton<String>(
+          key: const Key('accountMenu'),
+          tooltip: l10n.accountMenu,
+          onSelected: (choice) async {
+            if (choice == 'privacy') {
+              context.push('/privacy');
+              return;
+            }
+
+            final deleted = await showDialog<bool>(context: context, builder: (_) => const DeleteAccountDialog());
+            if (deleted == true && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.accountDeleted)));
+              context.go('/');
+            }
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem(value: 'privacy', child: Text(l10n.privacyPolicy)),
+            PopupMenuItem(key: const Key('deleteAccountItem'), value: 'delete', child: Text(l10n.deleteAccount)),
+          ],
         ),
         IconButton(
           key: const Key('signOut'),

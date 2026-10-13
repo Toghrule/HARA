@@ -544,4 +544,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discountRange => 'Enter a number from 0 to 100.';
+
+  @override
+  String get privacyPolicy => 'Privacy policy';
+
+  @override
+  String get accountMenu => 'Account menu';
+
+  @override
+  String get deleteAccount => 'Delete my account';
+
+  @override
+  String get deleteAccountTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountBody =>
+      'Your name, email and phone number will be removed and you will lose access. If you are a restaurant owner, the restaurant stays listed in HARA. This cannot be undone.';
+
+  @override
+  String get deleteAccountPasswordHint => 'Enter your password to confirm.';
+
+  @override
+  String get deleteAccountConfirm => 'Delete account';
+
+  @override
+  String get wrongPassword => 'Wrong password.';
+
+  @override
+  String get tooManyWrongPasswords =>
+      'Too many wrong attempts. Please try again later.';
+
+  @override
+  String get accountDeleted => 'Your account was deleted.';
 }

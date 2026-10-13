@@ -80,6 +80,9 @@ class AuthController extends StateNotifier<AuthSession?> implements TokenSource 
     }
   }
 
+  /// The server deleted this person's account: forget the session here, without telling the server (it is gone).
+  Future<void> accountDeleted() => _forget();
+
   @override
   Future<String?> validAccessToken() async {
     final session = state;
