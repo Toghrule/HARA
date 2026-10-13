@@ -12,14 +12,17 @@ import { ReservationStatus } from "../../types";
 
 const tabs: { label: string; value: ReservationStatus | "all" }[] = [
   { label: "All", value: "all" },
+  { label: "Waiting", value: ReservationStatus.Pending },
   { label: "Active", value: ReservationStatus.Active },
   { label: "Redeemed", value: ReservationStatus.Redeemed },
+  { label: "Declined", value: ReservationStatus.Declined },
+  { label: "No answer", value: ReservationStatus.Unanswered },
   { label: "Expired", value: ReservationStatus.Expired },
   { label: "Cancelled", value: ReservationStatus.Cancelled },
 ];
 
 export function ReservationsPage() {
-  const [activeTab, setActiveTab] = useState<ReservationStatus | "all">(ReservationStatus.Active);
+  const [activeTab, setActiveTab] = useState<ReservationStatus | "all">(ReservationStatus.Pending);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const { data, isLoading } = useReservations(debouncedSearch, activeTab);
@@ -33,7 +36,7 @@ export function ReservationsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Reservations"
-        description="Table reservations made in the mobile app. Read-only: each restaurant's owner or waiters confirm the codes themselves in the app."
+        description="Table requests made in the mobile app. Read-only: each restaurant's owner or waiters accept the requests and confirm the codes themselves in the app."
       />
 
       <div className="relative max-w-sm">
@@ -78,7 +81,7 @@ export function ReservationsPage() {
                 <th className="px-4 py-3">Restaurant</th>
                 <th className="px-4 py-3">Phone</th>
                 <th className="px-4 py-3">Reserved</th>
-                <th className="px-4 py-3">Valid until</th>
+                <th className="px-4 py-3">Deadline</th>
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>

@@ -5,6 +5,9 @@ export const reservationStatusLabels: Record<ReservationStatus, string> = {
   [ReservationStatus.Redeemed]: "Redeemed",
   [ReservationStatus.Cancelled]: "Cancelled",
   [ReservationStatus.Expired]: "Expired",
+  [ReservationStatus.Pending]: "Waiting for restaurant",
+  [ReservationStatus.Declined]: "Declined",
+  [ReservationStatus.Unanswered]: "No answer",
 };
 
 export const reservationStatusBadgeVariant: Record<ReservationStatus, "success" | "neutral" | "warning" | "danger"> = {
@@ -12,6 +15,9 @@ export const reservationStatusBadgeVariant: Record<ReservationStatus, "success" 
   [ReservationStatus.Redeemed]: "success",
   [ReservationStatus.Cancelled]: "neutral",
   [ReservationStatus.Expired]: "danger",
+  [ReservationStatus.Pending]: "warning",
+  [ReservationStatus.Declined]: "danger",
+  [ReservationStatus.Unanswered]: "danger",
 };
 
 export const contactTypeLabels: Record<ContactType, string> = {

@@ -11,6 +11,10 @@ export enum ReservationStatus {
   Redeemed = 1,
   Cancelled = 2,
   Expired = 3,
+  // A customer request waiting for the restaurant, one the restaurant declined, and one nobody answered in time.
+  Pending = 4,
+  Declined = 5,
+  Unanswered = 6,
 }
 
 export enum ContactType {
