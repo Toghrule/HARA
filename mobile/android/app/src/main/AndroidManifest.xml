@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Without this a release build cannot reach the server at all (debug and profile builds add it on their own). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Android 13+ asks before showing notifications (push: new requests, the restaurant's answer). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
