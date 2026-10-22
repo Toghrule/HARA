@@ -12,6 +12,15 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Secrets (JWT signing key, admin password) are kept out of git in backend/secrets/local-settings.json, which has the same
+// shape as appsettings.json. It is looked for in the app's folder and every folder above it, so it is found whether the
+// API is started with `dotnet run`, from the built files, or on a server.
+var localSettings = FindUpwards("secrets/local-settings.json");
+if (localSettings is not null)
+{
+    builder.Configuration.AddJsonFile(localSettings, optional: true, reloadOnChange: false);
+}
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration, builder.Environment);
@@ -26,7 +35,8 @@ if (string.IsNullOrWhiteSpace(jwtOptions.SigningKey))
 {
     throw new InvalidOperationException(
         $"Configuration \"{JwtOptions.SectionName}:{nameof(JwtOptions.SigningKey)}\" is required and must not be empty. " +
-        "Set it via appsettings, an environment variable, or user-secrets before starting the API.");
+        "Put it in backend/secrets/local-settings.json (see HANDOFF.md), an environment variable, or user-secrets before starting the API. " +
+        $"(Environment: {builder.Environment.EnvironmentName}; local-settings.json: {(localSettings ?? "not found")}.)");
 }
 
 builder.Services
@@ -129,3 +139,21 @@ app.MapFaqEndpoints();
 app.MapUploadsEndpoints();
 
 app.Run();
+
+// The first folder, from the app's own up to the drive root, that holds the given relative path; null if none does.
+static string? FindUpwards(string relativePath)
+{
+    foreach (var start in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
+    {
+        for (var directory = new DirectoryInfo(start); directory is not null; directory = directory.Parent)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+        }
+    }
+
+    return null;
+}
