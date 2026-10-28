@@ -7,6 +7,7 @@ using Hara.Infrastructure;
 using Hara.Persistence;
 using Hara.Persistence.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -100,10 +101,21 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
 
-    using var scope = app.Services.CreateScope();
+// Creates the admin account from configuration if it does not exist yet (does nothing without AdminUser settings).
+using (var scope = app.Services.CreateScope())
+{
     await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
+
+// Behind a tunnel or reverse proxy on this machine (cloudflared, nginx) every request arrives from 127.0.0.1. Trusting its
+// forwarded headers (only from a proxy on this machine, the default) makes the rate limits count each real client
+// separately instead of all of them together.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
