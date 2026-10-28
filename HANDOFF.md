@@ -12,6 +12,11 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 - **Mobil:** `lib/core/push/` (`PushService` interfeysi, `FirebasePushService`, `PushRegistrar`, `push_events`). Testlərdə `NoPushService`. Yalnız Android işə salınır.
 - **⚠ Yoxlanmayıb:** bu maşında Android SDK yoxdur, ona görə Gradle quraşdırması (google-services plugin 4.5.0, AGP 9.1.0 ilə) və real telefona bildiriş çatması **sınanmayıb**. Backend Firebase ilə əlaqə testi (saxta token-in rədd edilib silinməsi) keçib. iPhone üçün Apple APNs açarı + GoogleService-Info.plist lazımdır (edilməyib). Windows-da plugin ilə build üçün Developer Mode lazımdır.
 
+## Pilot (real insanlarla sınaq) — 2026-10-28
+- `start-pilot.bat` AYRI mühit qaldırır: baza `hara_pilot`, API `localhost:5082` (Production), admin panel `localhost:5175`, Cloudflare quick tunnel (`tools/cloudflared/cloudflared.exe`, gitignore, rəsmi hash yoxlanıb). Gündəlik dev (5080/5173/5174, baza `hara`) toxunulmaz. Tunel ünvanı `tools/cloudflared/current-url.txt`-dədir.
+- **Məhdudiyyət:** quick tunnel ünvanı hər yenidən başlamada dəyişir, APK isə ünvana bağlıdır (`--dart-define=API_BASE_URL`). Sabit ünvan üçün Cloudflare hesabı + domen (named tunnel) və ya VPS lazımdır.
+- Server proxy arxasındadır: `UseForwardedHeaders` yalnız lokal proxy-ni (loopback) etibarlı sayır, limitlər real müştəri IP-sinə görə işləyir.
+
 ## 1. Layihənin məqsədi
 
 **HARA** ("hara" = "where", şüar: *"Hara? deyə düşünmə"*) — məkan kəşfi + masa rezervasiyası tətbiqidir. Məqsəd: insanlar həmişə eyni tanış yerlərə getməsin, yeni məkanları kəşf etsin.

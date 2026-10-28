@@ -542,3 +542,6 @@ app.*.map.json
 # Firebase service account key (secret)
 backend/secrets/
 *firebase-adminsdk*.json
+
+# Downloaded helper programs (cloudflared), not part of the project
+tools/
