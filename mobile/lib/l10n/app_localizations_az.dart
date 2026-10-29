@@ -870,4 +870,90 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get resetNoLongerValid =>
       'Bu sorğunun vaxtı keçib və ya artıq etibarsızdır. Zəhmət olmasa yenisini göndərin.';
+
+  @override
+  String get filterOpenNow => 'İndi açıq';
+
+  @override
+  String get filterNearest => 'Ən yaxın';
+
+  @override
+  String get filterFavorites => 'Sevimlilər';
+
+  @override
+  String cuisineName(String code) {
+    String _temp0 = intl.Intl.selectLogic(
+      code,
+      {
+        'azerbaijani': 'Azərbaycan',
+        'kebab': 'Kabab və manqal',
+        'european': 'Avropa',
+        'italian': 'İtalyan',
+        'turkish': 'Türk',
+        'georgian': 'Gürcü',
+        'asian': 'Asiya',
+        'seafood': 'Dəniz məhsulları',
+        'fastfood': 'Fast food',
+        'pizza': 'Pizza',
+        'cafe': 'Kafe',
+        'dessert': 'Desertlər',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String distanceMeters(String meters) {
+    return '$meters m';
+  }
+
+  @override
+  String get locationExplainTitle => 'Yaxınlığınızdakı restoranları tapın';
+
+  @override
+  String get locationExplainBody =>
+      'HARA restoranları məsafəyə görə sıralaya bilər. Bunun üçün təxmini yerinizdən istifadə edir, yalnız sıralama və məsafə üçün. HARA onu saxlamır. İmtina etsəniz də bütün restoranları görə bilərsiniz.';
+
+  @override
+  String get locationAllow => 'İcazə ver';
+
+  @override
+  String get locationNotNow => 'İndi yox';
+
+  @override
+  String get locationDeniedForever =>
+      'HARA üçün məkan söndürülüb. Məsafəyə görə sıralamaq üçün telefonun ayarlarından yandırın.';
+
+  @override
+  String get locationOpenSettings => 'Ayarlar';
+
+  @override
+  String get locationServiceOff =>
+      'Telefonunuzda məkan xidməti söndürülüb. Məsafəyə görə sıralamaq üçün yandırın.';
+
+  @override
+  String get locationUnavailable =>
+      'Yeriniz tapılmadı. Bir azdan yenidən cəhd edin.';
+
+  @override
+  String get noFavoritesYet =>
+      'Hələ sevimli yoxdur. Restoranı burada saxlamaq üçün ürək işarəsinə toxunun.';
+
+  @override
+  String get noRestaurantsFilters => 'Bu süzgəclərə uyğun restoran yoxdur.';
+
+  @override
+  String get clearFilters => 'Süzgəcləri təmizlə';
+
+  @override
+  String get addFavorite => 'Sevimlilərə əlavə et';
+
+  @override
+  String get removeFavorite => 'Sevimlilərdən çıxar';
 }

@@ -1,7 +1,13 @@
+import '../../../../core/location/location_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/restaurant.dart';
+import '../../../../core/location/user_location_provider.dart';
+import '../../data/restaurant_filters.dart';
+import '../../data/restaurant_sort.dart';
 import '../../data/restaurants_repository.dart';
+import 'favorites_provider.dart';
+import 'restaurant_filters_provider.dart';
 import 'restaurant_search_provider.dart';
 import 'restaurant_sort_provider.dart';
 
@@ -53,15 +59,25 @@ class RestaurantsController extends AutoDisposeAsyncNotifier<RestaurantsState> {
 
   @override
   Future<RestaurantsState> build() async {
-    final sort = ref.watch(restaurantSortProvider);
+    final filters = ref.watch(restaurantFiltersProvider);
+    // The position only matters while sorting by distance, so moving does not reload an ordinary list.
+    final position = filters.nearest ? ref.watch(userLocationProvider.select((location) => location.position)) : null;
+    final favorites = filters.favoritesOnly ? ref.watch(favoritesProvider) : null;
+    // Watched here so the list starts over when the customer flips A-Z / Z-A; _sortFor reads the same value.
+    ref.watch(restaurantSortProvider);
+    final sort = _sortFor(filters, position);
     final search = ref.watch(restaurantSearchProvider);
     final repository = ref.watch(restaurantsRepositoryProvider);
+    final query = _queryFor(filters, position, favorites);
 
     _generation++;
     ref.onDispose(() => _generation++);
     _page = 1;
 
-    final items = await repository.getRestaurants(sort: sort, search: search, pageSize: pageSize);
+    // Nothing to ask the server for: no favourites yet.
+    if (favorites != null && favorites.isEmpty) return const RestaurantsState(items: [], hasMore: false);
+
+    final items = await repository.getRestaurants(sort: sort, search: search, pageSize: pageSize, query: query);
 
     return RestaurantsState(items: items, hasMore: items.length >= pageSize);
   }
@@ -75,10 +91,11 @@ class RestaurantsController extends AutoDisposeAsyncNotifier<RestaurantsState> {
 
     try {
       final next = await ref.read(restaurantsRepositoryProvider).getRestaurants(
-            sort: ref.read(restaurantSortProvider),
+            sort: _sortFor(ref.read(restaurantFiltersProvider), _positionIfNearest()),
             search: ref.read(restaurantSearchProvider),
             page: _page + 1,
             pageSize: pageSize,
+            query: _queryFor(ref.read(restaurantFiltersProvider), _positionIfNearest(), _favoritesIfFiltered()),
           );
       if (generation != _generation) return;
 
@@ -90,6 +107,22 @@ class RestaurantsController extends AutoDisposeAsyncNotifier<RestaurantsState> {
       state = AsyncData(current.failedToLoadMore(error));
     }
   }
+
+  UserPosition? _positionIfNearest() => ref.read(restaurantFiltersProvider).nearest ? ref.read(userLocationProvider).position : null;
+
+  Set<String>? _favoritesIfFiltered() => ref.read(restaurantFiltersProvider).favoritesOnly ? ref.read(favoritesProvider) : null;
+
+  /// By distance when asked for and the position is known, otherwise by name as the customer chose.
+  RestaurantSort _sortFor(RestaurantFilters filters, UserPosition? position) =>
+      filters.nearest && position != null ? RestaurantSort.nearest : ref.read(restaurantSortProvider);
+
+  RestaurantListQuery _queryFor(RestaurantFilters filters, UserPosition? position, Set<String>? favorites) => RestaurantListQuery(
+        openNow: filters.openNow,
+        cuisine: filters.cuisine,
+        latitude: filters.nearest ? position?.latitude : null,
+        longitude: filters.nearest ? position?.longitude : null,
+        ids: favorites?.toList(),
+      );
 
   Future<void> retryLoadMore() async {
     final current = state.valueOrNull;

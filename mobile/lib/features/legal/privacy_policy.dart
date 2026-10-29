@@ -7,7 +7,7 @@ class PolicySection {
 }
 
 /// The date shown under the title. Change it whenever the text changes.
-const privacyPolicyUpdated = '2026-10-13';
+const privacyPolicyUpdated = '2026-10-29';
 
 /// The privacy policy in each of the app's languages. It describes what the app does today; when a
 /// behaviour changes (what is collected, who sees it, how long it is kept), this text must change too.
@@ -21,8 +21,9 @@ const _az = [
   PolicySection('Nələri toplayırıq', [
     'Masa rezerv edəndə: telefon nömrənizi, seçdiyiniz restoranı, rezervin vaxtını (masa 30 dəqiqə saxlanılır). Bunun üçün hesab açmaq lazım deyil.',
     'Restoran sahibi və ya ofisiant qeydiyyatdan keçəndə: adı, e-poçtu, telefon nömrəsini (məcburi deyil), parolu (yalnız çevrilmiş, oxunmaz şəkildə saxlanılır) və sahibkar üçün restoranın məlumatlarını.',
-    'Telefonunuzda: dil seçiminizi, aktiv rezerv kodunuzu və hesaba daxil olubsunuzsa girişinizi. Bunlar yalnız sizin cihazınızda qalır.',
-    'Məkanınızı, ödəniş məlumatınızı və əlaqələrinizi toplamırıq, reklam izləyiciləri istifadə etmirik.',
+    'Telefonunuzda: dil seçiminizi, aktiv rezerv kodunuzu, sevimli restoranlarınızı və hesaba daxil olubsunuzsa girişinizi. Bunlar yalnız sizin cihazınızda qalır.',
+    'İcazə versəniz, telefonunuzun təxmini məkanını: yalnız restoranları məsafəyə görə sıralamaq və məsafəni göstərmək üçün. Məkan serverdə saxlanılmır və yalnız sıralama sorğusu ilə göndərilir. İcazə vermək məcburi deyil, imtina etsəniz bütün restoranları yenə görürsünüz.',
+    'Ödəniş məlumatınızı və əlaqələrinizi toplamırıq, reklam izləyiciləri istifadə etmirik.',
   ]),
   PolicySection('Nə üçün istifadə edirik', [
     'Rezervin işləməsi üçün: rezerv etdiyiniz restoran telefon nömrənizi və kodunuzu görür ki, endirimi təsdiqləsin və ya sizinlə əlaqə saxlasın.',
@@ -50,8 +51,9 @@ const _ru = [
   PolicySection('Что мы собираем', [
     'При бронировании столика: ваш номер телефона, выбранный ресторан, время брони (столик удерживается 30 минут). Для этого не нужен аккаунт.',
     'При регистрации владельца ресторана или официанта: имя, e-mail, номер телефона (по желанию), пароль (хранится только в виде необратимого шифра) и, для владельца, данные ресторана.',
-    'На вашем телефоне: выбранный язык, код активной брони и, если вы вошли в аккаунт, ваш вход. Это остаётся только на вашем устройстве.',
-    'Мы не собираем ваше местоположение, платёжные данные и контакты и не используем рекламные трекеры.',
+    'На вашем телефоне: выбранный язык, код активной брони, избранные рестораны и, если вы вошли в аккаунт, ваш вход. Это остаётся только на вашем устройстве.',
+    'Если вы разрешите, примерное местоположение телефона: только для сортировки ресторанов по расстоянию и показа расстояния. Местоположение не сохраняется на сервере и передаётся только вместе с запросом на сортировку. Разрешение не обязательно: если отказаться, все рестораны всё равно доступны.',
+    'Мы не собираем платёжные данные и контакты и не используем рекламные трекеры.',
   ]),
   PolicySection('Зачем мы это используем', [
     'Чтобы работала бронь: ресторан, в котором вы забронировали, видит ваш номер телефона и код, чтобы подтвердить скидку или связаться с вами.',
@@ -79,8 +81,9 @@ const _en = [
   PolicySection('What we collect', [
     'When you reserve a table: your phone number, the restaurant, the time of the reservation (a table is held for 30 minutes). You do not need an account for this.',
     'When a restaurant owner or waiter registers: name, email, an optional phone number, a password (stored only in scrambled form that cannot be read back) and, for owners, the restaurant\'s details.',
-    'On your phone: your language choice, your active reservation code and, if you are signed in, your sign-in. These stay on your device.',
-    'We do not collect your location, payment details or contacts, and we do not use advertising trackers.',
+    'On your phone: your language choice, your active reservation code, your favorite restaurants and, if you are signed in, your sign-in. These stay on your device.',
+    'If you allow it, your phone\'s approximate location: only to sort restaurants by distance and show how far they are. It is not stored on the server and is sent only with the request that sorts the list. Allowing it is optional: if you say no you still see every restaurant.',
+    'We do not collect your payment details or contacts, and we do not use advertising trackers.',
   ]),
   PolicySection('Why we use it', [
     'To make reservations work: the restaurant you reserved at sees your phone number and code so it can confirm the discount or reach you.',

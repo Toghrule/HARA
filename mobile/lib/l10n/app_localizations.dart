@@ -1569,6 +1569,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This request is no longer valid. Please send a new one.'**
   String get resetNoLongerValid;
+
+  /// No description provided for @filterOpenNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Open now'**
+  String get filterOpenNow;
+
+  /// No description provided for @filterNearest.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest'**
+  String get filterNearest;
+
+  /// No description provided for @filterFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get filterFavorites;
+
+  /// No description provided for @cuisineName.
+  ///
+  /// In en, this message translates to:
+  /// **'{code, select, azerbaijani{Azerbaijani} kebab{Kebab and grill} european{European} italian{Italian} turkish{Turkish} georgian{Georgian} asian{Asian} seafood{Seafood} fastfood{Fast food} pizza{Pizza} cafe{Cafe} dessert{Desserts} other{}}'**
+  String cuisineName(String code);
+
+  /// No description provided for @distanceKm.
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km'**
+  String distanceKm(String km);
+
+  /// No description provided for @distanceMeters.
+  ///
+  /// In en, this message translates to:
+  /// **'{meters} m'**
+  String distanceMeters(String meters);
+
+  /// No description provided for @locationExplainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find restaurants near you'**
+  String get locationExplainTitle;
+
+  /// No description provided for @locationExplainBody.
+  ///
+  /// In en, this message translates to:
+  /// **'HARA can sort restaurants by distance. For that it uses your approximate location, only for sorting and distances. HARA does not save it. You can say no and still see every restaurant.'**
+  String get locationExplainBody;
+
+  /// No description provided for @locationAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get locationAllow;
+
+  /// No description provided for @locationNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get locationNotNow;
+
+  /// No description provided for @locationDeniedForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Location is off for HARA. Turn it on in the phone\'s settings to sort by distance.'**
+  String get locationDeniedForever;
+
+  /// No description provided for @locationOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get locationOpenSettings;
+
+  /// No description provided for @locationServiceOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Location is turned off on your phone. Turn it on to sort by distance.'**
+  String get locationServiceOff;
+
+  /// No description provided for @locationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t find your location. Try again in a moment.'**
+  String get locationUnavailable;
+
+  /// No description provided for @noFavoritesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet. Tap the heart on a restaurant to keep it here.'**
+  String get noFavoritesYet;
+
+  /// No description provided for @noRestaurantsFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'No restaurants match these filters.'**
+  String get noRestaurantsFilters;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get clearFilters;
+
+  /// No description provided for @addFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get addFavorite;
+
+  /// No description provided for @removeFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get removeFavorite;
 }
 
 class _AppLocalizationsDelegate

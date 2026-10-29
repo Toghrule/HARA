@@ -5,6 +5,18 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Kəşf (2026-10-29, boşluq #16)
+- **Süzgəclər (mobil, axtarışın altında çip sırası):** "İndi açıq" (iş saatlarına görə, server tərəfdə), "Ən yaxın", "Sevimlilər" və 12 mətbəx növü (bir seçim, yenidən basanda silinir). Süzgəclər bir-biri ilə, axtarışla və səhifələmə ilə birlikdə işləyir. Boş nəticədə "Süzgəcləri təmizlə".
+- **Mətbəx növləri:** `Hara.Domain/Restaurants/Cuisines.cs` (sabit 12 kod, restoran başına ən çox 3), admin restoran formunda seçir (owner seçmir). Mobil adlar 3 dildə (`cuisineName`).
+- **Şəkil qalereyası:** `Restaurant.GalleryUrls` (ən çox 10), admin formda çoxlu yükləmə, silmə, sıralama; mobil detal ekranında üfüqi sürüşdürmə, nöqtələr, toxunanda tam ekran. Örtük şəkil birinci, təkrarsız. **Şəkillər HƏLƏ YÜKLƏNMƏYİB** (istifadəçi sonra yükləyəcək); owner şəkil yükləməsi park edilib.
+- **Məkan:** `geolocator` paketi, YALNIZ təxmini məkan (`ACCESS_COARSE_LOCATION`, `LocationAccuracy.low`). **İstifadəçi tətbiq ilk açılanda soruşulmasını seçdi:** siyahı ekranı ilk dəfə açılanda qısa izah pəncərəsi ("İcazə ver" / "İndi yox"), sonra sistem icazəsi; bir dəfə soruşulur (`location_asked`). İmtina edilsə A-Z qalır, "Ən yaxın" çipi sonradan yenə soruşur (həmişəlik rədd olunubsa ayarlara yönləndirir). Məsafə siyahıda və detalda cihazda hesablanır ("350 m", "1.2 km"). Server yalnız "Ən yaxın" sıralamasında `lat/lng` alır və saxlamır. Test və məkansız build-də (`NoLocationService`) heç nə soruşulmur və "Ən yaxın" çipi görünmür.
+- **Sevimlilər:** ürək işarəsi siyahıda və detalda, yalnız telefonda (`shared_preferences`, hesab yoxdur); "Sevimlilər" çipi serverdən `GET /api/restaurants?ids=a,b` ilə gətirir (ən çox 100).
+- **Server:** `GET /api/restaurants` indi `openNow`, `cuisine`, `ids` qəbul edir; cavabda `cuisines`, `galleryUrls`. Admin update-də bu sahələr göndərilməsə dəyişmir, boş siyahı təmizləyir. Migration `AddCuisinesAndGallery` (boş default ilə).
+- **Məxfilik siyasəti qaralaması yeniləndi** (3 dil, 2026-10-29): məkan və sevimlilər əlavə olundu, köhnə "məkanı toplamırıq" cümləsi silindi. **Hüquqi baxış hələ lazımdır.**
+- **Yoxlama:** API 37 yoxlama (izolə bazada, repoda YOXDUR), admin forma brauzerdə (limit 3, 2 fayl yükləndi, sıra saxlandı), mobil +32 test (cəmi 274), mutasiya yoxlaması (sevimlilərin `ids`-i silinəndə test düşdü).
+- **⚠ Yoxlanmayıb:** `geolocator`-un Android Gradle quraşdırması və real telefonda icazə pəncərəsi/məkan (bu maşında Android SDK yoxdur, build GitHub Actions-dadır); iOS qurulmayıb (`NSLocationWhenInUseUsageDescription` əlavə olunub, amma iOS build edilməyib). Əgər plugin `ACCESS_FINE_LOCATION`-u manifestə özü əlavə edərsə, sistem dəqiq məkan seçimi də göstərəcək (təxmini seçmək mümkündür).
+- **Edilmədi (istifadəçi seçmədi):** qiymət səviyyəsi, reytinq/rəy.
+
 ## Parol bərpası, yalnız owner üçün (2026-10-29, boşluq #13)
 - **Axın (istifadəçinin dizaynı):** owner giriş ekranında "Owner parolu unutdu?" basır, emailini yazır, sorğu admin panelə düşür ("Password resets" səhifəsi, menyuda gözləyən sorğuların sayı). Admin owner-ə ZƏNG edib onun olduğunu yoxlayır, sonra Approve edir. Owner-in tətbiqi (ekran açıq qalanda 5 saniyədən bir, bağlı olsa qayıdanda) təsdiqi görür və yeni parol + təkrarı formasını açır. Təsdiqdən sonra 1 SAAT vaxt var, bir dəfəlikdir.
 - **Təhlükəsizlik:** sorğu verən telefona bağlıdır. Sorğuda telefona gizli açar (`secret`) verilir, bazada yalnız SHA-256 hash saxlanır; status və tamamlama yalnız bu açarla işləyir (bədəndə, ünvanda yox). Başqası owner-in emailini bilib sorğu göndərsə də parolu dəyişə bilməz (açar onda deyil), və admin zəng edib yoxlayır. Cavab bütün emaillər üçün eynidir (hesab olub-olmadığı bilinmir); yalnız Owner rolu olan hesab üçün sorğu saxlanır (waiter və admin üçün saxlanmır). Yeni sorğu əvvəlki açıq sorğunu əvəz edir. Parol dəyişəndə bütün sessiyalar bağlanır və yanlış cəhdlərdən kilid açılır.
@@ -148,14 +160,14 @@ HARA/
 - Mobil app: `http://localhost:5174` (ilk açılış 20–60 san, boş qara səhifə = gözləyin).
 - Admin panel: `http://localhost:5173`. Login: `admin@hara.local`. **Gizli dəyərlər (2026-10-22) repoda deyil:** `Jwt:SigningKey` və `AdminUser:Password` `dotnet user-secrets`-dədir (`UserSecretsId` Hara.Api.csproj-da; baxmaq: `cd backend/src/ui/Hara.Api && dotnet user-secrets list`). Admin parolu `backend/secrets/admin-login.txt`-dədir (gitignore). **Əsas mənbə:** `backend/secrets/local-settings.json` (gitignore; appsettings ilə eyni forma: `{"Jwt":{"SigningKey":"..."},"AdminUser":{"Email":"admin@hara.local","Password":"..."}}`; Email Production-da məcburidir, çünki appsettings.json-da boşdur; admin hesabı indi hər mühitdə yaranır, Swagger yalnız Development-də), Program.cs onu yuxarı qovluqlarda axtarır, mühitdən asılı deyil (Production-da da işləyir). user-secrets də dəstəklənir. Yeni maşında bu faylı yaradın, yoxsa API açılmır. Admin hesabı yalnız YOXDURSA yaranır (seeder), parolu dəyişmək üçün DB-dən `admin@hara.local` sətrini silib API-ni yenidən başladın. Repo ictimaidir; köhnə dəyərlər git tarixçəsində qalıb, ona görə ləğv edilib (rotate).
 
-**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddPasswordResetRequests`). Skript bunu etmir. Boş bazada əvvəl:
+**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddCuisinesAndGallery`). Skript bunu etmir. Boş bazada əvvəl:
 ```bash
 cd backend
 dotnet ef database update --project src/external/Hara.Persistence --startup-project src/ui/Hara.Api --context ApplicationDbContext
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (242 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
+**Testlər:** `cd mobile && flutter analyze && flutter test` (274 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -259,7 +271,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 
 **D. Müştəri tərəfi**
 15. Heç bir bildiriş yoxdur: sahibkara ofisiant sorğusu, admin-ə yeni qeydiyyat/sorğu, müştəriyə "10 dəq qalıb" gəlmir; hamı tətbiqi özü açmalıdır.
-16. Kəşf zəifdir: yalnız A–Z; mətbəx növü, açıq/bağlı, məsafə (backend "ən yaxın"ı bilir, tətbiq yer icazəsi istəmir), şəkil qalereyası, qiymət səviyyəsi, reytinq/rəy, sevimlilər yoxdur.
+16. ✅ QİSMƏN HƏLL OLUNUB (2026-10-29): "indi açıq", "ən yaxın" + məsafə, mətbəx növü, sevimlilər və şəkil qalereyası (infrastruktur, şəkillər hələ yoxdur) var (bax "Kəşf"). Qiymət səviyyəsi və reytinq/rəy yoxdur. Əvvəlki qeyd: yalnız A–Z; mətbəx növü, açıq/bağlı, məsafə (backend "ən yaxın"ı bilir, tətbiq yer icazəsi istəmir), şəkil qalereyası, qiymət səviyyəsi, reytinq/rəy, sevimlilər yoxdur.
 17. Hesabsız müştəri = planlaşdırılmış bal/loyallıq mümkün deyil (kimlik, yəni telefon təsdiqi lazımdır).
 18. Şikayət yolu yoxdur ("restoran endirim vermədi"), yalnız əlaqə e-poçtu.
 

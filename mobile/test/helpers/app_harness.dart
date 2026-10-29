@@ -9,12 +9,14 @@ import 'package:hara/core/auth/auth_session.dart';
 import 'package:hara/core/auth/password_reset_storage.dart';
 import 'package:hara/core/auth/session_storage.dart';
 import 'package:hara/core/l10n/locale_provider.dart';
+import 'package:hara/core/location/location_service.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/core/push/push_service.dart';
 import 'package:hara/core/router/app_router.dart';
 import 'package:hara/features/auth/data/customer_choice.dart';
 import 'package:hara/features/auth/data/password_reset_repository.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
+import 'package:hara/features/restaurants/data/restaurant_filters.dart';
 import 'package:hara/features/restaurants/data/restaurant_sort.dart';
 import 'package:hara/features/restaurants/data/restaurants_repository.dart';
 import 'package:hara/features/venue/data/venue_repository.dart';
@@ -45,6 +47,40 @@ class MemorySessionStorage implements SessionStorage {
 
   @override
   Future<void> clear() async => saved = null;
+}
+
+/// A fake phone location: what permission is, what the dialog answers, and where the phone is.
+class FakeLocationService implements LocationService {
+  FakeLocationService({this.currentAccess = LocationAccess.denied, this.onRequest = LocationAccess.granted, this.at});
+
+  LocationAccess currentAccess;
+
+  /// What the phone's permission dialog answers when the app asks.
+  LocationAccess onRequest;
+
+  UserPosition? at;
+  int requests = 0;
+  int settingsOpened = 0;
+
+  @override
+  bool get isSupported => true;
+
+  @override
+  Future<LocationAccess> access() async => currentAccess;
+
+  @override
+  Future<LocationAccess> request() async {
+    requests++;
+    currentAccess = onRequest;
+
+    return onRequest;
+  }
+
+  @override
+  Future<UserPosition?> position() async => currentAccess == LocationAccess.granted ? at : null;
+
+  @override
+  Future<void> openSettings() async => settingsOpened++;
 }
 
 class MemoryPasswordResetStorage implements PasswordResetStorage {
@@ -182,6 +218,9 @@ class FakeRestaurantsRepository extends RestaurantsRepository {
 
   final List<Restaurant> all;
 
+  /// Every list request the app made: how it was sorted, searched and filtered.
+  final List<({RestaurantSort sort, String search, RestaurantListQuery query})> queries = [];
+
   @override
   Future<Restaurant> getRestaurant(String id) async => all.firstWhere((restaurant) => restaurant.id == id);
 
@@ -191,10 +230,24 @@ class FakeRestaurantsRepository extends RestaurantsRepository {
     String search = '',
     int page = 1,
     int pageSize = 20,
+    RestaurantListQuery query = const RestaurantListQuery(),
   }) async {
+    queries.add((sort: sort, search: search, query: query));
     final term = search.trim().toLowerCase();
 
-    return all.where((restaurant) => term.isEmpty || restaurant.name.toLowerCase().contains(term)).take(pageSize).toList();
+    var found = all
+        .where((restaurant) => term.isEmpty || restaurant.name.toLowerCase().contains(term))
+        .where((restaurant) => !query.openNow || restaurant.availability.acceptingRequests)
+        .where((restaurant) => query.cuisine == null || restaurant.cuisines.contains(query.cuisine))
+        .where((restaurant) => query.ids == null || query.ids!.contains(restaurant.id))
+        .toList();
+
+    if (sort == RestaurantSort.nearest && query.latitude != null && query.longitude != null) {
+      final from = UserPosition(latitude: query.latitude!, longitude: query.longitude!);
+      found.sort((a, b) => distanceKm(from, a.latitude, a.longitude).compareTo(distanceKm(from, b.latitude, b.longitude)));
+    }
+
+    return found.take(pageSize).toList();
   }
 }
 
@@ -224,6 +277,7 @@ class AppHarness {
     List<Restaurant>? restaurants,
     this.venueRepository,
     this.pushService,
+    this.locationService,
   })  : auth = FakeAuthRepository(),
         storage = MemorySessionStorage(session),
         passwordReset = FakePasswordResetRepository(),
@@ -234,6 +288,7 @@ class AppHarness {
   final bool continuedAsCustomer;
   final VenueRepository? venueRepository;
   final PushService? pushService;
+  final LocationService? locationService;
   final FakeAuthRepository auth;
   final MemorySessionStorage storage;
   final FakePasswordResetRepository passwordReset;
@@ -256,6 +311,7 @@ class AppHarness {
           passwordResetStorageProvider.overrideWithValue(resetStorage),
           if (venueRepository != null) venueRepositoryProvider.overrideWithValue(venueRepository!),
           if (pushService != null) pushServiceProvider.overrideWithValue(pushService!),
+          if (locationService != null) locationServiceProvider.overrideWithValue(locationService!),
         ],
         child: const HaraApp(),
       ),

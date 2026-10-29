@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/api_client.dart';
 import 'restaurant.dart';
+import 'restaurant_filters.dart';
 import 'restaurant_sort.dart';
 
 class RestaurantsRepository {
@@ -15,6 +16,7 @@ class RestaurantsRepository {
     String search = '',
     int page = 1,
     int pageSize = 20,
+    RestaurantListQuery query = const RestaurantListQuery(),
   }) async {
     final term = search.trim();
     final response = await _apiClient.dio.get<List<dynamic>>(
@@ -24,6 +26,10 @@ class RestaurantsRepository {
         if (term.isNotEmpty) 'search': term,
         'page': page,
         'pageSize': pageSize,
+        if (query.openNow) 'openNow': true,
+        if (query.cuisine != null) 'cuisine': query.cuisine,
+        if (query.latitude != null && query.longitude != null) ...{'lat': query.latitude, 'lng': query.longitude},
+        if (query.ids != null) 'ids': query.ids!.join(','),
       },
     );
 

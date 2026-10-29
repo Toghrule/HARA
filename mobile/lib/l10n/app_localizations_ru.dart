@@ -868,4 +868,90 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get resetNoLongerValid =>
       'Запрос больше недействителен. Отправьте новый.';
+
+  @override
+  String get filterOpenNow => 'Открыто сейчас';
+
+  @override
+  String get filterNearest => 'Ближайшие';
+
+  @override
+  String get filterFavorites => 'Избранное';
+
+  @override
+  String cuisineName(String code) {
+    String _temp0 = intl.Intl.selectLogic(
+      code,
+      {
+        'azerbaijani': 'Азербайджанская',
+        'kebab': 'Кебаб и гриль',
+        'european': 'Европейская',
+        'italian': 'Итальянская',
+        'turkish': 'Турецкая',
+        'georgian': 'Грузинская',
+        'asian': 'Азиатская',
+        'seafood': 'Морепродукты',
+        'fastfood': 'Фастфуд',
+        'pizza': 'Пицца',
+        'cafe': 'Кафе',
+        'dessert': 'Десерты',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceKm(String km) {
+    return '$km км';
+  }
+
+  @override
+  String distanceMeters(String meters) {
+    return '$meters м';
+  }
+
+  @override
+  String get locationExplainTitle => 'Найдите рестораны рядом';
+
+  @override
+  String get locationExplainBody =>
+      'HARA может сортировать рестораны по расстоянию. Для этого используется ваше примерное местоположение, только для сортировки и расстояний. HARA его не сохраняет. Можно отказаться и всё равно видеть все рестораны.';
+
+  @override
+  String get locationAllow => 'Разрешить';
+
+  @override
+  String get locationNotNow => 'Не сейчас';
+
+  @override
+  String get locationDeniedForever =>
+      'Доступ к местоположению для HARA отключён. Включите его в настройках телефона, чтобы сортировать по расстоянию.';
+
+  @override
+  String get locationOpenSettings => 'Настройки';
+
+  @override
+  String get locationServiceOff =>
+      'Геолокация на телефоне выключена. Включите её, чтобы сортировать по расстоянию.';
+
+  @override
+  String get locationUnavailable =>
+      'Не удалось определить местоположение. Попробуйте ещё раз.';
+
+  @override
+  String get noFavoritesYet =>
+      'Пока нет избранного. Нажмите на сердечко у ресторана, чтобы сохранить его здесь.';
+
+  @override
+  String get noRestaurantsFilters => 'Нет ресторанов по этим фильтрам.';
+
+  @override
+  String get clearFilters => 'Сбросить фильтры';
+
+  @override
+  String get addFavorite => 'Добавить в избранное';
+
+  @override
+  String get removeFavorite => 'Убрать из избранного';
 }

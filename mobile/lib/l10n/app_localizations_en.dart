@@ -870,4 +870,90 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get resetNoLongerValid =>
       'This request is no longer valid. Please send a new one.';
+
+  @override
+  String get filterOpenNow => 'Open now';
+
+  @override
+  String get filterNearest => 'Nearest';
+
+  @override
+  String get filterFavorites => 'Favorites';
+
+  @override
+  String cuisineName(String code) {
+    String _temp0 = intl.Intl.selectLogic(
+      code,
+      {
+        'azerbaijani': 'Azerbaijani',
+        'kebab': 'Kebab and grill',
+        'european': 'European',
+        'italian': 'Italian',
+        'turkish': 'Turkish',
+        'georgian': 'Georgian',
+        'asian': 'Asian',
+        'seafood': 'Seafood',
+        'fastfood': 'Fast food',
+        'pizza': 'Pizza',
+        'cafe': 'Cafe',
+        'dessert': 'Desserts',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String distanceMeters(String meters) {
+    return '$meters m';
+  }
+
+  @override
+  String get locationExplainTitle => 'Find restaurants near you';
+
+  @override
+  String get locationExplainBody =>
+      'HARA can sort restaurants by distance. For that it uses your approximate location, only for sorting and distances. HARA does not save it. You can say no and still see every restaurant.';
+
+  @override
+  String get locationAllow => 'Allow';
+
+  @override
+  String get locationNotNow => 'Not now';
+
+  @override
+  String get locationDeniedForever =>
+      'Location is off for HARA. Turn it on in the phone\'s settings to sort by distance.';
+
+  @override
+  String get locationOpenSettings => 'Settings';
+
+  @override
+  String get locationServiceOff =>
+      'Location is turned off on your phone. Turn it on to sort by distance.';
+
+  @override
+  String get locationUnavailable =>
+      'Couldn\'t find your location. Try again in a moment.';
+
+  @override
+  String get noFavoritesYet =>
+      'No favorites yet. Tap the heart on a restaurant to keep it here.';
+
+  @override
+  String get noRestaurantsFilters => 'No restaurants match these filters.';
+
+  @override
+  String get clearFilters => 'Clear filters';
+
+  @override
+  String get addFavorite => 'Add to favorites';
+
+  @override
+  String get removeFavorite => 'Remove from favorites';
 }

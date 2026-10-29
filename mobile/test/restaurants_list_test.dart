@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hara/l10n/app_localizations.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
+import 'package:hara/features/restaurants/data/restaurant_filters.dart';
 import 'package:hara/features/restaurants/data/restaurant_sort.dart';
 import 'package:hara/features/restaurants/data/restaurants_repository.dart';
 import 'package:hara/features/restaurants/presentation/screens/restaurants_screen.dart';
@@ -35,6 +36,7 @@ class _FakeRestaurantsRepository extends RestaurantsRepository {
     String search = '',
     int page = 1,
     int pageSize = 20,
+    RestaurantListQuery query = const RestaurantListQuery(),
   }) async {
     calls.add((sort: sort, search: search, page: page, pageSize: pageSize));
 
@@ -97,7 +99,7 @@ Future<_FakeRestaurantsRepository> _pumpHome(
 /// "loading more" spinner keeps animating while a request is in flight.
 Future<void> _scrollUntil(WidgetTester tester, Finder until) async {
   for (var i = 0; i < 40 && until.evaluate().isEmpty; i++) {
-    await tester.drag(find.byType(ListView), const Offset(0, -700));
+    await tester.drag(find.byType(ListView).last, const Offset(0, -700)); // the chips above are a ListView too
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
   }
@@ -142,7 +144,7 @@ void main() {
     expect(find.text('Test Restoran 25'), findsOneWidget);
 
     // Scroll back to the top: the first restaurant is there exactly once.
-    await tester.drag(find.byType(ListView), const Offset(0, 20000));
+    await tester.drag(find.byType(ListView).last, const Offset(0, 20000));
     await tester.pumpAndSettle();
     expect(find.text('Test Restoran 01'), findsOneWidget);
   });
@@ -243,6 +245,9 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
     expect(repository.calls, hasLength(callsAfterFailure)); // no automatic retry loop
 
+    // The filter chips took a row at the top, so the button sits just below the screen: scroll it into view.
+    await tester.drag(find.byType(ListView).last, const Offset(0, -150));
+    await tester.pump(const Duration(milliseconds: 100));
     await tester.tap(find.widgetWithText(FilledButton, 'Retry'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));

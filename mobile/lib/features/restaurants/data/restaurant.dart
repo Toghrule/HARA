@@ -14,6 +14,8 @@ class Restaurant {
     this.imageUrl,
     this.openingHours = const [],
     this.availability = Availability.open,
+    this.cuisines = const [],
+    this.galleryUrls = const [],
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
@@ -32,6 +34,8 @@ class Restaurant {
         availability: json['availability'] == null
             ? Availability.open
             : Availability.fromJson(json['availability'] as Map<String, dynamic>),
+        cuisines: [for (final code in (json['cuisines'] as List<dynamic>?) ?? const []) code as String],
+        galleryUrls: [for (final url in (json['galleryUrls'] as List<dynamic>?) ?? const []) url as String],
       );
 
   final String id;
@@ -49,6 +53,18 @@ class Restaurant {
 
   /// Whether a table can be requested right now.
   final Availability availability;
+
+  /// The kinds of cuisine, as codes (see [cuisineCodes]).
+  final List<String> cuisines;
+
+  /// Relative URLs of the photos, in display order.
+  final List<String> galleryUrls;
+
+  /// Every photo to show, the cover first, without repeats.
+  List<Uri> get photoUris => {
+        if (imageUrl != null) imageUrl!,
+        ...galleryUrls,
+      }.map(AppConstants.resolveApiUrl).toList();
 
   /// Full URL of the cover image, or `null` if none was uploaded.
   Uri? get imageUri => imageUrl == null ? null : AppConstants.resolveApiUrl(imageUrl!);

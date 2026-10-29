@@ -11,6 +11,13 @@ import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../availability_text.dart';
+import '../distance_text.dart';
+import '../location_prompt.dart';
+import '../widgets/restaurant_filter_bar.dart';
+import '../providers/favorites_provider.dart';
+import '../providers/restaurant_filters_provider.dart';
+import '../../data/restaurant_filters.dart';
+import '../../../../core/location/user_location_provider.dart';
 import '../../../reservations/presentation/widgets/active_reservations_banner.dart';
 import '../../data/restaurant.dart';
 import '../maps_launcher.dart';
@@ -35,6 +42,10 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
   void initState() {
     super.initState();
     _searchController = TextEditingController(text: ref.read(restaurantSearchProvider));
+    // The first time, after the screen is up: say what location is for and ask once.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(askForLocationOnce(context, ref));
+    });
   }
 
   @override
@@ -117,6 +128,7 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
               ),
             ),
           ),
+          const RestaurantFilterBar(),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () => ref.refresh(restaurantsProvider.future),
@@ -145,6 +157,7 @@ class _RestaurantList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final search = ref.watch(restaurantSearchProvider);
+    final filters = ref.watch(restaurantFiltersProvider);
     final l10n = AppLocalizations.of(context);
 
     if (state.items.isEmpty) {
@@ -160,12 +173,25 @@ class _RestaurantList extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      search.isEmpty ? l10n.noRestaurantsYet : l10n.noRestaurantsMatch(search),
+                      search.isNotEmpty
+                          ? l10n.noRestaurantsMatch(search)
+                          : filters.favoritesOnly
+                              ? l10n.noFavoritesYet
+                              : filters.narrows
+                                  ? l10n.noRestaurantsFilters
+                                  : l10n.noRestaurantsYet,
+                      key: const Key('emptyMessage'),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     if (search.isNotEmpty)
                       TextButton(onPressed: onClearSearch, child: Text(l10n.clearSearch)),
+                    if (filters.narrows)
+                      TextButton(
+                        key: const Key('clearFilters'),
+                        onPressed: () => ref.read(restaurantFiltersProvider.notifier).clearNarrowing(),
+                        child: Text(l10n.clearFilters),
+                      ),
                   ],
                 ),
               ),
@@ -188,23 +214,34 @@ class _RestaurantList extends ConsumerWidget {
   }
 }
 
-class _RestaurantTile extends StatelessWidget {
+class _RestaurantTile extends ConsumerWidget {
   const _RestaurantTile({required this.restaurant});
 
   final Restaurant restaurant;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final position = ref.watch(userLocationProvider.select((location) => location.position));
+    final isFavorite = ref.watch(favoritesProvider.select((favorites) => favorites.contains(restaurant.id)));
+    final distance = position != null && restaurant.hasCoordinates
+        ? distanceText(l10n, distanceKm(position, restaurant.latitude, restaurant.longitude))
+        : null;
 
     final lines = [
-      restaurant.address,
+      distance == null ? restaurant.address : '${restaurant.address} · $distance',
       if (restaurant.discountPercent > 0) l10n.discountWithCode(restaurant.discountPercent),
       // Only when it matters: a restaurant that is open needs no extra line here.
       if (!restaurant.availability.acceptingRequests) availabilityText(l10n, restaurant.availability),
     ];
 
     return ListTile(
+      leading: IconButton(
+        key: Key('fav-${restaurant.id}'),
+        tooltip: isFavorite ? l10n.removeFavorite : l10n.addFavorite,
+        icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: isFavorite ? Theme.of(context).colorScheme.error : null),
+        onPressed: () => ref.read(favoritesProvider.notifier).toggle(restaurant.id),
+      ),
       title: Text(restaurant.name),
       subtitle: Text(lines.join('\n'), key: Key('tile-info-${restaurant.id}')),
       isThreeLine: lines.length > 1,

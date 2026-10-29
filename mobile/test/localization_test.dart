@@ -8,6 +8,7 @@ import 'package:hara/features/auth/data/customer_choice.dart';
 import 'package:hara/core/l10n/locale_provider.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
+import 'package:hara/features/restaurants/data/restaurant_filters.dart';
 import 'package:hara/features/restaurants/data/restaurant_sort.dart';
 import 'package:hara/features/restaurants/data/restaurants_repository.dart';
 import 'package:hara/main.dart';
@@ -22,6 +23,7 @@ class _EmptyRestaurantsRepository extends RestaurantsRepository {
     String search = '',
     int page = 1,
     int pageSize = 20,
+    RestaurantListQuery query = const RestaurantListQuery(),
   }) async =>
       const [];
 }

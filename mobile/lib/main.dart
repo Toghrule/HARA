@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/auth/auth_controller.dart';
 import 'core/auth/session_storage.dart';
 import 'core/l10n/locale_provider.dart';
+import 'core/location/geolocator_location_service.dart';
+import 'core/location/location_service.dart';
 import 'core/push/firebase_push_service.dart';
 import 'core/push/push_events.dart';
 import 'core/push/push_service.dart';
@@ -25,6 +27,7 @@ Future<void> main() async {
     ProviderScope(
       overrides: [
         pushServiceProvider.overrideWithValue(pushService),
+        locationServiceProvider.overrideWithValue(const GeolocatorLocationService()),
         localeProvider.overrideWith((ref) => LocaleController(initialLocale)),
         customerChoiceProvider.overrideWith((ref) => CustomerChoice(continuedAsCustomer)),
         authControllerProvider.overrideWith(

@@ -8,6 +8,11 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
 import '../availability_text.dart';
+import '../distance_text.dart';
+import '../providers/favorites_provider.dart';
+import '../widgets/restaurant_gallery.dart';
+import '../../data/restaurant_filters.dart';
+import '../../../../core/location/user_location_provider.dart';
 import '../widgets/opening_hours_list.dart';
 import '../maps_launcher.dart';
 import '../providers/restaurant_provider.dart';
@@ -24,7 +29,12 @@ class RestaurantDetailScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(restaurant?.name ?? l10n.restaurantFallbackTitle)),
+      appBar: AppBar(
+        title: Text(restaurant?.name ?? l10n.restaurantFallbackTitle),
+        actions: [
+          if (restaurant != null) _FavoriteButton(restaurantId: restaurant.id),
+        ],
+      ),
       body: restaurantAsync.when(
         data: (restaurant) => _Details(restaurant: restaurant),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -51,26 +61,39 @@ class RestaurantDetailScreen extends ConsumerWidget {
   }
 }
 
-class _Details extends StatelessWidget {
+class _Details extends ConsumerWidget {
   const _Details({required this.restaurant});
 
   final Restaurant restaurant;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    final position = ref.watch(userLocationProvider.select((location) => location.position));
+    final distance = position != null && restaurant.hasCoordinates
+        ? distanceText(l10n, distanceKm(position, restaurant.latitude, restaurant.longitude))
+        : null;
     final description = restaurant.description?.trim();
     final phone = restaurant.phoneNumber?.trim();
 
     return ListView(
       children: [
-        _CoverImage(imageUri: restaurant.imageUri),
+        RestaurantGallery(photos: restaurant.photoUris),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(restaurant.name, style: theme.textTheme.headlineSmall),
+              if (restaurant.cuisines.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Wrap(
+                  key: const Key('cuisines'),
+                  spacing: 8,
+                  children: [for (final code in restaurant.cuisines) Chip(label: Text(l10n.cuisineName(code)))],
+                ),
+              ],
               if (restaurant.discountPercent > 0) ...[
                 const SizedBox(height: 12),
                 Chip(
@@ -84,6 +107,7 @@ class _Details extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.place_outlined),
           title: Text(restaurant.address),
+          subtitle: distance == null ? null : Text(distance, key: const Key('distance')),
           trailing: const Icon(Icons.map_outlined),
           onTap: () => openInGoogleMaps(restaurant),
         ),
@@ -114,34 +138,21 @@ class _Details extends StatelessWidget {
   }
 }
 
-class _CoverImage extends StatelessWidget {
-  const _CoverImage({required this.imageUri});
+class _FavoriteButton extends ConsumerWidget {
+  const _FavoriteButton({required this.restaurantId});
 
-  static const double _maxHeight = 260;
-
-  final Uri? imageUri;
+  final String restaurantId;
 
   @override
-  Widget build(BuildContext context) {
-    final placeholder = ColoredBox(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: const Center(child: Icon(Icons.restaurant, size: 56)),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final isFavorite = ref.watch(favoritesProvider.select((favorites) => favorites.contains(restaurantId)));
 
-    // 16:9 on a phone, but capped so wide screens don't push the details off-screen.
-    return LayoutBuilder(
-      builder: (context, constraints) => SizedBox(
-        height: (constraints.maxWidth * 9 / 16).clamp(0, _maxHeight).toDouble(),
-        child: imageUri == null
-            ? placeholder
-            : Image.network(
-                imageUri.toString(),
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => placeholder,
-                loadingBuilder: (context, child, progress) =>
-                    progress == null ? child : const Center(child: CircularProgressIndicator()),
-              ),
-      ),
+    return IconButton(
+      key: const Key('favoriteButton'),
+      tooltip: isFavorite ? l10n.removeFavorite : l10n.addFavorite,
+      icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: isFavorite ? Theme.of(context).colorScheme.error : null),
+      onPressed: () => ref.read(favoritesProvider.notifier).toggle(restaurantId),
     );
   }
 }

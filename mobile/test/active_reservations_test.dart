@@ -12,6 +12,7 @@ import 'package:hara/features/reservations/data/reservations_repository.dart';
 import 'package:hara/features/reservations/presentation/providers/active_reservations_provider.dart';
 import 'package:hara/features/reservations/presentation/screens/reservation_code_screen.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
+import 'package:hara/features/restaurants/data/restaurant_filters.dart';
 import 'package:hara/features/restaurants/data/restaurant_sort.dart';
 import 'package:hara/features/restaurants/data/restaurants_repository.dart';
 import 'package:hara/features/restaurants/presentation/screens/restaurants_screen.dart';
@@ -78,6 +79,7 @@ class _FakeRestaurantsRepository extends RestaurantsRepository {
     String search = '',
     int page = 1,
     int pageSize = 20,
+    RestaurantListQuery query = const RestaurantListQuery(),
   }) async =>
       const [_restaurant];
 }
