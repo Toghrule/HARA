@@ -11,10 +11,10 @@ public static class RestaurantsEndpoints
 {
     public static IEndpointRouteBuilder MapRestaurantsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, string? search, int? pageSize, int? page, string? lang, bool? openNow, string? cuisine, ISender sender, CancellationToken cancellationToken) =>
+        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, string? search, int? pageSize, int? page, string? lang, bool? openNow, string? cuisine, string? ids, ISender sender, CancellationToken cancellationToken) =>
             {
                 var sortBy = ParseSortBy(sort);
-                var query = new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng, search, pageSize, page, lang, openNow ?? false, cuisine);
+                var query = new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng, search, pageSize, page, lang, openNow ?? false, cuisine, ParseIds(ids));
                 return Results.Ok(await sender.Send(query, cancellationToken));
             })
             .WithTags("Restaurants")
@@ -64,6 +64,15 @@ public static class RestaurantsEndpoints
     }
 
     private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive, string? DescriptionRu = null, string? DescriptionEn = null, IReadOnlyList<string>? Cuisines = null, IReadOnlyList<string>? GalleryUrls = null);
+
+    /// <summary>The <c>ids</c> query string ("id,id,...") as a list; <c>null</c> when it was not given. Anything that is not an id is ignored.</summary>
+    private static IReadOnlyList<Guid>? ParseIds(string? ids) =>
+        ids is null
+            ? null
+            : ids.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(id => Guid.TryParse(id, out var parsed) ? parsed : (Guid?)null)
+                .OfType<Guid>()
+                .ToList();
 
     /// <summary>Maps the <c>sort</c> query string ("name_asc" | "name_desc" | "nearest") to <see cref="RestaurantSortBy"/>, defaulting to <see cref="RestaurantSortBy.NameAsc"/> for anything else.</summary>
     private static RestaurantSortBy ParseSortBy(string? sort) => sort?.ToLowerInvariant() switch

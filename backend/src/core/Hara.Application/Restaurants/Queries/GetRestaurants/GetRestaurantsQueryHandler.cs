@@ -19,6 +19,12 @@ public class GetRestaurantsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
             query = query.Where(r => r.IsActive);
         }
 
+        if (request.Ids is not null)
+        {
+            var ids = request.Ids.ToList();
+            query = query.Where(r => ids.Contains(r.Id));
+        }
+
         var restaurants = await query.ToListAsync(cancellationToken);
 
         // Filtered in memory, like the sorting below, so matching can ignore Azerbaijani diacritics

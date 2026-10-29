@@ -5,10 +5,12 @@ namespace Hara.Application.Restaurants.Queries.GetRestaurants;
 public class GetRestaurantsQueryValidator : AbstractValidator<GetRestaurantsQuery>
 {
     public const int MaxPageSize = 100;
+    public const int MaxIds = 100;
 
     public GetRestaurantsQueryValidator()
     {
         RuleFor(q => q.Search).MaximumLength(100);
+        RuleFor(q => q.Ids).Must(ids => ids!.Count <= MaxIds).WithMessage($"At most {MaxIds} ids.").When(q => q.Ids is not null);
         RuleFor(q => q.PageSize).InclusiveBetween(1, MaxPageSize).When(q => q.PageSize.HasValue);
         RuleFor(q => q.Page).GreaterThanOrEqualTo(1).When(q => q.Page.HasValue);
         RuleFor(q => q.PageSize)
