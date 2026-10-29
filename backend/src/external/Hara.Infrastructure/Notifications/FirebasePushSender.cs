@@ -39,7 +39,7 @@ public sealed class FirebasePushSender : IPushSender
 
         try
         {
-            var app = FirebaseApp.DefaultInstance ?? FirebaseApp.Create(new AppOptions { Credential = GoogleCredential.FromFile(path) });
+            var app = FirebaseApp.DefaultInstance ?? FirebaseApp.Create(new AppOptions { Credential = CredentialFactory.FromFile<ServiceAccountCredential>(path).ToGoogleCredential() });
             _messaging = FirebaseMessaging.GetMessaging(app);
         }
         catch (Exception exception)
@@ -62,6 +62,9 @@ public sealed class FirebasePushSender : IPushSender
         {
             try
             {
+                // Message.Token is marked obsolete in favour of Fid, but the app sends the FCM registration token, not a
+                // Firebase installation id, so Token is still the right field.
+#pragma warning disable CS0618
                 await _messaging.SendAsync(
                     new Message
                     {
@@ -75,6 +78,7 @@ public sealed class FirebasePushSender : IPushSender
                         }
                     },
                     cancellationToken);
+#pragma warning restore CS0618
             }
             catch (FirebaseMessagingException exception) when (exception.MessagingErrorCode is MessagingErrorCode.Unregistered or MessagingErrorCode.InvalidArgument)
             {
