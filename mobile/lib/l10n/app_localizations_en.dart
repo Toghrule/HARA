@@ -956,4 +956,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get removeFavorite => 'Remove from favorites';
+
+  @override
+  String get termsOfUse => 'Terms of use';
+
+  @override
+  String get venueAgreementTitle => 'Restaurant agreement';
+
+  @override
+  String get acceptTermsLabel =>
+      'I accept the terms of use and the privacy policy';
+
+  @override
+  String get acceptAgreementLabel => 'I accept the restaurant agreement';
+
+  @override
+  String get mustAccept => 'Please tick the box to continue.';
+
+  @override
+  String get termsGateTitle => 'Please accept the terms';
+
+  @override
+  String get termsGateBody =>
+      'These texts are new or have changed. To keep using HARA for your restaurant, please read and accept them.';
+
+  @override
+  String get termsAcceptButton => 'Accept and continue';
 }

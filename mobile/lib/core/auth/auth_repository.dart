@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../constants/app_constants.dart';
+import '../../features/legal/legal_documents.dart';
 import 'auth_session.dart';
 
 /// Talks to the sign-in, registration and token endpoints. Uses its own plain client — no sign-in
@@ -34,6 +35,9 @@ class AuthRepository {
         'address': address,
         'restaurantPhoneNumber': restaurantPhoneNumber,
         'description': description,
+        // The registration screen does not let go without both boxes ticked.
+        'acceptedTermsVersion': termsVersion,
+        'acceptedVenueAgreementVersion': venueAgreementVersion,
       });
 
   /// Signs up a waiter for an existing restaurant. The restaurant's owner has to approve them.
@@ -50,6 +54,7 @@ class AuthRepository {
         'fullName': fullName,
         'phoneNumber': phoneNumber,
         'restaurantId': restaurantId,
+        'acceptedTermsVersion': termsVersion,
       });
 
   /// Trades a refresh token for a new session, or `null` when the server no longer accepts it (the person

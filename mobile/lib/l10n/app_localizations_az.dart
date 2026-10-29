@@ -956,4 +956,30 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get removeFavorite => 'Sevimlilərdən çıxar';
+
+  @override
+  String get termsOfUse => 'İstifadə şərtləri';
+
+  @override
+  String get venueAgreementTitle => 'Restoran razılaşması';
+
+  @override
+  String get acceptTermsLabel =>
+      'İstifadə şərtləri və məxfilik siyasəti ilə razıyam';
+
+  @override
+  String get acceptAgreementLabel => 'Restoran razılaşması ilə razıyam';
+
+  @override
+  String get mustAccept => 'Davam etmək üçün qutunu işarələyin.';
+
+  @override
+  String get termsGateTitle => 'Zəhmət olmasa şərtləri qəbul edin';
+
+  @override
+  String get termsGateBody =>
+      'Bu mətnlər yenidir və ya dəyişib. Restoranınız üçün HARA-dan istifadəyə davam etmək üçün onları oxuyub qəbul edin.';
+
+  @override
+  String get termsAcceptButton => 'Qəbul et və davam et';
 }

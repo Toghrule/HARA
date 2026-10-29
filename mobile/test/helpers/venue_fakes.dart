@@ -102,6 +102,19 @@ class FakeVenueRepository extends VenueRepository {
   final List<Map<String, Object?>> createdRequests = [];
   Object? createRequestError;
 
+  /// The legal texts accepted through the gate (the versions sent); `acceptError` makes the call fail.
+  final List<({int terms, int agreement})> acceptedTerms = [];
+  Object? acceptError;
+
+  @override
+  Future<void> acceptTerms({required int termsVersion, required int venueAgreementVersion}) async {
+    if (acceptError != null) throw acceptError!;
+    acceptedTerms.add((terms: termsVersion, agreement: venueAgreementVersion));
+
+    // Like the server: nothing is pending any more.
+    me = VenueMe(isOwner: me.isOwner, status: me.status, fullName: me.fullName, restaurant: me.restaurant, note: me.note);
+  }
+
   /// What the owner saved as opening hours, in order; `hoursError` makes the call fail.
   final List<({List<DayHours> days, int lead})> savedHours = [];
   Object? hoursError;

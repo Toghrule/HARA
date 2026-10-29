@@ -55,7 +55,7 @@ class VenueRestaurant {
 
 /// The answer of `GET /api/venue/me`.
 class VenueMe {
-  const VenueMe({required this.isOwner, required this.status, this.fullName, this.restaurant, this.note});
+  const VenueMe({required this.isOwner, required this.status, this.fullName, this.restaurant, this.note, this.pendingTerms = const []});
 
   factory VenueMe.fromJson(Map<String, dynamic> json) => VenueMe(
         isOwner: json['role'] == 'Owner',
@@ -63,6 +63,7 @@ class VenueMe {
         fullName: json['fullName'] as String?,
         restaurant: json['restaurant'] == null ? null : VenueRestaurant.fromJson(json['restaurant'] as Map<String, dynamic>),
         note: json['note'] as String?,
+        pendingTerms: [for (final name in (json['pendingTerms'] as List<dynamic>?) ?? const []) name as String],
       );
 
   final bool isOwner;
@@ -74,4 +75,7 @@ class VenueMe {
 
   /// The reason, when an owner's registration was declined.
   final String? note;
+
+  /// The legal texts still to be accepted (`terms`, `venueAgreement`). Until the list is empty nothing else is shown.
+  final List<String> pendingTerms;
 }

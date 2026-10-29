@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../legal/legal_text_screen.dart';
 import '../../../legal/privacy_policy_screen.dart';
 import '../../data/customer_choice.dart';
 
@@ -72,6 +73,7 @@ class WelcomeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 const Center(child: PrivacyPolicyLink()),
+                const Center(child: TermsLink()),
               ],
             ),
           ),

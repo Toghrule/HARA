@@ -11,6 +11,8 @@ import '../../features/auth/presentation/screens/welcome_screen.dart';
 import '../../features/company_info/presentation/screens/about_screen.dart';
 import '../../features/company_info/presentation/screens/contact_screen.dart';
 import '../../features/faq/presentation/screens/faq_screen.dart';
+import '../../features/legal/legal_documents.dart';
+import '../../features/legal/legal_text_screen.dart';
 import '../../features/legal/privacy_policy_screen.dart';
 import '../../features/reservations/data/reservation.dart';
 import '../../features/reservations/presentation/screens/reservation_code_screen.dart';
@@ -109,6 +111,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/privacy',
         builder: (context, state) => const PrivacyPolicyScreen(),
+      ),
+      GoRoute(
+        path: '/terms',
+        builder: (context, state) => const LegalTextScreen(text: LegalText.terms),
+      ),
+      GoRoute(
+        path: '/restaurant-agreement',
+        builder: (context, state) => const LegalTextScreen(text: LegalText.venueAgreement),
       ),
       GoRoute(
         path: '/reservation',

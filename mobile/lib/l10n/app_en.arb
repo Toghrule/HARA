@@ -315,5 +315,13 @@
   "noRestaurantsFilters": "No restaurants match these filters.",
   "clearFilters": "Clear filters",
   "addFavorite": "Add to favorites",
-  "removeFavorite": "Remove from favorites"
+  "removeFavorite": "Remove from favorites",
+  "termsOfUse": "Terms of use",
+  "venueAgreementTitle": "Restaurant agreement",
+  "acceptTermsLabel": "I accept the terms of use and the privacy policy",
+  "acceptAgreementLabel": "I accept the restaurant agreement",
+  "mustAccept": "Please tick the box to continue.",
+  "termsGateTitle": "Please accept the terms",
+  "termsGateBody": "These texts are new or have changed. To keep using HARA for your restaurant, please read and accept them.",
+  "termsAcceptButton": "Accept and continue"
 }

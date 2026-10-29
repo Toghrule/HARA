@@ -9,6 +9,7 @@ import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../legal/privacy_policy_screen.dart';
+import '../acceptance_box.dart';
 import '../../../restaurants/data/restaurant.dart';
 import '../../../restaurants/data/restaurants_repository.dart';
 import '../form_validators.dart';
@@ -201,6 +202,14 @@ class _RegisterStaffScreenState extends ConsumerState<RegisterStaffScreen> {
                     textInputAction: TextInputAction.done,
                     onSubmitted: (_) => _submit(),
                     validator: validators.sameAs(() => _password.text),
+                  ),
+                  gap,
+                  AcceptanceBox(
+                    key: const Key('acceptTerms'),
+                    label: l10n.acceptTermsLabel,
+                    links: [(label: l10n.termsOfUse, route: '/terms'), (label: l10n.privacyPolicy, route: '/privacy')],
+                    errorText: l10n.mustAccept,
+                    enabled: !_submitting,
                   ),
                   if (_error != null) ...[
                     gap,

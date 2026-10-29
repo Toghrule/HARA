@@ -175,6 +175,7 @@ void main() {
       String password = 'Passw0rd1',
       String confirm = 'Passw0rd1',
       String email = 'owner@cafe.az',
+      List<String> accept = const ['acceptTerms', 'acceptAgreement'],
     }) async {
       Future<void> type(String key, String value) async {
         await tester.ensureVisible(find.byKey(Key(key)));
@@ -187,6 +188,13 @@ void main() {
       await type('confirmPassword', confirm);
       await type('restaurantName', 'Cafe One');
       await type('address', 'Baku, Nizami 1');
+      // Signing up needs both boxes ticked: the terms of use and the restaurant agreement.
+      for (final box in accept) {
+        final checkbox = find.descendant(of: find.byKey(Key(box)), matching: find.byType(Checkbox));
+        await tester.ensureVisible(checkbox);
+        await tester.tap(checkbox);
+        await tester.pump();
+      }
     }
 
     Future<void> submit(WidgetTester tester) async {
@@ -214,6 +222,27 @@ void main() {
       });
       expect(app.currentPath, '/venue');
       expect(find.text('Waiting for approval'), findsOneWidget);
+    });
+
+    testWidgets('without the boxes ticked nothing is sent, and both boxes say why', (tester) async {
+      final app = await openForm(tester);
+
+      await fill(tester, accept: const []);
+      await submit(tester);
+
+      expect(app.auth.calls, isEmpty);
+      expect(find.text('Please tick the box to continue.'), findsNWidgets(2));
+      expect(find.byKey(const Key('acceptTerms')), findsOneWidget);
+    });
+
+    testWidgets('the terms of use alone are not enough: the restaurant agreement has to be ticked too', (tester) async {
+      final app = await openForm(tester);
+
+      await fill(tester, accept: const ['acceptTerms']);
+      await submit(tester);
+
+      expect(app.auth.calls, isEmpty);
+      expect(find.text('Please tick the box to continue.'), findsOneWidget);
     });
 
     testWidgets('a weak password is explained before anything is sent', (tester) async {
@@ -312,6 +341,11 @@ void main() {
       await type('email', 'wali@cafe.az');
       await type('password', 'Passw0rd1');
       await type('confirmPassword', 'Passw0rd1');
+      // Signing up needs the terms of use accepted.
+      final checkbox = find.descendant(of: find.byKey(const Key('acceptTerms')), matching: find.byType(Checkbox));
+      await tester.ensureVisible(checkbox);
+      await tester.tap(checkbox);
+      await tester.pump();
     }
 
     Future<void> submit(WidgetTester tester) async {
@@ -342,6 +376,28 @@ void main() {
 
       expect(find.text('Pick your restaurant first.'), findsOneWidget);
       expect(app.auth.calls, isEmpty);
+    });
+
+    testWidgets('without the box ticked a waiter is not registered', (tester) async {
+      final app = await openForm(tester);
+
+      await tester.tap(find.text('Bistro Two'));
+      await tester.pump();
+      for (final key in ['fullName', 'email', 'password', 'confirmPassword']) {
+        await tester.ensureVisible(find.byKey(Key(key)));
+        await tester.enterText(
+          find.byKey(Key(key)),
+          switch (key) {
+            'fullName' => 'Waiter Wali',
+            'email' => 'wali@cafe.az',
+            _ => 'Passw0rd1',
+          },
+        );
+      }
+      await submit(tester);
+
+      expect(app.auth.calls, isEmpty);
+      expect(find.text('Please tick the box to continue.'), findsOneWidget);
     });
 
     testWidgets('sends the chosen restaurant and shows "waiting for the owner"', (tester) async {

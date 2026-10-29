@@ -16,6 +16,7 @@ import '../../data/venue_me.dart';
 import '../../data/venue_models.dart';
 import '../providers/venue_providers.dart';
 import '../widgets/code_confirm_tab.dart';
+import 'terms_gate_screen.dart';
 import '../widgets/delete_account_dialog.dart';
 import '../widgets/requests_tab.dart';
 import '../widgets/reservations_tab.dart';
@@ -32,6 +33,11 @@ class VenueHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final meAsync = ref.watch(venueMeProvider);
     final me = meAsync.valueOrNull;
+
+    // New or changed terms come first: nothing else works until they are accepted.
+    if (me != null && me.pendingTerms.isNotEmpty) {
+      return TermsGateScreen(pending: me.pendingTerms, actions: const [_AccountActions()]);
+    }
 
     if (me != null && me.status == VenueStatus.approved && me.restaurant != null) {
       return _ApprovedVenue(me: me, restaurant: me.restaurant!);

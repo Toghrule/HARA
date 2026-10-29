@@ -28,6 +28,11 @@ class VenueRepository {
     return (response.data ?? []).map((json) => VenueReservation.fromJson(json as Map<String, dynamic>)).toList();
   }
 
+  /// Accepts the current legal texts that are still pending. A version of `0` is for a text that is not pending.
+  Future<void> acceptTerms({required int termsVersion, required int venueAgreementVersion}) async {
+    await _apiClient.dio.post<void>('/api/venue/terms/accept', data: {'termsVersion': termsVersion, 'venueAgreementVersion': venueAgreementVersion});
+  }
+
   /// The numbers for the statistics tab.
   Future<VenueStats> getStats() async {
     final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/venue/stats');

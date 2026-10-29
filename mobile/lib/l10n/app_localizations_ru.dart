@@ -954,4 +954,30 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get removeFavorite => 'Убрать из избранного';
+
+  @override
+  String get termsOfUse => 'Условия использования';
+
+  @override
+  String get venueAgreementTitle => 'Соглашение с рестораном';
+
+  @override
+  String get acceptTermsLabel =>
+      'Я принимаю условия использования и политику конфиденциальности';
+
+  @override
+  String get acceptAgreementLabel => 'Я принимаю соглашение с рестораном';
+
+  @override
+  String get mustAccept => 'Отметьте галочку, чтобы продолжить.';
+
+  @override
+  String get termsGateTitle => 'Примите условия';
+
+  @override
+  String get termsGateBody =>
+      'Эти тексты новые или изменились. Чтобы продолжить пользоваться HARA для вашего ресторана, прочитайте и примите их.';
+
+  @override
+  String get termsAcceptButton => 'Принять и продолжить';
 }

@@ -1683,6 +1683,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove from favorites'**
   String get removeFavorite;
+
+  /// No description provided for @termsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of use'**
+  String get termsOfUse;
+
+  /// No description provided for @venueAgreementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant agreement'**
+  String get venueAgreementTitle;
+
+  /// No description provided for @acceptTermsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the terms of use and the privacy policy'**
+  String get acceptTermsLabel;
+
+  /// No description provided for @acceptAgreementLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the restaurant agreement'**
+  String get acceptAgreementLabel;
+
+  /// No description provided for @mustAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Please tick the box to continue.'**
+  String get mustAccept;
+
+  /// No description provided for @termsGateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please accept the terms'**
+  String get termsGateTitle;
+
+  /// No description provided for @termsGateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'These texts are new or have changed. To keep using HARA for your restaurant, please read and accept them.'**
+  String get termsGateBody;
+
+  /// No description provided for @termsAcceptButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept and continue'**
+  String get termsAcceptButton;
 }
 
 class _AppLocalizationsDelegate

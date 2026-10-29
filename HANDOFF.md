@@ -5,6 +5,14 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## İstifadə şərtləri və restoran razılaşması (2026-10-29, boşluq #21)
+- **İki mətn (QARALAMA, hüquqi baxış LAZIMDIR):** "İstifadə şərtləri" (hamı üçün: müştəri, owner, ofisiant) və "Restoran razılaşması" (owner: endirimi vermək, 15 dəq cavab, 30 dəq masa, telefon nömrələrindən yalnız rezerv üçün istifadə, məlumatların düzgünlüyü, ofisiantlara cavabdehlik, dayandırma/çıxış, mübahisə, Azərbaycan qanunu). 3 dildə: `mobile/lib/features/legal/legal_documents.dart`. Hazırda restoranlar üçün HARA PULSUZDUR (razılaşmada belə yazılıb; haqq gələndə əvvəlcədən xəbər veriləcək). Tarix: `legalTextsUpdated`.
+- **Kim nəyi qəbul edir (istifadəçinin seçimi):** owner qeydiyyatda İKİ qutu (şərtlər + məxfilik siyasəti, restoran razılaşması), ofisiant BİR qutu (şərtlər + məxfilik); müştəri yalnız oxuyur (xoş gəldin və giriş ekranında "İstifadə şərtləri" linki, "Haqqında" ekranında hər iki mətn). Mətnlərin yolları `/terms` və `/restaurant-agreement` (`/venue-...` YOX: `/venue` ilə başlayan yollar giriş tələb edir).
+- **Qeyd:** `TermsAcceptances` cədvəli (kim, hansı mətn, hansı versiya, nə vaxt; yalnız əlavə olunur, hesabla silinir). Qeydiyyatda mobil qəbul etdiyi versiyanı göndərir, server cari versiyadan fərqlisini rədd edir.
+- **Versiya dəyişəndə:** `Hara.Domain/Members/TermsAcceptance.cs` içindəki `LegalVersions` və `legal_documents.dart` içindəki `termsVersion`/`venueAgreementVersion` EYNİ ANDA artırılır. Onda owner/ofisiant növbəti girişdə qəbul ekranı görür (`GET /api/venue/me` → `pendingTerms`), `POST /api/venue/terms/accept` ilə qəbul edir; qəbul edənə qədər restoran tərəfinin BÜTÜN əməliyyatları serverdə 403 verir (`VenueAccess`). Bu funksiyadan əvvəl yaradılmış hesabların qeydi yoxdur, onlardan da soruşulur (məsələn dev bazasındakı test owner).
+- **Yoxlama:** API 46 yoxlama (izolə bazada, repoda YOXDUR; məcburi bloku söndürəndə 7-si düşdü), mobil +21 test (cəmi 295). Testlər 1 real səhv tapdı (`/venue-agreement` marşrutu giriş etməyənləri /welcome-a atırdı).
+- **Edilmədi:** admin paneldə "kim nəyi nə vaxt qəbul edib" görünüşü (məlumat bazadadır); ofisiant üçün ayrıca razılaşma yoxdur (owner razılaşmasına tabedir); müştəri üçün qəbul qutusu yoxdur (yalnız oxuyur); mətnlər ictimai ünvanda yerləşdirilməyib (mağaza üçün domen lazımdır).
+
 ## Kəşf (2026-10-29, boşluq #16)
 - **Süzgəclər (mobil, axtarışın altında çip sırası):** "İndi açıq" (iş saatlarına görə, server tərəfdə), "Ən yaxın", "Sevimlilər" və 12 mətbəx növü (bir seçim, yenidən basanda silinir). Süzgəclər bir-biri ilə, axtarışla və səhifələmə ilə birlikdə işləyir. Boş nəticədə "Süzgəcləri təmizlə".
 - **Mətbəx növləri:** `Hara.Domain/Restaurants/Cuisines.cs` (sabit 12 kod, restoran başına ən çox 3), admin restoran formunda seçir (owner seçmir). Mobil adlar 3 dildə (`cuisineName`).
@@ -160,14 +168,14 @@ HARA/
 - Mobil app: `http://localhost:5174` (ilk açılış 20–60 san, boş qara səhifə = gözləyin).
 - Admin panel: `http://localhost:5173`. Login: `admin@hara.local`. **Gizli dəyərlər (2026-10-22) repoda deyil:** `Jwt:SigningKey` və `AdminUser:Password` `dotnet user-secrets`-dədir (`UserSecretsId` Hara.Api.csproj-da; baxmaq: `cd backend/src/ui/Hara.Api && dotnet user-secrets list`). Admin parolu `backend/secrets/admin-login.txt`-dədir (gitignore). **Əsas mənbə:** `backend/secrets/local-settings.json` (gitignore; appsettings ilə eyni forma: `{"Jwt":{"SigningKey":"..."},"AdminUser":{"Email":"admin@hara.local","Password":"..."}}`; Email Production-da məcburidir, çünki appsettings.json-da boşdur; admin hesabı indi hər mühitdə yaranır, Swagger yalnız Development-də), Program.cs onu yuxarı qovluqlarda axtarır, mühitdən asılı deyil (Production-da da işləyir). user-secrets də dəstəklənir. Yeni maşında bu faylı yaradın, yoxsa API açılmır. Admin hesabı yalnız YOXDURSA yaranır (seeder), parolu dəyişmək üçün DB-dən `admin@hara.local` sətrini silib API-ni yenidən başladın. Repo ictimaidir; köhnə dəyərlər git tarixçəsində qalıb, ona görə ləğv edilib (rotate).
 
-**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddCuisinesAndGallery`). Skript bunu etmir. Boş bazada əvvəl:
+**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddTermsAcceptances`). Skript bunu etmir. Boş bazada əvvəl:
 ```bash
 cd backend
 dotnet ef database update --project src/external/Hara.Persistence --startup-project src/ui/Hara.Api --context ApplicationDbContext
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (274 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
+**Testlər:** `cd mobile && flutter analyze && flutter test` (295 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -278,7 +286,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 **E. Hüquqi və mağaza tələbləri**
 19. Restoran müştərinin telefonunu görür: **məxfilik siyasəti mobildə var (2026-10-13, `/privacy`, 3 dildə, proqramın indiki davranışını təsvir edir — HÜQUQİ YOXLAMADAN KEÇMƏYİB)**. Qalan: saxlama müddəti qərarı (indi nömrələr əbədi saxlanılır, siyasət "lazım olduğu müddət" deyir), razılıq mətni, şəxsi məlumat qanununa uyğunluq, müştərinin nömrəsini silmə yolu (hələlik yalnız əlaqə e-poçtu ilə).
 20. ~~Apple/Google hesabı silmə~~ — **HAZIRDIR (2026-10-13):** sahibkar/ofisiant tətbiqdə "Hesabımı sil" (parol təsdiqi ilə, `POST /api/auth/delete-account`). Ofisiant tam silinir; sahibkarın ad/e-poçt/telefonu silinir, restoran qalır (sahibsiz qalır, bax №10). Admin hesabları silinmir. **Qalan:** mağazalar ictimai **URL** tələb edir (siyasət hələ yalnız tətbiqin içindədir, eyni mətni vebdə yerləşdirmək lazımdır).
-21. İstifadə şərtləri və restoranla müqavilə (endirimi vermək öhdəliyi, ödəniş şərtləri, mübahisə) yoxdur.
+21. ✅ QARALAMA HAZIRDIR (2026-10-29): istifadə şərtləri və restoran razılaşması mətnləri (3 dil) və qəbul mexanizmi var (bax "İstifadə şərtləri və restoran razılaşması"). **Hüquqşünas baxışı hələ lazımdır**; ödəniş şərtləri yoxdur (xidmət pulsuzdur).
 
 **F. İdarəetmə**
 22. Bir ümumi admin girişi var: kimin nəyi təsdiqlədiyi görünmür (audit yoxdur).

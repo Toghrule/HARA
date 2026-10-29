@@ -7,6 +7,7 @@ import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../legal/privacy_policy_screen.dart';
+import '../acceptance_box.dart';
 import '../form_validators.dart';
 import '../password_field.dart';
 
@@ -202,6 +203,21 @@ class _RegisterOwnerScreenState extends ConsumerState<RegisterOwnerScreen> {
                       border: const OutlineInputBorder(),
                     ),
                     validator: (value) => validators.optional(value, max: 4000),
+                  ),
+                  gap,
+                  AcceptanceBox(
+                    key: const Key('acceptTerms'),
+                    label: l10n.acceptTermsLabel,
+                    links: [(label: l10n.termsOfUse, route: '/terms'), (label: l10n.privacyPolicy, route: '/privacy')],
+                    errorText: l10n.mustAccept,
+                    enabled: !_submitting,
+                  ),
+                  AcceptanceBox(
+                    key: const Key('acceptAgreement'),
+                    label: l10n.acceptAgreementLabel,
+                    links: [(label: l10n.venueAgreementTitle, route: '/restaurant-agreement')],
+                    errorText: l10n.mustAccept,
+                    enabled: !_submitting,
                   ),
                   if (_error != null) ...[
                     gap,

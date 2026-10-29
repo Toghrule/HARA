@@ -275,5 +275,13 @@
   "noRestaurantsFilters": "Bu süzgəclərə uyğun restoran yoxdur.",
   "clearFilters": "Süzgəcləri təmizlə",
   "addFavorite": "Sevimlilərə əlavə et",
-  "removeFavorite": "Sevimlilərdən çıxar"
+  "removeFavorite": "Sevimlilərdən çıxar",
+  "termsOfUse": "İstifadə şərtləri",
+  "venueAgreementTitle": "Restoran razılaşması",
+  "acceptTermsLabel": "İstifadə şərtləri və məxfilik siyasəti ilə razıyam",
+  "acceptAgreementLabel": "Restoran razılaşması ilə razıyam",
+  "mustAccept": "Davam etmək üçün qutunu işarələyin.",
+  "termsGateTitle": "Zəhmət olmasa şərtləri qəbul edin",
+  "termsGateBody": "Bu mətnlər yenidir və ya dəyişib. Restoranınız üçün HARA-dan istifadəyə davam etmək üçün onları oxuyub qəbul edin.",
+  "termsAcceptButton": "Qəbul et və davam et"
 }
