@@ -10,6 +10,7 @@ import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
+import '../availability_text.dart';
 import '../../../reservations/presentation/widgets/active_reservations_banner.dart';
 import '../../data/restaurant.dart';
 import '../maps_launcher.dart';
@@ -196,14 +197,17 @@ class _RestaurantTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    final lines = [
+      restaurant.address,
+      if (restaurant.discountPercent > 0) l10n.discountWithCode(restaurant.discountPercent),
+      // Only when it matters: a restaurant that is open needs no extra line here.
+      if (!restaurant.availability.acceptingRequests) availabilityText(l10n, restaurant.availability),
+    ];
+
     return ListTile(
       title: Text(restaurant.name),
-      subtitle: Text(
-        restaurant.discountPercent > 0
-            ? '${restaurant.address}\n${l10n.discountWithCode(restaurant.discountPercent)}'
-            : restaurant.address,
-      ),
-      isThreeLine: restaurant.discountPercent > 0,
+      subtitle: Text(lines.join('\n'), key: Key('tile-info-${restaurant.id}')),
+      isThreeLine: lines.length > 1,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -213,7 +217,8 @@ class _RestaurantTile extends StatelessWidget {
             onPressed: () => openInGoogleMaps(restaurant),
           ),
           FilledButton.tonal(
-            onPressed: () => startReservation(context, restaurant),
+            // Closed (or closing so soon it takes no more requests): the server would refuse it anyway.
+            onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
             child: Text(l10n.reserve),
           ),
         ],

@@ -1,4 +1,5 @@
 import '../../../core/constants/app_constants.dart';
+import 'opening_hours.dart';
 
 class Restaurant {
   const Restaurant({
@@ -11,6 +12,8 @@ class Restaurant {
     this.description,
     this.phoneNumber,
     this.imageUrl,
+    this.openingHours = const [],
+    this.availability = Availability.open,
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
@@ -23,6 +26,12 @@ class Restaurant {
         description: json['description'] as String?,
         phoneNumber: json['phoneNumber'] as String?,
         imageUrl: json['imageUrl'] as String?,
+        openingHours: [
+          for (final day in (json['openingHours'] as List<dynamic>?) ?? const []) DayHours.fromJson(day as Map<String, dynamic>),
+        ],
+        availability: json['availability'] == null
+            ? Availability.open
+            : Availability.fromJson(json['availability'] as Map<String, dynamic>),
       );
 
   final String id;
@@ -34,6 +43,12 @@ class Restaurant {
   final String? description;
   final String? phoneNumber;
   final String? imageUrl;
+
+  /// The hours the owner set, one entry per weekday; empty when none were set (always open).
+  final List<DayHours> openingHours;
+
+  /// Whether a table can be requested right now.
+  final Availability availability;
 
   /// Full URL of the cover image, or `null` if none was uploaded.
   Uri? get imageUri => imageUrl == null ? null : AppConstants.resolveApiUrl(imageUrl!);

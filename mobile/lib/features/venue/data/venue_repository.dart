@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../reservations/data/reservation_state.dart';
+import '../../restaurants/data/opening_hours.dart';
 import 'venue_me.dart';
 import 'venue_models.dart';
 
@@ -32,6 +33,15 @@ class VenueRepository {
     final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/venue/stats');
 
     return VenueStats.fromJson(response.data!);
+  }
+
+  /// Owner only: sets the restaurant's opening hours (all seven days, or an empty list to remove them), and how many
+  /// minutes before closing it stops taking requests. Applies at once.
+  Future<void> updateOpeningHours({required List<DayHours> days, required int lastRequestMinutesBeforeClose}) async {
+    await _apiClient.dio.put<void>('/api/venue/opening-hours', data: {
+      'days': [for (final day in days) day.toJson()],
+      'lastRequestMinutesBeforeClose': lastRequestMinutesBeforeClose,
+    });
   }
 
   /// Looks up a code a customer shows. Only codes of this restaurant are found.

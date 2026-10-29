@@ -698,4 +698,120 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get statsHint =>
       'Принято: запросы, на которые ресторан ответил «да». Пришли: клиенты, чей код подтвердили в ресторане.';
+
+  @override
+  String availOpenUntil(String time) {
+    return 'Открыто до $time';
+  }
+
+  @override
+  String availClosingSoon(String time) {
+    return 'Закрывается в $time, запросы больше не принимает';
+  }
+
+  @override
+  String get availClosed => 'Закрыто';
+
+  @override
+  String availClosedOpensToday(String time) {
+    return 'Закрыто, откроется сегодня в $time';
+  }
+
+  @override
+  String availClosedOpensTomorrow(String time) {
+    return 'Закрыто, откроется завтра в $time';
+  }
+
+  @override
+  String availClosedOpensOn(String day, String time) {
+    return 'Закрыто, откроется $day в $time';
+  }
+
+  @override
+  String weekdayName(String day) {
+    String _temp0 = intl.Intl.selectLogic(
+      day,
+      {
+        '0': 'Воскресенье',
+        '1': 'Понедельник',
+        '2': 'Вторник',
+        '3': 'Среда',
+        '4': 'Четверг',
+        '5': 'Пятница',
+        '6': 'Суббота',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekdayOn(String day) {
+    String _temp0 = intl.Intl.selectLogic(
+      day,
+      {
+        '0': 'в воскресенье',
+        '1': 'в понедельник',
+        '2': 'во вторник',
+        '3': 'в среду',
+        '4': 'в четверг',
+        '5': 'в пятницу',
+        '6': 'в субботу',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get openingHoursTitle => 'Часы работы';
+
+  @override
+  String get hoursClosedDay => 'Закрыто';
+
+  @override
+  String get hoursAllDay => 'Круглосуточно';
+
+  @override
+  String get hoursNotSet =>
+      'Часы работы не заданы: ресторан считается всегда открытым.';
+
+  @override
+  String get editOpeningHours => 'Изменить часы работы';
+
+  @override
+  String get hoursOpenSwitch => 'Открыто';
+
+  @override
+  String get hoursOpens => 'Открывается';
+
+  @override
+  String get hoursCloses => 'Закрывается';
+
+  @override
+  String get hoursLastRequest => 'Прекращать приём запросов до закрытия';
+
+  @override
+  String hoursLeadMinutes(int minutes) {
+    return 'за $minutes мин до закрытия';
+  }
+
+  @override
+  String get hoursLeadAtClose => 'до самого закрытия';
+
+  @override
+  String get hoursSameEveryDay => 'Одинаково каждый день';
+
+  @override
+  String get hoursRemove => 'Удалить часы (всегда открыто)';
+
+  @override
+  String get hoursSave => 'Сохранить';
+
+  @override
+  String get hoursSaved => 'Часы работы сохранены.';
+
+  @override
+  String get hoursHint =>
+      'Время азербайджанское. Если закрываетесь после полуночи (с 18:00 до 02:00), просто укажите более позднее время закрытия. Одинаковое время открытия и закрытия означает круглосуточно.';
 }

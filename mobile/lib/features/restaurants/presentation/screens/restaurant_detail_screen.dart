@@ -7,6 +7,8 @@ import '../../../../core/network/api_error.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
+import '../availability_text.dart';
+import '../widgets/opening_hours_list.dart';
 import '../maps_launcher.dart';
 import '../providers/restaurant_provider.dart';
 
@@ -39,7 +41,7 @@ class RestaurantDetailScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 child: FilledButton.icon(
-                  onPressed: () => startReservation(context, restaurant),
+                  onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
                   icon: const Icon(Icons.event_seat),
                   label: Text(l10n.reserveTable),
                 ),
@@ -85,6 +87,17 @@ class _Details extends StatelessWidget {
           trailing: const Icon(Icons.map_outlined),
           onTap: () => openInGoogleMaps(restaurant),
         ),
+        if (restaurant.openingHours.isNotEmpty)
+          ExpansionTile(
+            key: const Key('hoursTile'),
+            leading: const Icon(Icons.schedule),
+            title: Text(
+              availabilityText(AppLocalizations.of(context), restaurant.availability).ifEmpty(AppLocalizations.of(context).openingHoursTitle),
+              key: const Key('availability'),
+            ),
+            childrenPadding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
+            children: [OpeningHoursList(hours: restaurant.openingHours)],
+          ),
         if (phone != null && phone.isNotEmpty)
           ListTile(
             leading: const Icon(Icons.phone_outlined),
@@ -155,4 +168,8 @@ class _ErrorView extends StatelessWidget {
       ),
     );
   }
+}
+
+extension on String {
+  String ifEmpty(String fallback) => isEmpty ? fallback : this;
 }

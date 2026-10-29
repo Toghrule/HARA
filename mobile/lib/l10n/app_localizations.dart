@@ -1329,6 +1329,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Accepted: requests your restaurant said yes to. Came: customers whose code was confirmed at the restaurant.'**
   String get statsHint;
+
+  /// No description provided for @availOpenUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Open until {time}'**
+  String availOpenUntil(String time);
+
+  /// No description provided for @availClosingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing at {time}, not taking requests now'**
+  String availClosingSoon(String time);
+
+  /// No description provided for @availClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get availClosed;
+
+  /// No description provided for @availClosedOpensToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed, opens today at {time}'**
+  String availClosedOpensToday(String time);
+
+  /// No description provided for @availClosedOpensTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed, opens tomorrow at {time}'**
+  String availClosedOpensTomorrow(String time);
+
+  /// No description provided for @availClosedOpensOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed, opens {day} at {time}'**
+  String availClosedOpensOn(String day, String time);
+
+  /// No description provided for @weekdayName.
+  ///
+  /// In en, this message translates to:
+  /// **'{day, select, 0{Sunday} 1{Monday} 2{Tuesday} 3{Wednesday} 4{Thursday} 5{Friday} 6{Saturday} other{}}'**
+  String weekdayName(String day);
+
+  /// No description provided for @weekdayOn.
+  ///
+  /// In en, this message translates to:
+  /// **'{day, select, 0{on Sunday} 1{on Monday} 2{on Tuesday} 3{on Wednesday} 4{on Thursday} 5{on Friday} 6{on Saturday} other{}}'**
+  String weekdayOn(String day);
+
+  /// No description provided for @openingHoursTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening hours'**
+  String get openingHoursTitle;
+
+  /// No description provided for @hoursClosedDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get hoursClosedDay;
+
+  /// No description provided for @hoursAllDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Open 24 hours'**
+  String get hoursAllDay;
+
+  /// No description provided for @hoursNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'No opening hours set: the restaurant counts as always open.'**
+  String get hoursNotSet;
+
+  /// No description provided for @editOpeningHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit opening hours'**
+  String get editOpeningHours;
+
+  /// No description provided for @hoursOpenSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get hoursOpenSwitch;
+
+  /// No description provided for @hoursOpens.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens'**
+  String get hoursOpens;
+
+  /// No description provided for @hoursCloses.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes'**
+  String get hoursCloses;
+
+  /// No description provided for @hoursLastRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop taking requests before closing'**
+  String get hoursLastRequest;
+
+  /// No description provided for @hoursLeadMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min before closing'**
+  String hoursLeadMinutes(int minutes);
+
+  /// No description provided for @hoursLeadAtClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Until closing time'**
+  String get hoursLeadAtClose;
+
+  /// No description provided for @hoursSameEveryDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Same hours every day'**
+  String get hoursSameEveryDay;
+
+  /// No description provided for @hoursRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove hours (always open)'**
+  String get hoursRemove;
+
+  /// No description provided for @hoursSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get hoursSave;
+
+  /// No description provided for @hoursSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening hours saved.'**
+  String get hoursSaved;
+
+  /// No description provided for @hoursHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Times are Azerbaijan time. If you close after midnight (18:00 to 02:00), just set the later closing time. The same opening and closing time means open all day.'**
+  String get hoursHint;
 }
 
 class _AppLocalizationsDelegate

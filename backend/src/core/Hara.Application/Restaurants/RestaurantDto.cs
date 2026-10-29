@@ -17,6 +17,8 @@ namespace Hara.Application.Restaurants;
 /// <param name="LastModifiedAt">When the restaurant was last updated, if ever.</param>
 /// <param name="DescriptionRu">Russian translation of the description, if filled in.</param>
 /// <param name="DescriptionEn">English translation of the description, if filled in.</param>
+/// <param name="OpeningHours">The hours the owner set, one entry per weekday; empty when none were set (always open).</param>
+/// <param name="Availability">Whether a table can be requested right now, and if not why.</param>
 public sealed record RestaurantDto(
     Guid Id,
     string Name,
@@ -31,9 +33,13 @@ public sealed record RestaurantDto(
     DateTimeOffset CreatedAt,
     DateTimeOffset? LastModifiedAt,
     string? DescriptionRu = null,
-    string? DescriptionEn = null)
+    string? DescriptionEn = null,
+    IReadOnlyList<DayHoursDto>? OpeningHours = null,
+    AvailabilityDto? Availability = null)
 {
-    public static RestaurantDto FromEntity(Domain.Restaurants.Restaurant restaurant) => new(
+    /// <param name="restaurant">The restaurant.</param>
+    /// <param name="now">The moment to work out whether it is open; the current time when <c>null</c>.</param>
+    public static RestaurantDto FromEntity(Domain.Restaurants.Restaurant restaurant, DateTimeOffset? now = null) => new(
         restaurant.Id,
         restaurant.Name,
         restaurant.Description,
@@ -47,7 +53,9 @@ public sealed record RestaurantDto(
         restaurant.CreatedAt,
         restaurant.LastModifiedAt,
         restaurant.DescriptionRu,
-        restaurant.DescriptionEn);
+        restaurant.DescriptionEn,
+        restaurant.OpeningHours.OrderBy(h => h.Day).Select(DayHoursDto.FromEntity).ToList(),
+        AvailabilityDto.From(restaurant.AvailabilityAt(now ?? DateTimeOffset.UtcNow)));
 
     /// <summary>Returns a copy whose <see cref="Description"/> is the text in <paramref name="language"/> (falling back to Azerbaijani).</summary>
     public RestaurantDto Localize(string? language) =>

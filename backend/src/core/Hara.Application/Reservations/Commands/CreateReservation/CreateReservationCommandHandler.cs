@@ -29,6 +29,17 @@ public class CreateReservationCommandHandler(IUnitOfWork unitOfWork, Reservation
         var phoneNumber = PhoneNumber.Normalize(request.PhoneNumber);
         var now = DateTimeOffset.UtcNow;
 
+        // The app greys the button out when the restaurant is closed, but the server is the one that decides.
+        var availability = restaurant.AvailabilityAt(now);
+        if (!availability.AcceptingRequests)
+        {
+            throw new ValidationException(
+                "RestaurantId",
+                availability.Reason == AvailabilityReason.ClosingSoon
+                    ? "This restaurant is closing soon and is not taking more requests today."
+                    : "This restaurant is closed right now.");
+        }
+
         await EnsurePhoneMayReserveAsync(repository, phoneNumber, now, cancellationToken);
 
         var reservation = new Reservation

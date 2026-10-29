@@ -5,6 +5,7 @@ using Hara.Application.Venue.Commands.RedeemVenueReservation;
 using Hara.Application.Venue.Commands.RemoveStaff;
 using Hara.Application.Venue.Commands.RespondToReservation;
 using Hara.Application.Venue.Commands.ReviewStaff;
+using Hara.Application.Venue.Commands.UpdateOpeningHours;
 using Hara.Application.Venue.Queries.GetMyVenueStatus;
 using Hara.Application.Venue.Queries.GetVenueReservation;
 using Hara.Application.Venue.Queries.GetVenueReservations;
@@ -69,6 +70,12 @@ public static class VenueEndpoints
         venue.MapPost("/reservations/{code}/redeem", async (string code, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new RedeemVenueReservationCommand(code), cancellationToken)))
             .WithName("RedeemVenueReservation");
+
+        // Owner only: when the restaurant is open. Applies at once, unlike changes to the name or address.
+        venue.MapPut("/opening-hours", async (UpdateOpeningHoursCommand command, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(command, cancellationToken)))
+            .RequireAuthorization("Owner")
+            .WithName("UpdateOpeningHours");
 
         var requests = venue.MapGroup("/change-requests").RequireAuthorization("Owner");
 

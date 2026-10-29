@@ -699,4 +699,121 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get statsHint =>
       'Qəbul edilən: restoranın bəli dediyi sorğular. Gələn: kodu restoranda təsdiqlənən müştərilər.';
+
+  @override
+  String availOpenUntil(String time) {
+    return '$time-dək açıqdır';
+  }
+
+  @override
+  String availClosingSoon(String time) {
+    return '$time-da bağlanır, artıq sorğu qəbul etmir';
+  }
+
+  @override
+  String get availClosed => 'Bağlıdır';
+
+  @override
+  String availClosedOpensToday(String time) {
+    return 'Bağlıdır, bu gün saat $time-da açılır';
+  }
+
+  @override
+  String availClosedOpensTomorrow(String time) {
+    return 'Bağlıdır, sabah saat $time-da açılır';
+  }
+
+  @override
+  String availClosedOpensOn(String day, String time) {
+    return 'Bağlıdır, $day saat $time-da açılır';
+  }
+
+  @override
+  String weekdayName(String day) {
+    String _temp0 = intl.Intl.selectLogic(
+      day,
+      {
+        '0': 'Bazar',
+        '1': 'Bazar ertəsi',
+        '2': 'Çərşənbə axşamı',
+        '3': 'Çərşənbə',
+        '4': 'Cümə axşamı',
+        '5': 'Cümə',
+        '6': 'Şənbə',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekdayOn(String day) {
+    String _temp0 = intl.Intl.selectLogic(
+      day,
+      {
+        '0': 'Bazar günü',
+        '1': 'Bazar ertəsi günü',
+        '2': 'Çərşənbə axşamı günü',
+        '3': 'Çərşənbə günü',
+        '4': 'Cümə axşamı günü',
+        '5': 'Cümə günü',
+        '6': 'Şənbə günü',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get openingHoursTitle => 'İş saatları';
+
+  @override
+  String get hoursClosedDay => 'Bağlıdır';
+
+  @override
+  String get hoursAllDay => '24 saat açıqdır';
+
+  @override
+  String get hoursNotSet =>
+      'İş saatı qoyulmayıb: restoran həmişə açıq sayılır.';
+
+  @override
+  String get editOpeningHours => 'İş saatlarını dəyiş';
+
+  @override
+  String get hoursOpenSwitch => 'Açıqdır';
+
+  @override
+  String get hoursOpens => 'Açılır';
+
+  @override
+  String get hoursCloses => 'Bağlanır';
+
+  @override
+  String get hoursLastRequest =>
+      'Bağlanmadan nə qədər əvvəl sorğu qəbulunu dayandır';
+
+  @override
+  String hoursLeadMinutes(int minutes) {
+    return 'bağlanmadan $minutes dəq əvvəl';
+  }
+
+  @override
+  String get hoursLeadAtClose => 'bağlanma saatına qədər';
+
+  @override
+  String get hoursSameEveryDay => 'Hər gün eyni saat';
+
+  @override
+  String get hoursRemove => 'Saatları sil (həmişə açıq)';
+
+  @override
+  String get hoursSave => 'Yadda saxla';
+
+  @override
+  String get hoursSaved => 'İş saatları yadda saxlanıldı.';
+
+  @override
+  String get hoursHint =>
+      'Vaxt Azərbaycan vaxtı ilədir. Gecə yarısından sonra bağlanırsınızsa (18:00-dan 02:00-dək), sadəcə sonrakı bağlanma saatını yazın. Açılış və bağlanış saatı eynidirsə, gün boyu açıq sayılır.';
 }

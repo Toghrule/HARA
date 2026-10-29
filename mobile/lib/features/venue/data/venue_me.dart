@@ -1,3 +1,5 @@
+import '../../restaurants/data/opening_hours.dart';
+
 /// Where the signed-in owner or waiter stands.
 enum VenueStatus {
   pending,
@@ -22,6 +24,8 @@ class VenueRestaurant {
     required this.address,
     required this.discountPercent,
     this.imageUrl,
+    this.openingHours = const [],
+    this.lastRequestMinutesBeforeClose = 30,
   });
 
   factory VenueRestaurant.fromJson(Map<String, dynamic> json) => VenueRestaurant(
@@ -30,6 +34,10 @@ class VenueRestaurant {
         address: json['address'] as String,
         discountPercent: (json['discountPercent'] as num?)?.toInt() ?? 0,
         imageUrl: json['imageUrl'] as String?,
+        openingHours: [
+          for (final day in (json['openingHours'] as List<dynamic>?) ?? const []) DayHours.fromJson(day as Map<String, dynamic>),
+        ],
+        lastRequestMinutesBeforeClose: (json['lastRequestMinutesBeforeClose'] as num?)?.toInt() ?? 30,
       );
 
   final String id;
@@ -37,6 +45,12 @@ class VenueRestaurant {
   final String address;
   final int discountPercent;
   final String? imageUrl;
+
+  /// The hours the owner set, one entry per weekday; empty when none were set (always open).
+  final List<DayHours> openingHours;
+
+  /// How long before closing time the restaurant stops taking requests, in minutes.
+  final int lastRequestMinutesBeforeClose;
 }
 
 /// The answer of `GET /api/venue/me`.

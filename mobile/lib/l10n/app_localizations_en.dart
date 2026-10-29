@@ -700,4 +700,120 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get statsHint =>
       'Accepted: requests your restaurant said yes to. Came: customers whose code was confirmed at the restaurant.';
+
+  @override
+  String availOpenUntil(String time) {
+    return 'Open until $time';
+  }
+
+  @override
+  String availClosingSoon(String time) {
+    return 'Closing at $time, not taking requests now';
+  }
+
+  @override
+  String get availClosed => 'Closed';
+
+  @override
+  String availClosedOpensToday(String time) {
+    return 'Closed, opens today at $time';
+  }
+
+  @override
+  String availClosedOpensTomorrow(String time) {
+    return 'Closed, opens tomorrow at $time';
+  }
+
+  @override
+  String availClosedOpensOn(String day, String time) {
+    return 'Closed, opens $day at $time';
+  }
+
+  @override
+  String weekdayName(String day) {
+    String _temp0 = intl.Intl.selectLogic(
+      day,
+      {
+        '0': 'Sunday',
+        '1': 'Monday',
+        '2': 'Tuesday',
+        '3': 'Wednesday',
+        '4': 'Thursday',
+        '5': 'Friday',
+        '6': 'Saturday',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekdayOn(String day) {
+    String _temp0 = intl.Intl.selectLogic(
+      day,
+      {
+        '0': 'on Sunday',
+        '1': 'on Monday',
+        '2': 'on Tuesday',
+        '3': 'on Wednesday',
+        '4': 'on Thursday',
+        '5': 'on Friday',
+        '6': 'on Saturday',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get openingHoursTitle => 'Opening hours';
+
+  @override
+  String get hoursClosedDay => 'Closed';
+
+  @override
+  String get hoursAllDay => 'Open 24 hours';
+
+  @override
+  String get hoursNotSet =>
+      'No opening hours set: the restaurant counts as always open.';
+
+  @override
+  String get editOpeningHours => 'Edit opening hours';
+
+  @override
+  String get hoursOpenSwitch => 'Open';
+
+  @override
+  String get hoursOpens => 'Opens';
+
+  @override
+  String get hoursCloses => 'Closes';
+
+  @override
+  String get hoursLastRequest => 'Stop taking requests before closing';
+
+  @override
+  String hoursLeadMinutes(int minutes) {
+    return '$minutes min before closing';
+  }
+
+  @override
+  String get hoursLeadAtClose => 'Until closing time';
+
+  @override
+  String get hoursSameEveryDay => 'Same hours every day';
+
+  @override
+  String get hoursRemove => 'Remove hours (always open)';
+
+  @override
+  String get hoursSave => 'Save';
+
+  @override
+  String get hoursSaved => 'Opening hours saved.';
+
+  @override
+  String get hoursHint =>
+      'Times are Azerbaijan time. If you close after midnight (18:00 to 02:00), just set the later closing time. The same opening and closing time means open all day.';
 }

@@ -49,4 +49,23 @@ public class Restaurant : BaseAuditableEntity
     /// deactivate a restaurant without deleting it (e.g. temporarily closed).
     /// </summary>
     public bool IsActive { get; set; } = true;
+
+    /// <summary>
+    /// Opening hours, one entry per weekday. Empty means the owner has not set any, and the restaurant is taken as
+    /// always open. Set by the owner in the app.
+    /// </summary>
+    public List<DayHours> OpeningHours { get; set; } = [];
+
+    /// <summary>
+    /// How long before closing time the restaurant stops taking table requests, in minutes (the owner chooses), so a
+    /// customer is not sent to a restaurant that is about to close.
+    /// </summary>
+    public int LastRequestMinutesBeforeClose { get; set; } = 30;
+
+    /// <summary>What this restaurant offers at <paramref name="utcNow"/>: open, closing soon or closed.</summary>
+    public Availability AvailabilityAt(DateTimeOffset utcNow) =>
+        OpeningSchedule.Evaluate(OpeningHours, LastRequestMinutesBeforeClose, utcNow.ToOffset(AzerbaijanOffset).DateTime);
+
+    /// <summary>Azerbaijan time: UTC+4, no daylight saving.</summary>
+    public static readonly TimeSpan AzerbaijanOffset = TimeSpan.FromHours(4);
 }

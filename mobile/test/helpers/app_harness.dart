@@ -133,6 +133,9 @@ class FakeRestaurantsRepository extends RestaurantsRepository {
   final List<Restaurant> all;
 
   @override
+  Future<Restaurant> getRestaurant(String id) async => all.firstWhere((restaurant) => restaurant.id == id);
+
+  @override
   Future<List<Restaurant>> getRestaurants({
     RestaurantSort sort = RestaurantSort.nameAsc,
     String search = '',

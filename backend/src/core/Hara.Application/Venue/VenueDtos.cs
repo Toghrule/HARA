@@ -1,13 +1,29 @@
+using Hara.Application.Restaurants;
 using Hara.Domain.Members;
 using Hara.Domain.Restaurants;
 
 namespace Hara.Application.Venue;
 
 /// <summary>The restaurant a member works at, as shown in their part of the app.</summary>
-public sealed record VenueRestaurantDto(Guid Id, string Name, string Address, int DiscountPercent, string? ImageUrl)
+/// <param name="OpeningHours">The hours the owner set, one entry per weekday; empty when none were set (always open).</param>
+/// <param name="LastRequestMinutesBeforeClose">How long before closing time the restaurant stops taking requests.</param>
+public sealed record VenueRestaurantDto(
+    Guid Id,
+    string Name,
+    string Address,
+    int DiscountPercent,
+    string? ImageUrl,
+    IReadOnlyList<DayHoursDto> OpeningHours,
+    int LastRequestMinutesBeforeClose)
 {
-    public static VenueRestaurantDto FromEntity(Restaurant restaurant) =>
-        new(restaurant.Id, restaurant.Name, restaurant.Address, restaurant.DiscountPercent, restaurant.ImageUrl);
+    public static VenueRestaurantDto FromEntity(Restaurant restaurant) => new(
+        restaurant.Id,
+        restaurant.Name,
+        restaurant.Address,
+        restaurant.DiscountPercent,
+        restaurant.ImageUrl,
+        restaurant.OpeningHours.OrderBy(h => h.Day).Select(DayHoursDto.FromEntity).ToList(),
+        restaurant.LastRequestMinutesBeforeClose);
 }
 
 /// <summary>Where the signed-in owner or waiter stands: what they can do in the app right now.</summary>

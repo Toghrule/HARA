@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hara/features/reservations/data/reservation_state.dart';
+import 'package:hara/features/restaurants/data/opening_hours.dart';
+import 'package:hara/features/venue/data/venue_me.dart';
 import 'package:hara/features/venue/data/venue_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -98,6 +100,140 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.widget<Text>(find.byKey(const Key('statsMine'))).data, '2');
+    });
+  });
+
+  group('opening hours', () {
+    // The server's order for "Monday first" is 1..6 then 0 (Sunday).
+    List<DayHours> week({int? closedDay}) => [
+          for (final day in [1, 2, 3, 4, 5, 6, 0])
+            day == closedDay ? DayHours(day: day, isClosed: true) : DayHours(day: day, isClosed: false, opens: '10:00', closes: '23:00'),
+        ];
+
+    Future<FakeVenueRepository> openWith(WidgetTester tester, {List<DayHours> hours = const [], int lead = 30}) async {
+      final venue = FakeVenueRepository(
+        me: VenueMe(
+          isOwner: true,
+          status: VenueStatus.approved,
+          fullName: 'Anar Aliyev',
+          restaurant: VenueRestaurant(
+            id: 'rest-1',
+            name: 'Cafe One',
+            address: 'Baku, Nizami 1',
+            discountPercent: 10,
+            openingHours: hours,
+            lastRequestMinutesBeforeClose: lead,
+          ),
+        ),
+      );
+      await AppHarness(session: testSession(roles: ['Owner']), venueRepository: venue).pump(tester);
+      await goToTab(tester, 'Restaurant');
+
+      return venue;
+    }
+
+    Future<void> openEditor(WidgetTester tester) async {
+      await tester.ensureVisible(find.byKey(const Key('editHours')));
+      await tester.tap(find.byKey(const Key('editHours')));
+      await tester.pumpAndSettle();
+    }
+
+    // The editor is a long list that builds its rows as they scroll into view.
+    Future<void> scrollTo(WidgetTester tester, Key key) async {
+      await tester.scrollUntilVisible(find.byKey(key), 200, scrollable: find.byType(Scrollable).first);
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> tapVisible(WidgetTester tester, Key key) async {
+      await scrollTo(tester, key);
+      await tester.tap(find.byKey(key));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('with no hours set the owner is told the restaurant counts as always open', (tester) async {
+      await openWith(tester);
+
+      expect(find.byKey(const Key('hoursNotSet')), findsOneWidget);
+      expect(find.byKey(const Key('hours-1')), findsNothing);
+    });
+
+    testWidgets('the owner closes Sunday, picks a lead time and saves: the server gets all seven days', (tester) async {
+      final venue = await openWith(tester);
+      await openEditor(tester);
+
+      // Starts as 10:00 to 23:00 every day, and there is nothing to remove yet.
+      expect(find.text('Opens 10:00'), findsWidgets);
+      expect(find.text('Closes 23:00'), findsWidgets);
+      expect(find.byKey(const Key('removeHours')), findsNothing);
+
+      await tapVisible(tester, const Key('open-0'));
+      await tapVisible(tester, const Key('leadDropdown'));
+      await tester.tap(find.text('60 min before closing').last);
+      await tester.pumpAndSettle();
+      await tapVisible(tester, const Key('saveHours'));
+
+      expect(venue.savedHours, hasLength(1));
+      final saved = venue.savedHours.single;
+      expect(saved.lead, 60);
+      expect(saved.days.map((d) => d.day), [1, 2, 3, 4, 5, 6, 0]);
+      expect(saved.days.last.isClosed, isTrue);
+      expect(saved.days.first.isClosed, isFalse);
+      expect(saved.days.first.opens, '10:00');
+      expect(saved.days.first.closes, '23:00');
+
+      // Back on the restaurant tab, which now shows the saved week.
+      expect(find.byKey(const Key('editHours')), findsOneWidget);
+      expect(find.text('Opening hours saved.'), findsOneWidget);
+      expect(tester.widget<Text>(find.byKey(const Key('hours-0'))).data, 'Closed');
+      expect(tester.widget<Text>(find.byKey(const Key('hours-1'))).data, '10:00 – 23:00');
+    });
+
+    testWidgets('existing hours open in the editor as they were saved', (tester) async {
+      await openWith(tester, hours: week(closedDay: 3), lead: 45);
+      await openEditor(tester);
+
+      expect(find.byKey(const Key('opens-3')), findsNothing);
+      expect(find.byKey(const Key('opens-2')), findsOneWidget);
+      expect(tester.widget<Switch>(find.byKey(const Key('open-3'))).value, isFalse);
+      await scrollTo(tester, const Key('leadDropdown'));
+      expect(find.text('45 min before closing'), findsOneWidget);
+    });
+
+    testWidgets('"same hours every day" copies Monday to the whole week', (tester) async {
+      final venue = await openWith(tester, hours: week(closedDay: 3));
+      await openEditor(tester);
+
+      await tapVisible(tester, const Key('sameEveryDay'));
+      await tapVisible(tester, const Key('saveHours'));
+
+      expect(venue.savedHours.single.days.every((d) => !d.isClosed), isTrue);
+    });
+
+    testWidgets('the hours can be removed again, which sends an empty list', (tester) async {
+      final venue = await openWith(tester, hours: week());
+      await openEditor(tester);
+
+      await tapVisible(tester, const Key('removeHours'));
+
+      expect(venue.savedHours.single.days, isEmpty);
+      expect(find.byKey(const Key('hoursNotSet')), findsOneWidget);
+    });
+
+    testWidgets('if the server refuses, the reason shows and the editor stays', (tester) async {
+      final venue = await openWith(tester);
+      venue.hoursError = serverFailure(400, {
+        'errors': {
+          'Days': ['Give all seven weekdays, once each, or none to remove the hours.'],
+        },
+      });
+      await openEditor(tester);
+
+      await tapVisible(tester, const Key('saveHours'));
+
+      expect(find.byKey(const Key('hoursError')), findsOneWidget);
+      expect(find.text('Give all seven weekdays, once each, or none to remove the hours.'), findsOneWidget);
+      expect(venue.savedHours, isEmpty);
+      expect(find.byKey(const Key('saveHours')), findsOneWidget);
     });
   });
 

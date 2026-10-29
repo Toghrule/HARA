@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../restaurants/presentation/widgets/opening_hours_list.dart';
 import '../../data/venue_me.dart';
 import '../../data/venue_models.dart';
 import '../providers/venue_providers.dart';
@@ -39,6 +40,29 @@ class RestaurantTab extends ConsumerWidget {
               title: Text(restaurant.name, style: theme.textTheme.titleMedium),
               subtitle: Text('${restaurant.address}\n${l10n.discountLine(restaurant.discountPercent)}'),
               isThreeLine: true,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.openingHoursTitle, style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  if (restaurant.openingHours.isEmpty)
+                    Text(l10n.hoursNotSet, key: const Key('hoursNotSet'))
+                  else
+                    OpeningHoursList(hours: restaurant.openingHours),
+                  const SizedBox(height: 8),
+                  FilledButton.tonal(
+                    key: const Key('editHours'),
+                    onPressed: () => context.push<bool>('/venue/opening-hours', extra: restaurant),
+                    child: Text(l10n.editOpeningHours),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 8),

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/reservations/data/reservation_state.dart';
+import 'package:hara/features/restaurants/data/opening_hours.dart';
 import 'package:hara/features/venue/data/venue_me.dart';
 import 'package:hara/features/venue/data/venue_models.dart';
 import 'package:hara/features/venue/data/venue_repository.dart';
@@ -100,6 +101,33 @@ class FakeVenueRepository extends VenueRepository {
   List<ChangeRequest> changeRequests = [];
   final List<Map<String, Object?>> createdRequests = [];
   Object? createRequestError;
+
+  /// What the owner saved as opening hours, in order; `hoursError` makes the call fail.
+  final List<({List<DayHours> days, int lead})> savedHours = [];
+  Object? hoursError;
+
+  @override
+  Future<void> updateOpeningHours({required List<DayHours> days, required int lastRequestMinutesBeforeClose}) async {
+    if (hoursError != null) throw hoursError!;
+    savedHours.add((days: days, lead: lastRequestMinutesBeforeClose));
+
+    // Like the server: the next time the app asks who it is, the restaurant has the new hours.
+    final before = me.restaurant!;
+    me = VenueMe(
+      isOwner: me.isOwner,
+      status: me.status,
+      fullName: me.fullName,
+      restaurant: VenueRestaurant(
+        id: before.id,
+        name: before.name,
+        address: before.address,
+        discountPercent: before.discountPercent,
+        imageUrl: before.imageUrl,
+        openingHours: days,
+        lastRequestMinutesBeforeClose: lastRequestMinutesBeforeClose,
+      ),
+    );
+  }
 
   /// What the statistics tab gets; `statsError` makes the call fail.
   VenueStats stats = const VenueStats(redeemedByMeToday: 0);

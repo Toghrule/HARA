@@ -5,6 +5,14 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## İş saatları (2026-10-29, boşluq #6)
+- **Saxlanma:** `Restaurant.OpeningHours` (JSON sütunu, 7 gün: açılış/bağlanış dəqiqə ilə) və `LastRequestMinutesBeforeClose` (default 30). Boş siyahı = saat qoyulmayıb = restoran HƏMİŞƏ AÇIQ sayılır (mövcud restoranlar belədir). Migration `AddOpeningHours`.
+- **Məntiq:** `Hara.Domain/Restaurants/OpeningHours.cs` (`OpeningSchedule.Evaluate`), Azərbaycan vaxtı (UTC+4). Bağlanış saatı açılışdan əvvəl/bərabərdirsə gecə yarısından sonraya keçir (18:00-02:00); açılış = bağlanış 24 saat açıq deməkdir. Həftə sonu keçidi (şənbə gecəsi bazara) işləyir.
+- **Kim dəyişir:** yalnız owner, mobil tətbiqdə, dərhal (admin təsdiqi YOXDUR): `PUT /api/venue/opening-hours` (7 gün və ya boş siyahı = saatları sil + bağlanmadan neçə dəqiqə əvvəl sorğunu dayandır, 0-180). Admin paneldə saat dəyişdirmək yoxdur.
+- **Müştəri:** `GET /api/restaurants` və `/{id}` indi `openingHours` + `availability` (açıq / tezliklə bağlanır / bağlı və növbəti açılış) qaytarır. Bağlı və ya bağlanmağa az qalmış restoranda "Rezerv" düyməsi söndürülür, siyahıda səbəb yazılır. `POST /api/reservations` də server tərəfdə 400 ilə rədd edir (ingiliscə mesaj, tətbiq onu olduğu kimi göstərir).
+- **Yoxlama:** məntiq 22 yoxlama (scratchpad konsol layihəsi, repoda YOXDUR), API 37 yoxlama (izolə bazada, repoda YOXDUR), mobil +15 test. Mutasiya yoxlaması: serverdə bağlı yoxlamasını söndürəndə 5 yoxlama düşdü.
+- **Bilinən məhdudiyyətlər:** tətbiqdə göstərilən vəziyyət siyahını yükləyən andakıdır (saatlar keçəndə siyahı özü yenilənmir, server isə həmişə düzgün qərar verir); bağlı restoranda server mesajı ingiliscədir; qəbul olunmuş rezervin 30 dəqiqəsi bağlanış saatını keçə bilər ("bağlanmadan nə qədər əvvəl" seçimi bunu azaldır).
+
 ## Statistika (2026-10-29, boşluq #1 qismən)
 - **Admin panel:** "Statistics" səhifəsi (`/statistics`), `GET /api/admin/stats/restaurants`: hər restoran üçün bu ay / keçən ay / hamısı: sorğu, qəbul, rədd, cavabsız, gəldi (təsdiqlənən), gəlmədi (qəbul olunub, vaxtı bitib, kod təsdiqlənməyib). Say sorğunun yaranma tarixinə görədir.
 - **Mobil, yeni "Statistika" tabı** (`GET /api/venue/stats`): sahibkar restoranın bu gün / bu ay / bu il üzrə qəbul edilən və gələn (təsdiqlənən) saylarını görür; ofisiant (və sahibkar) bu gün özünün təsdiqlədiyi kodların sayını görür. Ofisiantə restoran üzrə sayılar GÖNDƏRİLMİR (backend `null` qaytarır).
@@ -131,14 +139,14 @@ HARA/
 - Mobil app: `http://localhost:5174` (ilk açılış 20–60 san, boş qara səhifə = gözləyin).
 - Admin panel: `http://localhost:5173`. Login: `admin@hara.local`. **Gizli dəyərlər (2026-10-22) repoda deyil:** `Jwt:SigningKey` və `AdminUser:Password` `dotnet user-secrets`-dədir (`UserSecretsId` Hara.Api.csproj-da; baxmaq: `cd backend/src/ui/Hara.Api && dotnet user-secrets list`). Admin parolu `backend/secrets/admin-login.txt`-dədir (gitignore). **Əsas mənbə:** `backend/secrets/local-settings.json` (gitignore; appsettings ilə eyni forma: `{"Jwt":{"SigningKey":"..."},"AdminUser":{"Email":"admin@hara.local","Password":"..."}}`; Email Production-da məcburidir, çünki appsettings.json-da boşdur; admin hesabı indi hər mühitdə yaranır, Swagger yalnız Development-də), Program.cs onu yuxarı qovluqlarda axtarır, mühitdən asılı deyil (Production-da da işləyir). user-secrets də dəstəklənir. Yeni maşında bu faylı yaradın, yoxsa API açılmır. Admin hesabı yalnız YOXDURSA yaranır (seeder), parolu dəyişmək üçün DB-dən `admin@hara.local` sətrini silib API-ni yenidən başladın. Repo ictimaidir; köhnə dəyərlər git tarixçəsində qalıb, ona görə ləğv edilib (rotate).
 
-**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddDeviceTokens`). Skript bunu etmir. Boş bazada əvvəl:
+**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddOpeningHours`). Skript bunu etmir. Boş bazada əvvəl:
 ```bash
 cd backend
 dotnet ef database update --project src/external/Hara.Persistence --startup-project src/ui/Hara.Api --context ApplicationDbContext
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (211 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
+**Testlər:** `cd mobile && flutter analyze && flutter test` (226 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -228,7 +236,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 
 **B. "Rezerv" real olandan çox vəd edir**
 5. Rezerv əslində endirim kuponudur: masa sayı, doluluq, nəfər sayı, gəliş vaxtı yoxdur. Ya "endirim kodu" deyin, ya real masa sistemi qurun (ən böyük məhsul qərarı).
-6. İş saatları yoxdur: gecə 3-də bağlı restoranda rezerv etmək olur.
+6. ✅ HƏLL OLUNUB (2026-10-29): iş saatları var, owner tətbiqdə qoyur, bağlı restoranda rezerv olmur (bax "İş saatları").
 7. Restoran rezervi ləğv edə bilmir, sahibkarın "bu gün doluyuq, rezervləri dayandır" açarı yoxdur; hər dəyişiklik admindən keçir (yavaş).
 8. Gəlməyənə (no-show) nəticə yoxdur; telefon təsdiqlənmir (SMS təxirə salınıb): başqasının nömrəsini bloklamaq və ya spam mümkündür.
 9. 30 dəq yol vaxtını nəzərə almır; 31-ci dəqiqədə çatan endirimi itirir.

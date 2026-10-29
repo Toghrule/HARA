@@ -414,6 +414,11 @@ namespace Hara.Persistence.Migrations
                     b.Property<DateTimeOffset?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("LastRequestMinutesBeforeClose")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(30);
+
                     b.Property<double>("Latitude")
                         .HasPrecision(9, 6)
                         .HasColumnType("double precision");
@@ -860,6 +865,42 @@ namespace Hara.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("Hara.Domain.Restaurants.Restaurant", b =>
+                {
+                    b.OwnsMany("Hara.Domain.Restaurants.DayHours", "OpeningHours", b1 =>
+                        {
+                            b1.Property<Guid>("RestaurantId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("ClosesAtMinute")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("Day")
+                                .HasColumnType("integer");
+
+                            b1.Property<bool>("IsClosed")
+                                .HasColumnType("boolean");
+
+                            b1.Property<int>("OpensAtMinute")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("RestaurantId", "__synthesizedOrdinal");
+
+                            b1.ToTable("Restaurants");
+
+                            b1.ToJson("OpeningHours");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RestaurantId");
+                        });
+
+                    b.Navigation("OpeningHours");
                 });
 
             modelBuilder.Entity("Hara.Domain.Restaurants.RestaurantChangeRequest", b =>

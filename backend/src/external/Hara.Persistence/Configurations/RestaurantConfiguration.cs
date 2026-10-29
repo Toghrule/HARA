@@ -18,6 +18,10 @@ public class RestaurantConfiguration : IEntityTypeConfiguration<Restaurant>
         builder.Property(r => r.DescriptionRu).HasMaxLength(4000);
         builder.Property(r => r.DescriptionEn).HasMaxLength(4000);
 
+        // The seven weekdays' hours are small and always read with the restaurant, so they live in one JSON column.
+        builder.OwnsMany(r => r.OpeningHours, hours => hours.ToJson());
+        builder.Property(r => r.LastRequestMinutesBeforeClose).HasDefaultValue(30);
+
         builder.HasIndex(r => r.IsActive);
     }
 }
