@@ -363,6 +363,9 @@ class AppLocalizationsAz extends AppLocalizations {
   String get tabReservations => 'Rezervlər';
 
   @override
+  String get tabStats => 'Statistika';
+
+  @override
   String get tabTeam => 'Komanda';
 
   @override
@@ -674,4 +677,26 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get requestDeclinedDone => 'Rədd edildi.';
+
+  @override
+  String get statsToday => 'Bu gün';
+
+  @override
+  String get statsThisMonth => 'Bu ay';
+
+  @override
+  String get statsThisYear => 'Bu il';
+
+  @override
+  String get statsAccepted => 'Qəbul edilən';
+
+  @override
+  String get statsCame => 'Gələn';
+
+  @override
+  String get statsMyToday => 'Bu gün təsdiqlədiyiniz kodlar';
+
+  @override
+  String get statsHint =>
+      'Qəbul edilən: restoranın bəli dediyi sorğular. Gələn: kodu restoranda təsdiqlənən müştərilər.';
 }

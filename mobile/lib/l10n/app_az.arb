@@ -115,6 +115,7 @@
 
   "tabConfirmCode": "Kodu təsdiqlə",
   "tabReservations": "Rezervlər",
+  "tabStats": "Statistika",
   "tabTeam": "Komanda",
   "tabRestaurant": "Restoran",
   "codeInputLabel": "Müştərinin kodu",
@@ -208,5 +209,12 @@
   "sentAt": "Göndərilib: {time}",
   "answerWithin": "Cavab üçün qalıb: {countdown}",
   "requestAccepted": "Qəbul edildi. Müştərinin {minutes} dəqiqəsi başladı.",
-  "requestDeclinedDone": "Rədd edildi."
+  "requestDeclinedDone": "Rədd edildi.",
+  "statsToday": "Bu gün",
+  "statsThisMonth": "Bu ay",
+  "statsThisYear": "Bu il",
+  "statsAccepted": "Qəbul edilən",
+  "statsCame": "Gələn",
+  "statsMyToday": "Bu gün təsdiqlədiyiniz kodlar",
+  "statsHint": "Qəbul edilən: restoranın bəli dediyi sorğular. Gələn: kodu restoranda təsdiqlənən müştərilər."
 }

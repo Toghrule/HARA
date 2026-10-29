@@ -115,6 +115,7 @@
 
   "tabConfirmCode": "Подтвердить код",
   "tabReservations": "Брони",
+  "tabStats": "Статистика",
   "tabTeam": "Команда",
   "tabRestaurant": "Ресторан",
   "codeInputLabel": "Код клиента",
@@ -208,5 +209,12 @@
   "sentAt": "Отправлена: {time}",
   "answerWithin": "На ответ осталось: {countdown}",
   "requestAccepted": "Принято. У клиента пошли {minutes} минут.",
-  "requestDeclinedDone": "Отклонено."
+  "requestDeclinedDone": "Отклонено.",
+  "statsToday": "Сегодня",
+  "statsThisMonth": "В этом месяце",
+  "statsThisYear": "В этом году",
+  "statsAccepted": "Принято",
+  "statsCame": "Пришли",
+  "statsMyToday": "Кодов, подтверждённых вами сегодня",
+  "statsHint": "Принято: запросы, на которые ресторан ответил «да». Пришли: клиенты, чей код подтвердили в ресторане."
 }

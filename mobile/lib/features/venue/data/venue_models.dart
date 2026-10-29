@@ -165,3 +165,41 @@ class ChangeRequest {
         if (descriptionEn != null) descriptionEn!,
       ];
 }
+
+/// Two counts for one stretch of time.
+class PeriodCounts {
+  const PeriodCounts({required this.accepted, required this.redeemed});
+
+  factory PeriodCounts.fromJson(Map<String, dynamic> json) => PeriodCounts(
+        accepted: (json['accepted'] as num).toInt(),
+        redeemed: (json['redeemed'] as num).toInt(),
+      );
+
+  /// Requests the restaurant accepted.
+  final int accepted;
+
+  /// Codes confirmed at the restaurant: the customer really came.
+  final int redeemed;
+}
+
+/// The numbers on the statistics tab. The restaurant-wide ones come only for the owner (`null` for a waiter);
+/// everyone gets how many codes they themselves confirmed today.
+class VenueStats {
+  const VenueStats({this.today, this.thisMonth, this.thisYear, required this.redeemedByMeToday});
+
+  factory VenueStats.fromJson(Map<String, dynamic> json) {
+    PeriodCounts? period(String key) => json[key] == null ? null : PeriodCounts.fromJson(json[key] as Map<String, dynamic>);
+
+    return VenueStats(
+      today: period('today'),
+      thisMonth: period('thisMonth'),
+      thisYear: period('thisYear'),
+      redeemedByMeToday: (json['redeemedByMeToday'] as num).toInt(),
+    );
+  }
+
+  final PeriodCounts? today;
+  final PeriodCounts? thisMonth;
+  final PeriodCounts? thisYear;
+  final int redeemedByMeToday;
+}

@@ -101,6 +101,19 @@ class FakeVenueRepository extends VenueRepository {
   final List<Map<String, Object?>> createdRequests = [];
   Object? createRequestError;
 
+  /// What the statistics tab gets; `statsError` makes the call fail.
+  VenueStats stats = const VenueStats(redeemedByMeToday: 0);
+  Object? statsError;
+  int statsCalls = 0;
+
+  @override
+  Future<VenueStats> getStats() async {
+    statsCalls++;
+    if (statsError != null) throw statsError!;
+
+    return stats;
+  }
+
   @override
   Future<VenueMe> getMe() async {
     meCalls++;

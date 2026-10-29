@@ -19,6 +19,8 @@ void main() {
   }
 
   Future<void> goToTab(WidgetTester tester, String label) async {
+    // With six tabs the last ones sit beyond the screen's edge; the tab bar scrolls, like on a phone.
+    await tester.ensureVisible(find.widgetWithText(Tab, label));
     await tester.tap(find.widgetWithText(Tab, label));
     await tester.pumpAndSettle();
   }
@@ -31,6 +33,7 @@ void main() {
       expect(find.widgetWithText(Tab, 'Requests'), findsOneWidget);
       expect(find.widgetWithText(Tab, 'Confirm code'), findsOneWidget);
       expect(find.widgetWithText(Tab, 'Reservations'), findsOneWidget);
+      expect(find.widgetWithText(Tab, 'Statistics'), findsOneWidget);
       expect(find.widgetWithText(Tab, 'Team'), findsNothing);
       expect(find.widgetWithText(Tab, 'Restaurant'), findsNothing);
     });
@@ -40,6 +43,61 @@ void main() {
 
       expect(find.widgetWithText(Tab, 'Team'), findsOneWidget);
       expect(find.widgetWithText(Tab, 'Restaurant'), findsOneWidget);
+    });
+  });
+
+  group('statistics', () {
+    testWidgets('the owner sees the restaurant\'s day, month and year, and their own count', (tester) async {
+      final (_, venue) = await open(tester, owner: true);
+      venue.stats = const VenueStats(
+        today: PeriodCounts(accepted: 3, redeemed: 2),
+        thisMonth: PeriodCounts(accepted: 40, redeemed: 31),
+        thisYear: PeriodCounts(accepted: 400, redeemed: 310),
+        redeemedByMeToday: 1,
+      );
+
+      await goToTab(tester, 'Statistics');
+
+      expect(find.text('Today'), findsOneWidget);
+      expect(find.text('This month'), findsOneWidget);
+      expect(find.text('This year'), findsOneWidget);
+      expect(tester.widget<Text>(find.byKey(const Key('today-accepted'))).data, '3');
+      expect(tester.widget<Text>(find.byKey(const Key('today-came'))).data, '2');
+      expect(tester.widget<Text>(find.byKey(const Key('month-accepted'))).data, '40');
+      expect(tester.widget<Text>(find.byKey(const Key('month-came'))).data, '31');
+      expect(tester.widget<Text>(find.byKey(const Key('year-accepted'))).data, '400');
+      expect(tester.widget<Text>(find.byKey(const Key('year-came'))).data, '310');
+      expect(tester.widget<Text>(find.byKey(const Key('statsMine'))).data, '1');
+    });
+
+    testWidgets('a waiter sees only how many codes they confirmed today', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.stats = const VenueStats(redeemedByMeToday: 4);
+
+      await goToTab(tester, 'Statistics');
+
+      expect(find.text('Codes you confirmed today'), findsOneWidget);
+      expect(tester.widget<Text>(find.byKey(const Key('statsMine'))).data, '4');
+      expect(find.text('Today'), findsNothing);
+      expect(find.text('This month'), findsNothing);
+      expect(find.text('This year'), findsNothing);
+    });
+
+    testWidgets('a failed load says so and can be retried', (tester) async {
+      final (_, venue) = await open(tester);
+      venue.statsError = serverFailure(500);
+
+      await goToTab(tester, 'Statistics');
+
+      expect(find.byKey(const Key('statsMine')), findsNothing);
+      expect(find.text('Retry'), findsOneWidget);
+
+      venue.statsError = null;
+      venue.stats = const VenueStats(redeemedByMeToday: 2);
+      await tester.tap(find.text('Retry'));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<Text>(find.byKey(const Key('statsMine'))).data, '2');
     });
   });
 

@@ -362,6 +362,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tabReservations => 'Брони';
 
   @override
+  String get tabStats => 'Статистика';
+
+  @override
   String get tabTeam => 'Команда';
 
   @override
@@ -673,4 +676,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get requestDeclinedDone => 'Отклонено.';
+
+  @override
+  String get statsToday => 'Сегодня';
+
+  @override
+  String get statsThisMonth => 'В этом месяце';
+
+  @override
+  String get statsThisYear => 'В этом году';
+
+  @override
+  String get statsAccepted => 'Принято';
+
+  @override
+  String get statsCame => 'Пришли';
+
+  @override
+  String get statsMyToday => 'Кодов, подтверждённых вами сегодня';
+
+  @override
+  String get statsHint =>
+      'Принято: запросы, на которые ресторан ответил «да». Пришли: клиенты, чей код подтвердили в ресторане.';
 }

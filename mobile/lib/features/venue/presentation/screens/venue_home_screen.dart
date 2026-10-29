@@ -20,6 +20,7 @@ import '../widgets/delete_account_dialog.dart';
 import '../widgets/requests_tab.dart';
 import '../widgets/reservations_tab.dart';
 import '../widgets/restaurant_tab.dart';
+import '../widgets/stats_tab.dart';
 import '../widgets/team_tab.dart';
 
 /// The owner's and waiters' home. What it shows depends on where the account stands: waiting for
@@ -166,6 +167,7 @@ class _ApprovedVenueState extends ConsumerState<_ApprovedVenue> {
       (label: l10n.tabRequests, icon: Icons.notifications_active_outlined, badge: waiting, body: const RequestsTab()),
       (label: l10n.tabConfirmCode, icon: Icons.qr_code_2, badge: 0, body: const CodeConfirmTab()),
       (label: l10n.tabReservations, icon: Icons.event_seat_outlined, badge: 0, body: const ReservationsTab()),
+      (label: l10n.tabStats, icon: Icons.bar_chart, badge: 0, body: const StatsTab()),
       if (me.isOwner) (label: l10n.tabTeam, icon: Icons.groups_outlined, badge: 0, body: const TeamTab()),
       if (me.isOwner) (label: l10n.tabRestaurant, icon: Icons.storefront_outlined, badge: 0, body: RestaurantTab(restaurant: widget.restaurant)),
     ];

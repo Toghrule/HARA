@@ -5,6 +5,12 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Statistika (2026-10-29, boşluq #1 qismən)
+- **Admin panel:** "Statistics" səhifəsi (`/statistics`), `GET /api/admin/stats/restaurants`: hər restoran üçün bu ay / keçən ay / hamısı: sorğu, qəbul, rədd, cavabsız, gəldi (təsdiqlənən), gəlmədi (qəbul olunub, vaxtı bitib, kod təsdiqlənməyib). Say sorğunun yaranma tarixinə görədir.
+- **Mobil, yeni "Statistika" tabı** (`GET /api/venue/stats`): sahibkar restoranın bu gün / bu ay / bu il üzrə qəbul edilən və gələn (təsdiqlənən) saylarını görür; ofisiant (və sahibkar) bu gün özünün təsdiqlədiyi kodların sayını görür. Ofisiantə restoran üzrə sayılar GÖNDƏRİLMİR (backend `null` qaytarır).
+- **Qərarlar:** "gün/ay/il" Azərbaycan vaxtı ilə (UTC+4, `BakuTime.cs`). Qəbul = cavab verilib və rədd edilməyib (`RespondedAt` var, status `Declined` deyil); gələn = `Redeemed`. **Hesab məbləği YAZILMIR** (istifadəçi ləğv etdi), gəlir məbləği göstərilmir; boşluq #4 hələ açıqdır.
+- Backend 19 yoxlama (izolə bazada), mobil 3 yeni test; admin panel brauzerdə yoxlanıb. Admin paneldə avtomatik test yoxdur.
+
 ## Push bildirişlər (2026-10-13)
 - **Necə işləyir:** Firebase Cloud Messaging. Yeni sorğu gələndə restoranın təsdiqlənmiş sahibkarı/ofisiantlarının telefonlarına, qəbul/rədd olunanda müştərinin telefonuna bildiriş gedir (3 dildə mətn, `PushTexts.cs`). `ReservationNotifier` (Application) yaradılma və cavab handler-lərindən çağırılır; göndərmə xətası sorğunu pozmur, Firebase-in rədd etdiyi token-lər silinir. **Cavabsız qalma (15 dəq) üçün push YOXDUR** (serverdə fon işi yoxdur); müştəri tətbiqi bunu özü hesablayır.
 - **Token-lər:** `DeviceTokens` cədvəli (`UserId` = restoran hesabı, `ReservationId` = müştəri sorğusu). Müştəri token-i sorğu kodu ilə qeyd olunur; bir telefonda başqa hesab girəndə köhnə hesabın sətri silinir; çıxışda mobil əvvəl `unregister` edir.
@@ -132,7 +138,7 @@ dotnet ef database update --project src/external/Hara.Persistence --startup-proj
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (208 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
+**Testlər:** `cd mobile && flutter analyze && flutter test` (211 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -215,7 +221,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 İstifadəçi MVP-ni yüngül saxlamaq istəyir: bunlardan heç birini özü seçməyincə **başlamayın**. Qayıdanda əvvəl yalnız seçilən bəndə dair qısa qərar sualı verin, kod yox. (Eyni siyahı Claude yaddaşında `project_hara_business_gaps.md`-dədir.)
 
 **A. Gəlirə təhlükə**
-1. Restoranlara dəyər sübutu yoxdur: sayğaclar (rezerv, təsdiq, gəlməyən) nə adminə, nə sahibkara görünür. Hər restorana aylıq hesabat satış üçün ən güclü arqumentdir.
+1. ✅ QİSMƏN HƏLL OLUNUB (2026-10-29): admin panelində restoran üzrə sayğaclar və sahibkar/ofisiant üçün mobil statistika var (bax "Statistika"). Hesabat PDF/aylıq göndəriş və gəlir məbləği yoxdur.
 2. Abunə modeli yoxdur: pulsuz dövr, haqq, dayandırma, ödəniş yolu (kart/köçürmə/e-qaimə); ödəməyən restoranı avtomatik gizlətmək olmur; premium/adi reklam səviyyələri yoxdur.
 3. Reklam admin paneldə var, mobil tətbiqdə heç göstərilmir.
 4. Kodu təsdiqləyəndə hesab məbləği qeyd olunmur (bonus "minimum hesab" qaydası və gələcək komissiya üçün lazımdır).

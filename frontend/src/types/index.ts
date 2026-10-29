@@ -287,3 +287,20 @@ export interface ReviewChangeRequestBody {
 export interface UploadImageResult {
   url: string;
 }
+
+export interface StatsPeriodDto {
+  requests: number;
+  accepted: number;
+  declined: number;
+  unanswered: number;
+  redeemed: number;
+  noShows: number;
+}
+
+export interface RestaurantStatsDto {
+  restaurantId: string;
+  restaurantName: string;
+  thisMonth: StatsPeriodDto;
+  lastMonth: StatsPeriodDto;
+  allTime: StatsPeriodDto;
+}

@@ -11,6 +11,7 @@ import { RestaurantsPage } from "./features/restaurants/RestaurantsPage";
 import { SubmissionsPage } from "./features/submissions/SubmissionsPage";
 import { ChangeRequestsPage } from "./features/change-requests/ChangeRequestsPage";
 import { ReservationsPage } from "./features/reservations/ReservationsPage";
+import { StatisticsPage } from "./features/statistics/StatisticsPage";
 import { AdvertisementsPage } from "./features/advertisements/AdvertisementsPage";
 import { FaqPage } from "./features/faq/FaqPage";
 import { AboutUsPage } from "./features/company-info/AboutUsPage";
@@ -35,6 +36,7 @@ export default function App() {
                 <Route index element={<DashboardPage />} />
                 <Route path="restaurants" element={<RestaurantsPage />} />
                 <Route path="reservations" element={<ReservationsPage />} />
+                <Route path="statistics" element={<StatisticsPage />} />
                 <Route path="submissions" element={<SubmissionsPage />} />
                 <Route path="change-requests" element={<ChangeRequestsPage />} />
                 <Route path="advertisements" element={<AdvertisementsPage />} />

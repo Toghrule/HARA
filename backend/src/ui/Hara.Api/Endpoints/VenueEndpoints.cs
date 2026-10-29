@@ -9,6 +9,7 @@ using Hara.Application.Venue.Queries.GetMyVenueStatus;
 using Hara.Application.Venue.Queries.GetVenueReservation;
 using Hara.Application.Venue.Queries.GetVenueReservations;
 using Hara.Application.Venue.Queries.GetVenueStaff;
+using Hara.Application.Venue.Queries.GetVenueStats;
 using Hara.Domain.Reservations;
 using MediatR;
 
@@ -31,6 +32,10 @@ public static class VenueEndpoints
             .WithName("GetMyVenueStatus");
 
         // This phone wants to hear about new requests while this person is signed in on it.
+        venue.MapGet("/stats", async (ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetVenueStatsQuery(), cancellationToken)))
+            .WithName("GetVenueStats");
+
         venue.MapPost("/devices", async (DeviceBody body, ISender sender, CancellationToken cancellationToken) =>
             {
                 await sender.Send(new RegisterVenueDeviceCommand(body.Token, body.Language), cancellationToken);

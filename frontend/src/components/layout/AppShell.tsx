@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   Building2,
+  BarChart3,
   CalendarCheck,
   HelpCircle,
   FilePenLine,
@@ -19,6 +20,7 @@ const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/restaurants", label: "Restaurants", icon: UtensilsCrossed, end: false },
   { to: "/reservations", label: "Reservations", icon: CalendarCheck, end: false },
+  { to: "/statistics", label: "Statistics", icon: BarChart3, end: false },
   { to: "/submissions", label: "Submissions", icon: Inbox, end: false },
   { to: "/change-requests", label: "Change requests", icon: FilePenLine, end: false },
   { to: "/advertisements", label: "Advertisements", icon: Image, end: false },

@@ -736,6 +736,12 @@ abstract class AppLocalizations {
   /// **'Reservations'**
   String get tabReservations;
 
+  /// No description provided for @tabStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get tabStats;
+
   /// No description provided for @tabTeam.
   ///
   /// In en, this message translates to:
@@ -1281,6 +1287,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Declined.'**
   String get requestDeclinedDone;
+
+  /// No description provided for @statsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get statsToday;
+
+  /// No description provided for @statsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get statsThisMonth;
+
+  /// No description provided for @statsThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get statsThisYear;
+
+  /// No description provided for @statsAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get statsAccepted;
+
+  /// No description provided for @statsCame.
+  ///
+  /// In en, this message translates to:
+  /// **'Came'**
+  String get statsCame;
+
+  /// No description provided for @statsMyToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Codes you confirmed today'**
+  String get statsMyToday;
+
+  /// No description provided for @statsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted: requests your restaurant said yes to. Came: customers whose code was confirmed at the restaurant.'**
+  String get statsHint;
 }
 
 class _AppLocalizationsDelegate

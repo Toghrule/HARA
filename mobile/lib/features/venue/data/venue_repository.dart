@@ -27,6 +27,13 @@ class VenueRepository {
     return (response.data ?? []).map((json) => VenueReservation.fromJson(json as Map<String, dynamic>)).toList();
   }
 
+  /// The numbers for the statistics tab.
+  Future<VenueStats> getStats() async {
+    final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/venue/stats');
+
+    return VenueStats.fromJson(response.data!);
+  }
+
   /// Looks up a code a customer shows. Only codes of this restaurant are found.
   Future<VenueReservation> lookup(String code) async {
     final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/venue/reservations/${Uri.encodeComponent(code)}');

@@ -363,6 +363,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabReservations => 'Reservations';
 
   @override
+  String get tabStats => 'Statistics';
+
+  @override
   String get tabTeam => 'Team';
 
   @override
@@ -675,4 +678,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requestDeclinedDone => 'Declined.';
+
+  @override
+  String get statsToday => 'Today';
+
+  @override
+  String get statsThisMonth => 'This month';
+
+  @override
+  String get statsThisYear => 'This year';
+
+  @override
+  String get statsAccepted => 'Accepted';
+
+  @override
+  String get statsCame => 'Came';
+
+  @override
+  String get statsMyToday => 'Codes you confirmed today';
+
+  @override
+  String get statsHint =>
+      'Accepted: requests your restaurant said yes to. Came: customers whose code was confirmed at the restaurant.';
 }

@@ -37,6 +37,12 @@ final venueReservationsProvider = FutureProvider.autoDispose.family<List<VenueRe
   return ref.watch(venueRepositoryProvider).getReservations(status: filter.status);
 });
 
+final venueStatsProvider = FutureProvider.autoDispose<VenueStats>((ref) {
+  _dependOnSignedInPerson(ref);
+
+  return ref.watch(venueRepositoryProvider).getStats();
+});
+
 /// The owner's team, waiting requests first.
 final venueStaffProvider = FutureProvider.autoDispose<List<StaffMember>>((ref) {
   _dependOnSignedInPerson(ref);

@@ -127,6 +127,7 @@
 
   "tabConfirmCode": "Confirm code",
   "tabReservations": "Reservations",
+  "tabStats": "Statistics",
   "tabTeam": "Team",
   "tabRestaurant": "Restaurant",
   "codeInputLabel": "Customer's code",
@@ -236,5 +237,12 @@
   "@answerWithin": {"placeholders": {"countdown": {"type": "String"}}},
   "requestAccepted": "Accepted. The customer's {minutes} minutes have started.",
   "@requestAccepted": {"placeholders": {"minutes": {"type": "int"}}},
-  "requestDeclinedDone": "Declined."
+  "requestDeclinedDone": "Declined.",
+  "statsToday": "Today",
+  "statsThisMonth": "This month",
+  "statsThisYear": "This year",
+  "statsAccepted": "Accepted",
+  "statsCame": "Came",
+  "statsMyToday": "Codes you confirmed today",
+  "statsHint": "Accepted: requests your restaurant said yes to. Came: customers whose code was confirmed at the restaurant."
 }
