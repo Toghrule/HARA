@@ -11,10 +11,10 @@ public static class RestaurantsEndpoints
 {
     public static IEndpointRouteBuilder MapRestaurantsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, string? search, int? pageSize, int? page, string? lang, ISender sender, CancellationToken cancellationToken) =>
+        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, string? search, int? pageSize, int? page, string? lang, bool? openNow, string? cuisine, ISender sender, CancellationToken cancellationToken) =>
             {
                 var sortBy = ParseSortBy(sort);
-                var query = new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng, search, pageSize, page, lang);
+                var query = new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng, search, pageSize, page, lang, openNow ?? false, cuisine);
                 return Results.Ok(await sender.Send(query, cancellationToken));
             })
             .WithTags("Restaurants")
@@ -48,7 +48,7 @@ public static class RestaurantsEndpoints
 
         admin.MapPut("/{id:guid}", async (Guid id, UpdateRestaurantBody body, ISender sender, CancellationToken cancellationToken) =>
             {
-                var command = new UpdateRestaurantCommand(id, body.Name, body.Description, body.Address, body.Latitude, body.Longitude, body.PhoneNumber, body.ImageUrl, body.DiscountPercent, body.IsActive, body.DescriptionRu, body.DescriptionEn);
+                var command = new UpdateRestaurantCommand(id, body.Name, body.Description, body.Address, body.Latitude, body.Longitude, body.PhoneNumber, body.ImageUrl, body.DiscountPercent, body.IsActive, body.DescriptionRu, body.DescriptionEn, body.Cuisines, body.GalleryUrls);
                 return Results.Ok(await sender.Send(command, cancellationToken));
             })
             .WithName("AdminUpdateRestaurant");
@@ -63,7 +63,7 @@ public static class RestaurantsEndpoints
         return app;
     }
 
-    private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive, string? DescriptionRu = null, string? DescriptionEn = null);
+    private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive, string? DescriptionRu = null, string? DescriptionEn = null, IReadOnlyList<string>? Cuisines = null, IReadOnlyList<string>? GalleryUrls = null);
 
     /// <summary>Maps the <c>sort</c> query string ("name_asc" | "name_desc" | "nearest") to <see cref="RestaurantSortBy"/>, defaulting to <see cref="RestaurantSortBy.NameAsc"/> for anything else.</summary>
     private static RestaurantSortBy ParseSortBy(string? sort) => sort?.ToLowerInvariant() switch

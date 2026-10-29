@@ -12,6 +12,8 @@ namespace Hara.Application.Restaurants.Commands.CreateRestaurant;
 /// <param name="ImageUrl">Optional cover image URL, from a prior upload.</param>
 /// <param name="DiscountPercent">Percentage (0–100) off the table bill for customers with a valid reservation code.</param>
 /// <param name="FromSubmissionId">The registration this restaurant is created from, if any. The submission is marked approved and, if an owner registered it, that account becomes the restaurant's owner.</param>
+/// <param name="Cuisines">Optional kinds of cuisine, from the fixed list.</param>
+/// <param name="GalleryUrls">Optional photo URLs, from prior uploads.</param>
 public sealed record CreateRestaurantCommand(
     string Name,
     string? Description,
@@ -23,4 +25,6 @@ public sealed record CreateRestaurantCommand(
     int DiscountPercent,
     string? DescriptionRu = null,
     string? DescriptionEn = null,
-    Guid? FromSubmissionId = null) : IRequest<RestaurantDto>;
+    Guid? FromSubmissionId = null,
+    IReadOnlyList<string>? Cuisines = null,
+    IReadOnlyList<string>? GalleryUrls = null) : IRequest<RestaurantDto>;

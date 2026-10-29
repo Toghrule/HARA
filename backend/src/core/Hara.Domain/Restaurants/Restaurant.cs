@@ -62,6 +62,12 @@ public class Restaurant : BaseAuditableEntity
     /// </summary>
     public int LastRequestMinutesBeforeClose { get; set; } = 30;
 
+    /// <summary>The kinds of cuisine, from <see cref="Restaurants.Cuisines.All"/> (at most <see cref="Restaurants.Cuisines.MaxPerRestaurant"/>). Set by the admin.</summary>
+    public List<string> Cuisines { get; set; } = [];
+
+    /// <summary>Photos of the restaurant, as the upload endpoint returned them, in the order they are shown. Set by the admin.</summary>
+    public List<string> GalleryUrls { get; set; } = [];
+
     /// <summary>What this restaurant offers at <paramref name="utcNow"/>: open, closing soon or closed.</summary>
     public Availability AvailabilityAt(DateTimeOffset utcNow) =>
         OpeningSchedule.Evaluate(OpeningHours, LastRequestMinutesBeforeClose, utcNow.ToOffset(AzerbaijanOffset).DateTime);

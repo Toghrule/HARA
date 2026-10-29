@@ -13,6 +13,8 @@ namespace Hara.Application.Restaurants.Queries.GetRestaurants;
 /// <param name="Longitude">Caller's longitude, required for <see cref="RestaurantSortBy.Nearest"/>.</param>
 /// <param name="Search">Only restaurants whose name or address contains this text (ignoring case and Azerbaijani diacritics).</param>
 /// <param name="PageSize">When set, returns just one page of this many restaurants; when null, returns them all.</param>
+/// <param name="OpenNow">Only restaurants that can be asked for a table right now (open, and not about to close).</param>
+/// <param name="Cuisine">Only restaurants filed under this kind of cuisine (a code such as <c>kebab</c>).</param>
 /// <param name="Page">1-based page to return when <paramref name="PageSize"/> is set. Defaults to the first page.</param>
 public sealed record GetRestaurantsQuery(
     bool OnlyActive,
@@ -22,4 +24,6 @@ public sealed record GetRestaurantsQuery(
     string? Search = null,
     int? PageSize = null,
     int? Page = null,
-    string? Language = null) : IRequest<IReadOnlyList<RestaurantDto>>;
+    string? Language = null,
+    bool OpenNow = false,
+    string? Cuisine = null) : IRequest<IReadOnlyList<RestaurantDto>>;

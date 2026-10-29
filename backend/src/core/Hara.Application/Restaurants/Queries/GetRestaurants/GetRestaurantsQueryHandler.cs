@@ -31,6 +31,19 @@ public class GetRestaurantsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
                 .ToList();
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Cuisine))
+        {
+            var cuisine = request.Cuisine.Trim().ToLowerInvariant();
+            restaurants = restaurants.Where(r => r.Cuisines.Contains(cuisine)).ToList();
+        }
+
+        // Taken at one moment for the whole list, so every restaurant is judged by the same clock.
+        var now = DateTimeOffset.UtcNow;
+        if (request.OpenNow)
+        {
+            restaurants = restaurants.Where(r => r.AvailabilityAt(now).AcceptingRequests).ToList();
+        }
+
         var sortBy = request.SortBy == RestaurantSortBy.Nearest && (request.Latitude is null || request.Longitude is null)
             ? RestaurantSortBy.NameAsc
             : request.SortBy;
@@ -48,7 +61,7 @@ public class GetRestaurantsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
         }
 
         return sorted
-            .Select(r => request.Language is null ? RestaurantDto.FromEntity(r) : RestaurantDto.FromEntity(r).Localize(request.Language))
+            .Select(r => request.Language is null ? RestaurantDto.FromEntity(r, now) : RestaurantDto.FromEntity(r, now).Localize(request.Language))
             .ToList();
     }
 

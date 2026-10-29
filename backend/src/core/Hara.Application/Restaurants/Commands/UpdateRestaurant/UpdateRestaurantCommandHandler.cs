@@ -24,6 +24,15 @@ public class UpdateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         restaurant.ImageUrl = request.ImageUrl;
         restaurant.DiscountPercent = request.DiscountPercent;
         restaurant.IsActive = request.IsActive;
+        if (request.Cuisines is not null)
+        {
+            restaurant.Cuisines = request.Cuisines.Distinct().ToList();
+        }
+
+        if (request.GalleryUrls is not null)
+        {
+            restaurant.GalleryUrls = request.GalleryUrls.ToList();
+        }
 
         repository.Update(restaurant);
         await unitOfWork.SaveChangesAsync(cancellationToken);

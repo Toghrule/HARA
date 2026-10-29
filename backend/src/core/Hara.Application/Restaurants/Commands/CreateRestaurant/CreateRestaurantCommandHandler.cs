@@ -22,7 +22,9 @@ public class CreateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             Longitude = request.Longitude,
             PhoneNumber = request.PhoneNumber,
             ImageUrl = request.ImageUrl,
-            DiscountPercent = request.DiscountPercent
+            DiscountPercent = request.DiscountPercent,
+            Cuisines = request.Cuisines?.Distinct().ToList() ?? [],
+            GalleryUrls = request.GalleryUrls?.ToList() ?? []
         };
 
         await unitOfWork.Repository<Restaurant>().AddAsync(restaurant, cancellationToken);

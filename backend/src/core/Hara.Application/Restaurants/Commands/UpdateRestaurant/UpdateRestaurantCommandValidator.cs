@@ -4,6 +4,9 @@ namespace Hara.Application.Restaurants.Commands.UpdateRestaurant;
 
 public class UpdateRestaurantCommandValidator : AbstractValidator<UpdateRestaurantCommand>
 {
+    /// <summary>The most photos one restaurant can have.</summary>
+    public const int MaxGalleryPhotos = 10;
+
     public UpdateRestaurantCommandValidator()
     {
         RuleFor(c => c.Id).NotEmpty();
@@ -17,5 +20,17 @@ public class UpdateRestaurantCommandValidator : AbstractValidator<UpdateRestaura
         RuleFor(c => c.DescriptionEn).MaximumLength(4000);
         RuleFor(c => c.ImageUrl).MaximumLength(1000);
         RuleFor(c => c.DiscountPercent).InclusiveBetween(0, 100);
+        RuleFor(c => c.Cuisines)
+            .Must(cuisines => cuisines!.Distinct().Count() <= Domain.Restaurants.Cuisines.MaxPerRestaurant)
+            .WithMessage($"At most {Domain.Restaurants.Cuisines.MaxPerRestaurant} cuisines.")
+            .Must(cuisines => cuisines!.All(Domain.Restaurants.Cuisines.IsKnown))
+            .WithMessage("Unknown cuisine.")
+            .When(c => c.Cuisines is not null);
+        RuleFor(c => c.GalleryUrls)
+            .Must(urls => urls!.Count <= MaxGalleryPhotos)
+            .WithMessage($"At most {MaxGalleryPhotos} photos.")
+            .Must(urls => urls!.All(url => !string.IsNullOrWhiteSpace(url) && url.Length <= 1000))
+            .WithMessage("A photo address is empty or too long.")
+            .When(c => c.GalleryUrls is not null);
     }
 }

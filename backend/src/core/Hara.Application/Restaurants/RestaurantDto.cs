@@ -19,6 +19,8 @@ namespace Hara.Application.Restaurants;
 /// <param name="DescriptionEn">English translation of the description, if filled in.</param>
 /// <param name="OpeningHours">The hours the owner set, one entry per weekday; empty when none were set (always open).</param>
 /// <param name="Availability">Whether a table can be requested right now, and if not why.</param>
+/// <param name="Cuisines">The kinds of cuisine (codes such as <c>kebab</c>), possibly none.</param>
+/// <param name="GalleryUrls">Relative URLs of the restaurant's photos, in display order.</param>
 public sealed record RestaurantDto(
     Guid Id,
     string Name,
@@ -35,7 +37,9 @@ public sealed record RestaurantDto(
     string? DescriptionRu = null,
     string? DescriptionEn = null,
     IReadOnlyList<DayHoursDto>? OpeningHours = null,
-    AvailabilityDto? Availability = null)
+    AvailabilityDto? Availability = null,
+    IReadOnlyList<string>? Cuisines = null,
+    IReadOnlyList<string>? GalleryUrls = null)
 {
     /// <param name="restaurant">The restaurant.</param>
     /// <param name="now">The moment to work out whether it is open; the current time when <c>null</c>.</param>
@@ -55,7 +59,9 @@ public sealed record RestaurantDto(
         restaurant.DescriptionRu,
         restaurant.DescriptionEn,
         restaurant.OpeningHours.OrderBy(h => h.Day).Select(DayHoursDto.FromEntity).ToList(),
-        AvailabilityDto.From(restaurant.AvailabilityAt(now ?? DateTimeOffset.UtcNow)));
+        AvailabilityDto.From(restaurant.AvailabilityAt(now ?? DateTimeOffset.UtcNow)),
+        restaurant.Cuisines.ToList(),
+        restaurant.GalleryUrls.ToList());
 
     /// <summary>Returns a copy whose <see cref="Description"/> is the text in <paramref name="language"/> (falling back to Azerbaijani).</summary>
     public RestaurantDto Localize(string? language) =>
