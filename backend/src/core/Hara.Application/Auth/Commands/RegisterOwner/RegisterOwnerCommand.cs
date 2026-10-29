@@ -25,4 +25,6 @@ public sealed record RegisterOwnerCommand(
     string RestaurantName,
     string Address,
     string? RestaurantPhoneNumber,
-    string? Description) : IRequest<LoginResult>;
+    string? Description,
+    int AcceptedTermsVersion = 0,
+    int AcceptedVenueAgreementVersion = 0) : IRequest<LoginResult>;

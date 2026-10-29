@@ -360,6 +360,37 @@ namespace Hara.Persistence.Migrations
                     b.ToTable("RestaurantMembers");
                 });
 
+            modelBuilder.Entity("Hara.Domain.Members.TermsAcceptance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("AcceptedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Document")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("LastModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Document");
+
+                    b.ToTable("TermsAcceptances");
+                });
+
             modelBuilder.Entity("Hara.Domain.Reservations.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -908,6 +939,15 @@ namespace Hara.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("Hara.Domain.Members.TermsAcceptance", b =>
+                {
+                    b.HasOne("Hara.Persistence.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Hara.Domain.Reservations.Reservation", b =>

@@ -1,6 +1,7 @@
 using Hara.Application.ChangeRequests.Commands.CreateChangeRequest;
 using Hara.Application.ChangeRequests.Queries.GetVenueChangeRequests;
 using Hara.Application.Devices;
+using Hara.Application.Legal;
 using Hara.Application.Venue.Commands.RedeemVenueReservation;
 using Hara.Application.Venue.Commands.RemoveStaff;
 using Hara.Application.Venue.Commands.RespondToReservation;
@@ -33,6 +34,14 @@ public static class VenueEndpoints
             .WithName("GetMyVenueStatus");
 
         // This phone wants to hear about new requests while this person is signed in on it.
+        // Accepting the current texts: the one thing a restaurant account can do before it has.
+        venue.MapPost("/terms/accept", async (AcceptTermsCommand command, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(command, cancellationToken);
+                return Results.NoContent();
+            })
+            .WithName("AcceptTerms");
+
         venue.MapGet("/stats", async (ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new GetVenueStatsQuery(), cancellationToken)))
             .WithName("GetVenueStats");

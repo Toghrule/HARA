@@ -7,12 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hara.Application.Venue.Queries.GetMyVenueStatus;
 
-public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOfWork, ICurrentUserService currentUser)
+public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOfWork, ICurrentUserService currentUser, Legal.LegalAcceptance legal)
     : IRequestHandler<GetMyVenueStatusQuery, VenueMeDto>
 {
     public async Task<VenueMeDto> Handle(GetMyVenueStatusQuery request, CancellationToken cancellationToken)
     {
         var userId = currentUser.UserId ?? throw new ForbiddenException();
+
+        var pendingTerms = (await legal.PendingAsync(userId, cancellationToken)).Select(Legal.LegalAcceptance.NameOf).ToList();
 
         var member = await access.FindMembershipAsync(cancellationToken);
         if (member is not null)
@@ -24,7 +26,8 @@ public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOf
                 member.Status == MemberStatus.Approved && member.Restaurant is not null
                     ? VenueRestaurantDto.FromEntity(member.Restaurant)
                     : null,
-                null);
+                null,
+                pendingTerms);
         }
 
         // An owner has no membership until the admin creates their restaurant; until then their
@@ -36,11 +39,11 @@ public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOf
 
         if (submission is null)
         {
-            return new VenueMeDto("None", "None", null, null, null);
+            return new VenueMeDto("None", "None", null, null, null, pendingTerms);
         }
 
         var status = submission.Status == SubmissionStatus.Rejected ? MemberStatus.Rejected.ToString() : MemberStatus.Pending.ToString();
 
-        return new VenueMeDto(MemberRole.Owner.ToString(), status, submission.SubmitterName, null, submission.AdminNote);
+        return new VenueMeDto(MemberRole.Owner.ToString(), status, submission.SubmitterName, null, submission.AdminNote, pendingTerms);
     }
 }

@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
         services.AddValidatorsFromAssembly(assembly);
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+        services.AddScoped<Legal.LegalAcceptance>();
         services.AddScoped<Venue.VenueAccess>();
         services.AddScoped<Notifications.ReservationNotifier>();
 

@@ -49,6 +49,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<PasswordResetRequest> PasswordResetRequests => Set<PasswordResetRequest>();
 
+    public DbSet<TermsAcceptance> TermsAcceptances => Set<TermsAcceptance>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

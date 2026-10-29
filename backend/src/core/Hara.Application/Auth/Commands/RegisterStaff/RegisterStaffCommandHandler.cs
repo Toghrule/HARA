@@ -2,6 +2,7 @@ using FluentValidation.Results;
 using Hara.Application.Auth.Commands.Login;
 using Hara.Application.Common.Exceptions;
 using Hara.Application.Common.Interfaces;
+using Hara.Application.Legal;
 using Hara.Domain.Members;
 using Hara.Domain.Restaurants;
 using MediatR;
@@ -53,6 +54,9 @@ public class RegisterStaffCommandHandler(IIdentityService identityService, IUnit
                     Email = email,
                     PhoneNumber = string.IsNullOrWhiteSpace(request.PhoneNumber) ? null : request.PhoneNumber.Trim(),
                 },
+                cancellationToken);
+            await unitOfWork.Repository<TermsAcceptance>().AddAsync(
+                LegalAcceptance.Record(registration.UserId!.Value, LegalDocument.UserTerms, DateTimeOffset.UtcNow),
                 cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }

@@ -2,6 +2,8 @@ using FluentValidation.Results;
 using Hara.Application.Auth.Commands.Login;
 using Hara.Application.Common.Exceptions;
 using Hara.Application.Common.Interfaces;
+using Hara.Application.Legal;
+using Hara.Domain.Members;
 using Hara.Domain.Restaurants;
 using MediatR;
 using ValidationException = Hara.Application.Common.Exceptions.ValidationException;
@@ -36,6 +38,7 @@ public class RegisterOwnerCommandHandler(IIdentityService identityService, IUnit
                     OwnerUserId = registration.UserId,
                 },
                 cancellationToken);
+            await RecordAcceptancesAsync(registration.UserId!.Value, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
         catch
@@ -52,6 +55,16 @@ public class RegisterOwnerCommandHandler(IIdentityService identityService, IUnit
         }
 
         return new LoginResult(session.Token!, session.ExpiresAtUtc!.Value, session.RefreshToken, session.Roles);
+    }
+
+    /// <summary>Saves, with the registration, that the new owner accepted the current texts.</summary>
+    private async Task RecordAcceptancesAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var now = DateTimeOffset.UtcNow;
+        foreach (var document in LegalAcceptance.RequiredFor([Roles.Owner]))
+        {
+            await unitOfWork.Repository<TermsAcceptance>().AddAsync(LegalAcceptance.Record(userId, document, now), cancellationToken);
+        }
     }
 
     private static string? Clean(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
