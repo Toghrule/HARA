@@ -59,6 +59,10 @@ export interface RestaurantDto {
   lastModifiedAt: string | null;
   descriptionRu?: string | null;
   descriptionEn?: string | null;
+  /** Codes of the kinds of cuisine (see lib/cuisines.ts). */
+  cuisines?: string[];
+  /** Relative URLs of the photos, in display order. */
+  galleryUrls?: string[];
 }
 
 export interface CreateRestaurantBody {
@@ -72,6 +76,8 @@ export interface CreateRestaurantBody {
   discountPercent: number;
   descriptionRu?: string | null;
   descriptionEn?: string | null;
+  cuisines?: string[];
+  galleryUrls?: string[];
   /** Approves this registration and makes its owner the restaurant's owner. */
   fromSubmissionId?: string | null;
 }

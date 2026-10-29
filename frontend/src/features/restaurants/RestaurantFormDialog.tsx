@@ -10,6 +10,8 @@ import { Textarea } from "../../components/ui/Textarea";
 import { Checkbox } from "../../components/ui/Checkbox";
 import { FormField } from "../../components/ui/FormField";
 import { ImageUploader } from "../../components/ui/ImageUploader";
+import { GalleryUploader } from "../../components/ui/GalleryUploader";
+import { cuisineOptions, maxCuisines, maxGalleryPhotos } from "../../lib/cuisines";
 import { useToast } from "../../components/ui/Toast";
 import { ApiError } from "../../lib/api";
 import { parseCoordinatePair } from "../../lib/coordinates";
@@ -32,6 +34,8 @@ const schema = z.object({
     .min(0, "Must be between 0 and 100")
     .max(100, "Must be between 0 and 100"),
   isActive: z.boolean(),
+  cuisines: z.array(z.string()).max(maxCuisines),
+  galleryUrls: z.array(z.string()).max(maxGalleryPhotos),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -48,6 +52,8 @@ const emptyValues: FormValues = {
   imageUrl: "",
   discountPercent: 0,
   isActive: true,
+  cuisines: [],
+  galleryUrls: [],
 };
 
 /** Starting values for a new restaurant, e.g. taken from an approved submission. */
@@ -100,6 +106,8 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
             imageUrl: restaurant.imageUrl ?? "",
             discountPercent: restaurant.discountPercent,
             isActive: restaurant.isActive,
+            cuisines: restaurant.cuisines ?? [],
+            galleryUrls: restaurant.galleryUrls ?? [],
           }
         : {
             ...emptyValues,
@@ -112,6 +120,8 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
   }, [open, restaurant, prefill, reset]);
 
   const imageUrl = watch("imageUrl");
+  const cuisines = watch("cuisines");
+  const galleryUrls = watch("galleryUrls");
   const latitude = watch("latitude");
   const longitude = watch("longitude");
   const hasValidCoordinates = !Number.isNaN(latitude) && !Number.isNaN(longitude) && !(latitude === 0 && longitude === 0);
@@ -139,6 +149,8 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
       phoneNumber: values.phoneNumber || null,
       imageUrl: values.imageUrl || null,
       discountPercent: values.discountPercent,
+      cuisines: values.cuisines,
+      galleryUrls: values.galleryUrls,
     };
     try {
       if (isEdit && restaurant) {
@@ -242,6 +254,42 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
             value={imageUrl}
             onChange={(url) => setValue("imageUrl", url, { shouldDirty: true })}
           />
+        </FormField>
+        <FormField label={`Photos (up to ${maxGalleryPhotos})`}>
+          <GalleryUploader
+            category="restaurants"
+            value={galleryUrls}
+            max={maxGalleryPhotos}
+            onChange={(urls) => setValue("galleryUrls", urls, { shouldDirty: true })}
+          />
+        </FormField>
+        <FormField label={`Cuisine (up to ${maxCuisines})`}>
+          <div className="flex flex-wrap gap-2" data-testid="cuisine-options">
+            {cuisineOptions.map(({ code, label }) => {
+              const selected = cuisines.includes(code);
+              const full = !selected && cuisines.length >= maxCuisines;
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  aria-pressed={selected}
+                  disabled={full}
+                  onClick={() =>
+                    setValue("cuisines", selected ? cuisines.filter((c) => c !== code) : [...cuisines, code], {
+                      shouldDirty: true,
+                    })
+                  }
+                  className={
+                    selected
+                      ? "rounded-full border border-slate-900 bg-slate-900 px-3 py-1 text-sm text-white"
+                      : "rounded-full border border-slate-300 bg-white px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+                  }
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         </FormField>
         {isEdit && <Checkbox label="Active (visible in the mobile app)" {...register("isActive")} />}
         <div className="flex justify-end gap-2 pt-2">
