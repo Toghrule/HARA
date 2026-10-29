@@ -153,6 +153,52 @@ public class IdentityService(
         return PasswordCheck.Correct;
     }
 
+    public async Task<Guid?> FindUserIdByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+
+        return user?.Id;
+    }
+
+    public async Task<SetPasswordResult> SetPasswordAsync(Guid userId, string newPassword, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+        {
+            return new SetPasswordResult(false, new Dictionary<string, string[]> { ["email"] = ["This account no longer exists."] });
+        }
+
+        // The app has no email or SMS token providers, so Identity's reset-token route is unavailable: check the password
+        // against the same rules registration uses, then store its hash. Nothing changes if the password is refused.
+        var errors = new List<IdentityError>();
+        foreach (var validator in userManager.PasswordValidators)
+        {
+            var validation = await validator.ValidateAsync(userManager, user, newPassword);
+            if (!validation.Succeeded)
+            {
+                errors.AddRange(validation.Errors);
+            }
+        }
+
+        if (errors.Count > 0)
+        {
+            return new SetPasswordResult(false, ToErrors(IdentityResult.Failed(errors.ToArray())));
+        }
+
+        user.PasswordHash = userManager.PasswordHasher.HashPassword(user, newPassword);
+        var saved = await userManager.UpdateAsync(user);
+        if (!saved.Succeeded)
+        {
+            return new SetPasswordResult(false, ToErrors(saved));
+        }
+
+        await userManager.ResetAccessFailedCountAsync(user);
+        await userManager.SetLockoutEndDateAsync(user, null);
+        await RevokeAllAsync(user.Id, DateTimeOffset.UtcNow, cancellationToken);
+
+        return new SetPasswordResult(true, new Dictionary<string, string[]>());
+    }
+
     public async Task<IReadOnlyList<string>> GetRolesAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());

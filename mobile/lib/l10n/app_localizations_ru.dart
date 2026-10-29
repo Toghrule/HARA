@@ -814,4 +814,58 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get hoursHint =>
       'Время азербайджанское. Если закрываетесь после полуночи (с 18:00 до 02:00), просто укажите более позднее время закрытия. Одинаковое время открытия и закрытия означает круглосуточно.';
+
+  @override
+  String get forgotPasswordLink => 'Владелец забыл пароль?';
+
+  @override
+  String get resetTitle => 'Восстановление пароля';
+
+  @override
+  String get resetIntro =>
+      'Для владельцев ресторанов. Введите email, с которым вы регистрировались. HARA свяжется с вами, чтобы убедиться, что это вы, после чего здесь можно будет выбрать новый пароль.';
+
+  @override
+  String get resetSend => 'Отправить запрос';
+
+  @override
+  String get resetWaitingTitle => 'Ожидаем ответ HARA';
+
+  @override
+  String resetWaitingBody(String email) {
+    return 'Запрос для $email отправлен. HARA свяжется с вами, чтобы подтвердить, что это вы. Можно выйти с этого экрана: когда запрос одобрят, при возвращении приложение сразу попросит новый пароль.';
+  }
+
+  @override
+  String get resetCheckNow => 'Проверить сейчас';
+
+  @override
+  String get resetCancel => 'Отменить запрос';
+
+  @override
+  String get resetApprovedTitle => 'Выберите новый пароль';
+
+  @override
+  String get resetApprovedBody =>
+      'HARA подтвердила, что это вы. Выберите новый пароль; это доступно в течение одного часа.';
+
+  @override
+  String get resetNewPasswordLabel => 'Новый пароль';
+
+  @override
+  String get resetSave => 'Сохранить новый пароль';
+
+  @override
+  String get resetDone => 'Пароль изменён. Войдите с новым паролем.';
+
+  @override
+  String get resetRejected =>
+      'HARA не одобрила этот запрос. Если это действительно вы, свяжитесь с HARA и попросите снова.';
+
+  @override
+  String get resetAskAgain => 'Попросить снова';
+
+  @override
+  String get resetNoLongerValid =>
+      'Запрос больше недействителен. Отправьте новый.';
 }

@@ -5,6 +5,15 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Parol bərpası, yalnız owner üçün (2026-10-29, boşluq #13)
+- **Axın (istifadəçinin dizaynı):** owner giriş ekranında "Owner parolu unutdu?" basır, emailini yazır, sorğu admin panelə düşür ("Password resets" səhifəsi, menyuda gözləyən sorğuların sayı). Admin owner-ə ZƏNG edib onun olduğunu yoxlayır, sonra Approve edir. Owner-in tətbiqi (ekran açıq qalanda 5 saniyədən bir, bağlı olsa qayıdanda) təsdiqi görür və yeni parol + təkrarı formasını açır. Təsdiqdən sonra 1 SAAT vaxt var, bir dəfəlikdir.
+- **Təhlükəsizlik:** sorğu verən telefona bağlıdır. Sorğuda telefona gizli açar (`secret`) verilir, bazada yalnız SHA-256 hash saxlanır; status və tamamlama yalnız bu açarla işləyir (bədəndə, ünvanda yox). Başqası owner-in emailini bilib sorğu göndərsə də parolu dəyişə bilməz (açar onda deyil), və admin zəng edib yoxlayır. Cavab bütün emaillər üçün eynidir (hesab olub-olmadığı bilinmir); yalnız Owner rolu olan hesab üçün sorğu saxlanır (waiter və admin üçün saxlanmır). Yeni sorğu əvvəlki açıq sorğunu əvəz edir. Parol dəyişəndə bütün sessiyalar bağlanır və yanlış cəhdlərdən kilid açılır.
+- **Parol ADMİNƏ GÖRÜNMÜR və heç yerdə saxlanmır** (heş). İstifadəçinin "bütün parolları görüm" təklifi bu səbəbdən rədd edildi (bax söhbət), əvəzinə bu axın seçildi.
+- **Endpoint-lər:** anonim `POST /api/auth/password-reset/{request,status,complete}` (limit: sorğu 5/saat, status 600/saat, complete Login limiti); admin `GET /api/admin/password-resets[?status=]`, `POST .../{id}/approve|reject`. Cədvəl `PasswordResetRequests`, migration `AddPasswordResetRequests`. Admin paneldə zəng üçün owner adı, email, telefon, restoran görünür.
+- **Texniki qeyd:** Identity-də token provayderləri qeydiyyatda deyil, ona görə `ResetPassword` işləmir; `IdentityService.SetPasswordAsync` parolu Identity-nin qaydaları ilə yoxlayıb hash-ləyib yazır.
+- **Yoxlama:** API 46 yoxlama (izolə bazada, repoda YOXDUR), mobil +16 test, admin səhifə brauzerdə (təsdiq bazaya yazıldı, say göstəricisi yeniləndi). Testlər 2 real səhv tapdı (Identity token provayderi yoxdur; vaxtı keçən sorğuda ekran "yüklənir" vəziyyətində qalırdı).
+- **Edilmir / məhdudiyyət:** ofisiant üçün bərpa yoxdur (istifadəçi "yalnız owner" dedi; owner ofisiantı silib yenidən qeydiyyat etdirə bilər); email göndərilmir; admin-ə bildiriş yoxdur (yalnız paneldə say); admin yoxlamanı ZƏNG ilə öz məsuliyyətində edir, sistem bunu məcbur etmir; admin parolu bu axına daxil deyil. Mobil əsas ekranları cihazda (telefonda) yoxlanmayıb.
+
 ## İş saatları (2026-10-29, boşluq #6)
 - **Saxlanma:** `Restaurant.OpeningHours` (JSON sütunu, 7 gün: açılış/bağlanış dəqiqə ilə) və `LastRequestMinutesBeforeClose` (default 30). Boş siyahı = saat qoyulmayıb = restoran HƏMİŞƏ AÇIQ sayılır (mövcud restoranlar belədir). Migration `AddOpeningHours`.
 - **Məntiq:** `Hara.Domain/Restaurants/OpeningHours.cs` (`OpeningSchedule.Evaluate`), Azərbaycan vaxtı (UTC+4). Bağlanış saatı açılışdan əvvəl/bərabərdirsə gecə yarısından sonraya keçir (18:00-02:00); açılış = bağlanış 24 saat açıq deməkdir. Həftə sonu keçidi (şənbə gecəsi bazara) işləyir.
@@ -139,14 +148,14 @@ HARA/
 - Mobil app: `http://localhost:5174` (ilk açılış 20–60 san, boş qara səhifə = gözləyin).
 - Admin panel: `http://localhost:5173`. Login: `admin@hara.local`. **Gizli dəyərlər (2026-10-22) repoda deyil:** `Jwt:SigningKey` və `AdminUser:Password` `dotnet user-secrets`-dədir (`UserSecretsId` Hara.Api.csproj-da; baxmaq: `cd backend/src/ui/Hara.Api && dotnet user-secrets list`). Admin parolu `backend/secrets/admin-login.txt`-dədir (gitignore). **Əsas mənbə:** `backend/secrets/local-settings.json` (gitignore; appsettings ilə eyni forma: `{"Jwt":{"SigningKey":"..."},"AdminUser":{"Email":"admin@hara.local","Password":"..."}}`; Email Production-da məcburidir, çünki appsettings.json-da boşdur; admin hesabı indi hər mühitdə yaranır, Swagger yalnız Development-də), Program.cs onu yuxarı qovluqlarda axtarır, mühitdən asılı deyil (Production-da da işləyir). user-secrets də dəstəklənir. Yeni maşında bu faylı yaradın, yoxsa API açılmır. Admin hesabı yalnız YOXDURSA yaranır (seeder), parolu dəyişmək üçün DB-dən `admin@hara.local` sətrini silib API-ni yenidən başladın. Repo ictimaidir; köhnə dəyərlər git tarixçəsində qalıb, ona görə ləğv edilib (rotate).
 
-**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddOpeningHours`). Skript bunu etmir. Boş bazada əvvəl:
+**⚠ Təzə baza/maşında migration-lar AVTOMATİK tətbiq olunmur** (son migration: `AddPasswordResetRequests`). Skript bunu etmir. Boş bazada əvvəl:
 ```bash
 cd backend
 dotnet ef database update --project src/external/Hara.Persistence --startup-project src/ui/Hara.Api --context ApplicationDbContext
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (226 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
+**Testlər:** `cd mobile && flutter analyze && flutter test` (242 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 
@@ -245,7 +254,7 @@ Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend 
 10. Admin tərəfindən yaradılmış restoranların (məs. Mixək) sahibi YOXDUR: sahibkar qeydiyyatı həmişə YENİ restoran yaradır. "Bu mənim restoranımdır" (claim) axını və ya admin dəvəti lazımdır.
 11. Adminin sahibkarın həqiqətən restoranın sahibi olduğunu yoxlama qaydası təyin olunmayıb (zəng? VÖEN?); dublikat aşkarlanması (eyni ad+ünvan) yoxdur.
 12. Bir hesab = bir restoran: filiallar/şəbəkə sığmır.
-13. Sahibkarı dəyişmək və ya girişi itirəndə bərpa yolu yoxdur (parol sıfırlama hələ qurulmayıb).
+13. ✅ QİSMƏN HƏLL OLUNUB (2026-10-29): owner parolunu admin təsdiqi ilə bərpa edə bilir (bax "Parol bərpası"). Ofisiant üçün, email ilə bərpa və sahibkarı dəyişmək hələ yoxdur.
 14. Endirim qaydaları yalnız bir faizdir: saat/gün məhdudiyyəti, gündə maksimum say, istisnalar (spirtli içki), digər kampaniya ilə birləşmə yoxdur.
 
 **D. Müştəri tərəfi**

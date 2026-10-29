@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:hara/core/auth/auth_controller.dart';
 import 'package:hara/core/auth/auth_repository.dart';
 import 'package:hara/core/auth/auth_session.dart';
+import 'package:hara/core/auth/password_reset_storage.dart';
 import 'package:hara/core/auth/session_storage.dart';
 import 'package:hara/core/l10n/locale_provider.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/core/push/push_service.dart';
 import 'package:hara/core/router/app_router.dart';
 import 'package:hara/features/auth/data/customer_choice.dart';
+import 'package:hara/features/auth/data/password_reset_repository.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
 import 'package:hara/features/restaurants/data/restaurant_sort.dart';
 import 'package:hara/features/restaurants/data/restaurants_repository.dart';
@@ -43,6 +45,54 @@ class MemorySessionStorage implements SessionStorage {
 
   @override
   Future<void> clear() async => saved = null;
+}
+
+class MemoryPasswordResetStorage implements PasswordResetStorage {
+  PasswordResetTicket? saved;
+
+  @override
+  Future<PasswordResetTicket?> read() async => saved;
+
+  @override
+  Future<void> write(PasswordResetTicket ticket) async => saved = ticket;
+
+  @override
+  Future<void> clear() async => saved = null;
+}
+
+/// A fake password-reset server: `state` is what HARA has decided so far, and the calls are remembered.
+class FakePasswordResetRepository extends PasswordResetRepository {
+  FakePasswordResetRepository() : super(ApiClient());
+
+  PasswordResetState state = PasswordResetState.pending;
+  final List<String> requested = [];
+  final List<String> completedWith = [];
+  int statusCalls = 0;
+  Object? requestError;
+  Object? statusError;
+  Object? completeError;
+
+  @override
+  Future<PasswordResetTicket> request(String email) async {
+    if (requestError != null) throw requestError!;
+    requested.add(email);
+
+    return PasswordResetTicket(requestId: 'req-1', secret: 'secret-1', email: email);
+  }
+
+  @override
+  Future<PasswordResetState> status(PasswordResetTicket ticket) async {
+    statusCalls++;
+    if (statusError != null) throw statusError!;
+
+    return state;
+  }
+
+  @override
+  Future<void> complete(PasswordResetTicket ticket, String newPassword) async {
+    if (completeError != null) throw completeError!;
+    completedWith.add(newPassword);
+  }
 }
 
 DioException serverError(int status, [Object? data]) {
@@ -176,6 +226,8 @@ class AppHarness {
     this.pushService,
   })  : auth = FakeAuthRepository(),
         storage = MemorySessionStorage(session),
+        passwordReset = FakePasswordResetRepository(),
+        resetStorage = MemoryPasswordResetStorage(),
         restaurants = FakeRestaurantsRepository(restaurants ?? const [cafeOne, cafeTwo]);
 
   final AuthSession? session;
@@ -184,6 +236,8 @@ class AppHarness {
   final PushService? pushService;
   final FakeAuthRepository auth;
   final MemorySessionStorage storage;
+  final FakePasswordResetRepository passwordReset;
+  final MemoryPasswordResetStorage resetStorage;
   final FakeRestaurantsRepository restaurants;
 
   late ProviderContainer container;
@@ -198,6 +252,8 @@ class AppHarness {
           customerChoiceProvider.overrideWith((ref) => CustomerChoice(continuedAsCustomer)),
           authControllerProvider.overrideWith((ref) => AuthController(auth, storage, session)),
           restaurantsRepositoryProvider.overrideWithValue(restaurants),
+          passwordResetRepositoryProvider.overrideWithValue(passwordReset),
+          passwordResetStorageProvider.overrideWithValue(resetStorage),
           if (venueRepository != null) venueRepositoryProvider.overrideWithValue(venueRepository!),
           if (pushService != null) pushServiceProvider.overrideWithValue(pushService!),
         ],

@@ -1473,6 +1473,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Times are Azerbaijan time. If you close after midnight (18:00 to 02:00), just set the later closing time. The same opening and closing time means open all day.'**
   String get hoursHint;
+
+  /// No description provided for @forgotPasswordLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner forgot the password?'**
+  String get forgotPasswordLink;
+
+  /// No description provided for @resetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset the password'**
+  String get resetTitle;
+
+  /// No description provided for @resetIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'For restaurant owners. Enter the email you signed up with. HARA will contact you to make sure it is you, and then you can choose a new password here.'**
+  String get resetIntro;
+
+  /// No description provided for @resetSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the request'**
+  String get resetSend;
+
+  /// No description provided for @resetWaitingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for HARA'**
+  String get resetWaitingTitle;
+
+  /// No description provided for @resetWaitingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request for {email} was sent. HARA will contact you to confirm it is you. You can leave this screen: when you come back it will ask for the new password as soon as the request is approved.'**
+  String resetWaitingBody(String email);
+
+  /// No description provided for @resetCheckNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Check now'**
+  String get resetCheckNow;
+
+  /// No description provided for @resetCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel the request'**
+  String get resetCancel;
+
+  /// No description provided for @resetApprovedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a new password'**
+  String get resetApprovedTitle;
+
+  /// No description provided for @resetApprovedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'HARA confirmed it is you. Choose a new password; this stays open for one hour.'**
+  String get resetApprovedBody;
+
+  /// No description provided for @resetNewPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get resetNewPasswordLabel;
+
+  /// No description provided for @resetSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the new password'**
+  String get resetSave;
+
+  /// No description provided for @resetDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed. Sign in with the new password.'**
+  String get resetDone;
+
+  /// No description provided for @resetRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'HARA did not approve this request. If it is really you, contact HARA and ask again.'**
+  String get resetRejected;
+
+  /// No description provided for @resetAskAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask again'**
+  String get resetAskAgain;
+
+  /// No description provided for @resetNoLongerValid.
+  ///
+  /// In en, this message translates to:
+  /// **'This request is no longer valid. Please send a new one.'**
+  String get resetNoLongerValid;
 }
 
 class _AppLocalizationsDelegate

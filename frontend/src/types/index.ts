@@ -304,3 +304,23 @@ export interface RestaurantStatsDto {
   lastMonth: StatsPeriodDto;
   allTime: StatsPeriodDto;
 }
+
+export enum PasswordResetStatus {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2,
+  Completed = 3,
+  Expired = 4,
+}
+
+export interface PasswordResetRequestDto {
+  id: string;
+  email: string;
+  ownerName: string | null;
+  phoneNumber: string | null;
+  restaurantName: string | null;
+  createdAt: string;
+  status: PasswordResetStatus;
+  decidedAt: string | null;
+  expiresAt: string | null;
+}

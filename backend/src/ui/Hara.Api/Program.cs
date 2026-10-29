@@ -140,6 +140,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "healthy" }))
     .AllowAnonymous();
 
 app.MapAuthEndpoints();
+app.MapPasswordResetsEndpoints();
 app.MapRestaurantsEndpoints();
 app.MapSubmissionsEndpoints();
 app.MapReservationsEndpoints();

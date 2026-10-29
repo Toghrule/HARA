@@ -7,6 +7,7 @@ import {
   FilePenLine,
   Image,
   Inbox,
+  KeyRound,
   LayoutDashboard,
   LogOut,
   Phone,
@@ -15,12 +16,15 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../lib/auth-context";
 import { cn } from "../../lib/utils";
+import { usePasswordResets } from "../../features/password-resets/api";
+import { PasswordResetStatus } from "../../types";
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/restaurants", label: "Restaurants", icon: UtensilsCrossed, end: false },
   { to: "/reservations", label: "Reservations", icon: CalendarCheck, end: false },
   { to: "/statistics", label: "Statistics", icon: BarChart3, end: false },
+  { to: "/password-resets", label: "Password resets", icon: KeyRound, end: false },
   { to: "/submissions", label: "Submissions", icon: Inbox, end: false },
   { to: "/change-requests", label: "Change requests", icon: FilePenLine, end: false },
   { to: "/advertisements", label: "Advertisements", icon: Image, end: false },
@@ -32,6 +36,8 @@ const navItems = [
 
 export function AppShell() {
   const { logout } = useAuth();
+  // Owners waiting for an answer: the number beside the menu entry, so a request is not missed.
+  const waitingResets = usePasswordResets(PasswordResetStatus.Pending).data?.length ?? 0;
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -60,6 +66,14 @@ export function AppShell() {
             >
               <Icon className="h-4 w-4" />
               {label}
+              {to === "/password-resets" && waitingResets > 0 && (
+                <span
+                  data-testid="password-resets-badge"
+                  className="ml-auto rounded-full bg-red-600 px-2 py-0.5 text-xs font-semibold text-white"
+                >
+                  {waitingResets}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

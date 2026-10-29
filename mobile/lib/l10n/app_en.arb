@@ -276,5 +276,22 @@
   "hoursRemove": "Remove hours (always open)",
   "hoursSave": "Save",
   "hoursSaved": "Opening hours saved.",
-  "hoursHint": "Times are Azerbaijan time. If you close after midnight (18:00 to 02:00), just set the later closing time. The same opening and closing time means open all day."
+  "hoursHint": "Times are Azerbaijan time. If you close after midnight (18:00 to 02:00), just set the later closing time. The same opening and closing time means open all day.",
+  "forgotPasswordLink": "Owner forgot the password?",
+  "resetTitle": "Reset the password",
+  "resetIntro": "For restaurant owners. Enter the email you signed up with. HARA will contact you to make sure it is you, and then you can choose a new password here.",
+  "resetSend": "Send the request",
+  "resetWaitingTitle": "Waiting for HARA",
+  "resetWaitingBody": "Your request for {email} was sent. HARA will contact you to confirm it is you. You can leave this screen: when you come back it will ask for the new password as soon as the request is approved.",
+  "@resetWaitingBody": {"placeholders":{"email":{"type":"String"}}},
+  "resetCheckNow": "Check now",
+  "resetCancel": "Cancel the request",
+  "resetApprovedTitle": "Choose a new password",
+  "resetApprovedBody": "HARA confirmed it is you. Choose a new password; this stays open for one hour.",
+  "resetNewPasswordLabel": "New password",
+  "resetSave": "Save the new password",
+  "resetDone": "Password changed. Sign in with the new password.",
+  "resetRejected": "HARA did not approve this request. If it is really you, contact HARA and ask again.",
+  "resetAskAgain": "Ask again",
+  "resetNoLongerValid": "This request is no longer valid. Please send a new one."
 }

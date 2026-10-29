@@ -35,6 +35,15 @@ public interface IIdentityService
     /// </summary>
     Task<PasswordCheck> CheckPasswordAsync(Guid userId, string password, CancellationToken cancellationToken = default);
 
+    /// <summary>The account with this sign-in email, or <c>null</c> if there is none.</summary>
+    Task<Guid?> FindUserIdByEmailAsync(string email, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Sets a new password without asking for the old one (an owner who forgot it, once HARA approved). The account is signed
+    /// out everywhere and a lockout from wrong guesses is lifted, so the new password works at once.
+    /// </summary>
+    Task<SetPasswordResult> SetPasswordAsync(Guid userId, string newPassword, CancellationToken cancellationToken = default);
+
     /// <summary>The account's roles, or an empty list if it doesn't exist.</summary>
     Task<IReadOnlyList<string>> GetRolesAsync(Guid userId, CancellationToken cancellationToken = default);
 }
@@ -59,6 +68,11 @@ public sealed record AuthenticationResult(
 /// <param name="UserId">The new account, when <paramref name="Succeeded"/> is <c>true</c>.</param>
 /// <param name="Errors">Why it failed (e.g. the email is taken or the password is too weak), keyed by field.</param>
 public sealed record RegistrationResult(bool Succeeded, Guid? UserId, IReadOnlyDictionary<string, string[]> Errors);
+
+/// <summary>Outcome of <see cref="IIdentityService.SetPasswordAsync"/>.</summary>
+/// <param name="Succeeded">Whether the password was changed.</param>
+/// <param name="Errors">Why not (the password is too weak, or the account is gone), keyed by field.</param>
+public sealed record SetPasswordResult(bool Succeeded, IReadOnlyDictionary<string, string[]> Errors);
 
 /// <summary>Outcome of <see cref="IIdentityService.CheckPasswordAsync"/>.</summary>
 public enum PasswordCheck

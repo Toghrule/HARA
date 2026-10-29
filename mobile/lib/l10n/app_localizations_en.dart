@@ -816,4 +816,58 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get hoursHint =>
       'Times are Azerbaijan time. If you close after midnight (18:00 to 02:00), just set the later closing time. The same opening and closing time means open all day.';
+
+  @override
+  String get forgotPasswordLink => 'Owner forgot the password?';
+
+  @override
+  String get resetTitle => 'Reset the password';
+
+  @override
+  String get resetIntro =>
+      'For restaurant owners. Enter the email you signed up with. HARA will contact you to make sure it is you, and then you can choose a new password here.';
+
+  @override
+  String get resetSend => 'Send the request';
+
+  @override
+  String get resetWaitingTitle => 'Waiting for HARA';
+
+  @override
+  String resetWaitingBody(String email) {
+    return 'Your request for $email was sent. HARA will contact you to confirm it is you. You can leave this screen: when you come back it will ask for the new password as soon as the request is approved.';
+  }
+
+  @override
+  String get resetCheckNow => 'Check now';
+
+  @override
+  String get resetCancel => 'Cancel the request';
+
+  @override
+  String get resetApprovedTitle => 'Choose a new password';
+
+  @override
+  String get resetApprovedBody =>
+      'HARA confirmed it is you. Choose a new password; this stays open for one hour.';
+
+  @override
+  String get resetNewPasswordLabel => 'New password';
+
+  @override
+  String get resetSave => 'Save the new password';
+
+  @override
+  String get resetDone => 'Password changed. Sign in with the new password.';
+
+  @override
+  String get resetRejected =>
+      'HARA did not approve this request. If it is really you, contact HARA and ask again.';
+
+  @override
+  String get resetAskAgain => 'Ask again';
+
+  @override
+  String get resetNoLongerValid =>
+      'This request is no longer valid. Please send a new one.';
 }

@@ -816,4 +816,58 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get hoursHint =>
       'Vaxt Azərbaycan vaxtı ilədir. Gecə yarısından sonra bağlanırsınızsa (18:00-dan 02:00-dək), sadəcə sonrakı bağlanma saatını yazın. Açılış və bağlanış saatı eynidirsə, gün boyu açıq sayılır.';
+
+  @override
+  String get forgotPasswordLink => 'Owner parolu unutdu?';
+
+  @override
+  String get resetTitle => 'Parolu bərpa et';
+
+  @override
+  String get resetIntro =>
+      'Restoran sahibləri üçündür. Qeydiyyatdan keçdiyiniz emaili yazın. HARA sizin olduğunuzu təsdiqləmək üçün sizinlə əlaqə saxlayacaq, sonra burada yeni parol seçə biləcəksiniz.';
+
+  @override
+  String get resetSend => 'Sorğunu göndər';
+
+  @override
+  String get resetWaitingTitle => 'HARA-nın cavabı gözlənilir';
+
+  @override
+  String resetWaitingBody(String email) {
+    return '$email üçün sorğunuz göndərildi. HARA sizin olduğunuzu təsdiqləmək üçün sizinlə əlaqə saxlayacaq. Bu ekrandan çıxa bilərsiniz: qayıdanda sorğu təsdiqlənibsə, dərhal yeni parol soruşacaq.';
+  }
+
+  @override
+  String get resetCheckNow => 'İndi yoxla';
+
+  @override
+  String get resetCancel => 'Sorğunu ləğv et';
+
+  @override
+  String get resetApprovedTitle => 'Yeni parol seçin';
+
+  @override
+  String get resetApprovedBody =>
+      'HARA sizin olduğunuzu təsdiqlədi. Yeni parol seçin; bu imkan bir saat açıq qalır.';
+
+  @override
+  String get resetNewPasswordLabel => 'Yeni parol';
+
+  @override
+  String get resetSave => 'Yeni parolu yadda saxla';
+
+  @override
+  String get resetDone => 'Parol dəyişdirildi. Yeni parolla daxil olun.';
+
+  @override
+  String get resetRejected =>
+      'HARA bu sorğunu təsdiqləmədi. Həqiqətən siz olsanız, HARA ilə əlaqə saxlayıb yenidən xahiş edin.';
+
+  @override
+  String get resetAskAgain => 'Yenidən xahiş et';
+
+  @override
+  String get resetNoLongerValid =>
+      'Bu sorğunun vaxtı keçib və ya artıq etibarsızdır. Zəhmət olmasa yenisini göndərin.';
 }

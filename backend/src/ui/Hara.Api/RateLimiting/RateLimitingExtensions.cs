@@ -14,6 +14,8 @@ public static class RateLimitPolicies
     public const string ReservationStatusChecks = "ReservationStatusChecks";
     public const string Login = "Login";
     public const string Devices = "Devices";
+    public const string PasswordResetRequests = "PasswordResetRequests";
+    public const string PasswordResetChecks = "PasswordResetChecks";
 }
 
 public sealed class RateLimitPolicyOptions
@@ -49,6 +51,9 @@ public static class RateLimitingExtensions
             AddPerIpPolicy(options, configuration, RateLimitPolicies.Submissions, defaultPermitLimit: 3);
             AddPerIpPolicy(options, configuration, RateLimitPolicies.Login, defaultPermitLimit: 10, defaultWindowMinutes: 10);
             AddPerIpPolicy(options, configuration, RateLimitPolicies.Devices, defaultPermitLimit: 60);
+            AddPerIpPolicy(options, configuration, RateLimitPolicies.PasswordResetRequests, defaultPermitLimit: 5);
+            // The app asks every few seconds while the owner waits for HARA's answer.
+            AddPerIpPolicy(options, configuration, RateLimitPolicies.PasswordResetChecks, defaultPermitLimit: 600);
         });
 
         return services;

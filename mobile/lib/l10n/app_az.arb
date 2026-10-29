@@ -240,5 +240,21 @@
   "hoursRemove": "Saatları sil (həmişə açıq)",
   "hoursSave": "Yadda saxla",
   "hoursSaved": "İş saatları yadda saxlanıldı.",
-  "hoursHint": "Vaxt Azərbaycan vaxtı ilədir. Gecə yarısından sonra bağlanırsınızsa (18:00-dan 02:00-dək), sadəcə sonrakı bağlanma saatını yazın. Açılış və bağlanış saatı eynidirsə, gün boyu açıq sayılır."
+  "hoursHint": "Vaxt Azərbaycan vaxtı ilədir. Gecə yarısından sonra bağlanırsınızsa (18:00-dan 02:00-dək), sadəcə sonrakı bağlanma saatını yazın. Açılış və bağlanış saatı eynidirsə, gün boyu açıq sayılır.",
+  "forgotPasswordLink": "Owner parolu unutdu?",
+  "resetTitle": "Parolu bərpa et",
+  "resetIntro": "Restoran sahibləri üçündür. Qeydiyyatdan keçdiyiniz emaili yazın. HARA sizin olduğunuzu təsdiqləmək üçün sizinlə əlaqə saxlayacaq, sonra burada yeni parol seçə biləcəksiniz.",
+  "resetSend": "Sorğunu göndər",
+  "resetWaitingTitle": "HARA-nın cavabı gözlənilir",
+  "resetWaitingBody": "{email} üçün sorğunuz göndərildi. HARA sizin olduğunuzu təsdiqləmək üçün sizinlə əlaqə saxlayacaq. Bu ekrandan çıxa bilərsiniz: qayıdanda sorğu təsdiqlənibsə, dərhal yeni parol soruşacaq.",
+  "resetCheckNow": "İndi yoxla",
+  "resetCancel": "Sorğunu ləğv et",
+  "resetApprovedTitle": "Yeni parol seçin",
+  "resetApprovedBody": "HARA sizin olduğunuzu təsdiqlədi. Yeni parol seçin; bu imkan bir saat açıq qalır.",
+  "resetNewPasswordLabel": "Yeni parol",
+  "resetSave": "Yeni parolu yadda saxla",
+  "resetDone": "Parol dəyişdirildi. Yeni parolla daxil olun.",
+  "resetRejected": "HARA bu sorğunu təsdiqləmədi. Həqiqətən siz olsanız, HARA ilə əlaqə saxlayıb yenidən xahiş edin.",
+  "resetAskAgain": "Yenidən xahiş et",
+  "resetNoLongerValid": "Bu sorğunun vaxtı keçib və ya artıq etibarsızdır. Zəhmət olmasa yenisini göndərin."
 }
