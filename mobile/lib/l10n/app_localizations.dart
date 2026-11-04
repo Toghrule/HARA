@@ -1477,7 +1477,7 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPasswordLink.
   ///
   /// In en, this message translates to:
-  /// **'Owner forgot the password?'**
+  /// **'Forgot the password?'**
   String get forgotPasswordLink;
 
   /// No description provided for @resetTitle.
@@ -1489,7 +1489,7 @@ abstract class AppLocalizations {
   /// No description provided for @resetIntro.
   ///
   /// In en, this message translates to:
-  /// **'For restaurant owners. Enter the email you signed up with. HARA will contact you to make sure it is you, and then you can choose a new password here.'**
+  /// **'For restaurant owners and waiters. Enter the email you signed up with. HARA will contact you to make sure it is you, and then you can choose a new password here.'**
   String get resetIntro;
 
   /// No description provided for @resetSend.

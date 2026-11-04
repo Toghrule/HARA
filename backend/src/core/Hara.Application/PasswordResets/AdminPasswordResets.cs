@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hara.Application.PasswordResets;
 
-/// <summary>The owners' password reset requests, newest first, for the admin to decide.</summary>
+/// <summary>The owners' and waiters' password reset requests, newest first, for the admin to decide.</summary>
 /// <param name="Status">Only requests in this (effective) state; all of them when <c>null</c>.</param>
 public sealed record GetPasswordResetRequestsQuery(PasswordResetStatus? Status) : IRequest<IReadOnlyList<PasswordResetRequestDto>>;
 
@@ -24,7 +24,8 @@ public sealed record PasswordResetRequestDto(
     DateTimeOffset CreatedAt,
     PasswordResetStatus Status,
     DateTimeOffset? DecidedAt,
-    DateTimeOffset? ExpiresAt);
+    DateTimeOffset? ExpiresAt,
+    bool IsWaiter = false);
 
 public class DecidePasswordResetCommandValidator : AbstractValidator<DecidePasswordResetCommand>
 {
@@ -67,7 +68,8 @@ internal static class PasswordResetDtos
                 request.CreatedAt,
                 request.EffectiveStatus(now),
                 request.DecidedAt,
-                request.ExpiresAt);
+                request.ExpiresAt,
+                member?.Role == MemberRole.Staff);
         }).ToList();
     }
 }

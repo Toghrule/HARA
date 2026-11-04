@@ -31,11 +31,12 @@ public class RequestPasswordResetCommandHandler(IIdentityService identityService
         var requestId = Guid.NewGuid();
 
         var userId = await identityService.FindUserIdByEmailAsync(email, cancellationToken);
-        var isOwner = userId is not null && (await identityService.GetRolesAsync(userId.Value, cancellationToken)).Contains(Roles.Owner);
+        var roles = userId is null ? [] : await identityService.GetRolesAsync(userId.Value, cancellationToken);
+        var isRestaurantAccount = roles.Contains(Roles.Owner) || roles.Contains(Roles.Staff);
 
-        // The answer is the same whether or not the email belongs to an owner, so this cannot be used to find out who has an
-        // account. Only an owner's request is stored, and it is the only kind HARA ever sees.
-        if (isOwner)
+        // The answer is the same whether or not the email belongs to an owner or a waiter, so this cannot be used to find out
+        // who has an account. Only their requests are stored, and they are the only kind HARA ever sees.
+        if (isRestaurantAccount)
         {
             var repository = unitOfWork.Repository<PasswordResetRequest>();
 

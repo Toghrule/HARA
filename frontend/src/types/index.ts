@@ -323,6 +323,7 @@ export interface PasswordResetRequestDto {
   id: string;
   email: string;
   ownerName: string | null;
+  isWaiter?: boolean;
   phoneNumber: string | null;
   restaurantName: string | null;
   createdAt: string;

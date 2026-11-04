@@ -58,7 +58,7 @@ export function PasswordResetsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Password resets"
-        description="Owners who forgot their password. Call the owner on the number shown and make sure it is really them before approving: once approved, their phone opens a form for a new password for one hour."
+        description="Owners and waiters who forgot their password. Call them on the number shown (for a waiter with no number, call the restaurant) and make sure it is really them before approving: once approved, their phone opens a form for a new password for one hour."
       />
 
       <div className="flex gap-1 border-b border-slate-200">
@@ -99,7 +99,10 @@ export function PasswordResetsPage() {
               {data.map((request) => (
                 <tr key={request.id}>
                   <td className="px-4 py-3">
-                    <p className="font-medium text-slate-900">{request.ownerName ?? "—"}</p>
+                    <p className="font-medium text-slate-900">
+                      {request.ownerName ?? "—"}
+                      {request.isWaiter && <span className="ml-2 rounded bg-slate-100 px-1.5 py-0.5 text-xs font-normal text-slate-600">Waiter</span>}
+                    </p>
                     <p className="text-xs text-slate-500">{request.email}</p>
                     <p className="text-xs text-slate-500">{request.phoneNumber ?? "No phone number on file"}</p>
                   </td>

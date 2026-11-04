@@ -818,14 +818,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Times are Azerbaijan time. If you close after midnight (18:00 to 02:00), just set the later closing time. The same opening and closing time means open all day.';
 
   @override
-  String get forgotPasswordLink => 'Owner forgot the password?';
+  String get forgotPasswordLink => 'Forgot the password?';
 
   @override
   String get resetTitle => 'Reset the password';
 
   @override
   String get resetIntro =>
-      'For restaurant owners. Enter the email you signed up with. HARA will contact you to make sure it is you, and then you can choose a new password here.';
+      'For restaurant owners and waiters. Enter the email you signed up with. HARA will contact you to make sure it is you, and then you can choose a new password here.';
 
   @override
   String get resetSend => 'Send the request';

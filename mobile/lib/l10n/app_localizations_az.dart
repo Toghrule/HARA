@@ -818,14 +818,14 @@ class AppLocalizationsAz extends AppLocalizations {
       'Vaxt Azərbaycan vaxtı ilədir. Gecə yarısından sonra bağlanırsınızsa (18:00-dan 02:00-dək), sadəcə sonrakı bağlanma saatını yazın. Açılış və bağlanış saatı eynidirsə, gün boyu açıq sayılır.';
 
   @override
-  String get forgotPasswordLink => 'Owner parolu unutdu?';
+  String get forgotPasswordLink => 'Parolu unutdunuz?';
 
   @override
   String get resetTitle => 'Parolu bərpa et';
 
   @override
   String get resetIntro =>
-      'Restoran sahibləri üçündür. Qeydiyyatdan keçdiyiniz emaili yazın. HARA sizin olduğunuzu təsdiqləmək üçün sizinlə əlaqə saxlayacaq, sonra burada yeni parol seçə biləcəksiniz.';
+      'Restoran sahibləri və ofisiantlar üçündür. Qeydiyyatdan keçdiyiniz emaili yazın. HARA sizin olduğunuzu təsdiqləmək üçün sizinlə əlaqə saxlayacaq, sonra burada yeni parol seçə biləcəksiniz.';
 
   @override
   String get resetSend => 'Sorğunu göndər';
