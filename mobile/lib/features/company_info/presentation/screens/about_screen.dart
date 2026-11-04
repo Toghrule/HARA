@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/theme/theme_mode_provider.dart';
 import '../../../../core/utils/open_link.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/language_menu.dart';
@@ -50,6 +51,24 @@ class AboutScreen extends ConsumerWidget {
               title: Text(l10n.privacyPolicy),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/privacy'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.brightness_6_outlined),
+              title: Text(l10n.appearanceTitle),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: SegmentedButton<ThemeMode>(
+                  key: const Key('themeMode'),
+                  showSelectedIcon: false,
+                  segments: [
+                    ButtonSegment(value: ThemeMode.system, label: Text(l10n.themeSystem)),
+                    ButtonSegment(value: ThemeMode.light, label: Text(l10n.themeLight)),
+                    ButtonSegment(value: ThemeMode.dark, label: Text(l10n.themeDark)),
+                  ],
+                  selected: {ref.watch(themeModeProvider)},
+                  onSelectionChanged: (selection) => ref.read(themeModeProvider.notifier).set(selection.first),
+                ),
+              ),
             ),
             ListTile(
               key: const Key('aboutTerms'),

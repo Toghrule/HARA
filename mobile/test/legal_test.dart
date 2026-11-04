@@ -102,6 +102,8 @@ void main() {
       app.router.go('/about');
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.byKey(const Key('aboutAgreement')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('aboutAgreement')));
       await tester.pumpAndSettle();
 
@@ -110,6 +112,8 @@ void main() {
       expect(find.text('What the restaurant promises'), findsOneWidget);
 
       app.router.go('/about');
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('aboutTerms')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('aboutTerms')));
       await tester.pumpAndSettle();

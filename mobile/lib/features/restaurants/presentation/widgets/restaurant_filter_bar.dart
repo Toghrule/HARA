@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../data/restaurant_filters.dart';
 import '../location_prompt.dart';
 import '../providers/restaurant_filters_provider.dart';
+import '../providers/restaurant_sort_provider.dart';
 
 /// A row of chips under the search box: open now, nearest, favourites, and one per cuisine.
 class RestaurantFilterBar extends ConsumerWidget {
@@ -15,6 +16,7 @@ class RestaurantFilterBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final filters = ref.watch(restaurantFiltersProvider);
+    final sort = ref.watch(restaurantSortProvider);
     final notifier = ref.read(restaurantFiltersProvider.notifier);
     final locationOffered = ref.watch(locationServiceProvider).isSupported;
 
@@ -24,6 +26,15 @@ class RestaurantFilterBar extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+            child: ActionChip(
+              key: const Key('sortButton'),
+              avatar: const Icon(Icons.swap_vert, size: 18),
+              label: Text(sort.label),
+              onPressed: () => ref.read(restaurantSortProvider.notifier).toggle(),
+            ),
+          ),
           _chip(
             key: const Key('chip-open'),
             label: l10n.filterOpenNow,

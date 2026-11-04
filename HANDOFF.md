@@ -5,6 +5,16 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Dizayn: tema, loqo, ikon (2026-11-04)
+- **Mənbə:** istifadəçinin loqosu `mobile/assets/logo/H.png` (2000x2000, QARA fon, qızılı-bənövşəyi qradiyentli H, ortada bənövşəyi pin, altda kiçik "hara" yazısı). Rənglər: qızılı `#E4B744`, mis `#BB8069`, bənövşəyi `#9E4CB6` (pin) və `#7B2D9E`.
+- **İki tema (istifadəçi hər ikisini bəyəndi):** AÇIQ = krem fon `#FBF3E6`, bənövşəyi düymələr, qızılı vurğu; TÜND = loqonun qara fonu `#0F0A14`, qızılı düymələr, bənövşəyi vurğu. İkisində də yuxarı zolaq QARADIR (loqo öz qara fonunda, başlıq qızılı). `lib/core/theme/app_theme.dart` (ColorScheme + komponent temaları; mətn/fon kontrastı testlə yoxlanır, WCAG AA). Müştəri cihazın temasını izləyir, "Haqqında" ekranında "Görünüş" (Telefon ayarı / Açıq / Tünd) ilə əl ilə dəyişir və telefonda yadda saxlanır (`theme_mode_provider.dart`).
+- **Loqo zolaqda:** `HaraLogo` = `assets/logo/mark.png` (yalnız H+pin) + qızılı "HARA" mətni (tam loqodakı kiçik "hara" yazısı zolaq ölçüsündə oxunmur). `assets/logo/logo.png` (tam loqo) açılış ekranı üçündür.
+- **İkon və ad:** `dart run flutter_launcher_icons` (pubspec-də ayar) `assets/logo/icon.png` və `icon_foreground.png`-dən Android (adaptiv, qara fon) və iOS ikonlarını yaradır; ikonda yalnız H+pin. Tətbiq adı `HARA` (Android `android:label`, iOS `CFBundleDisplayName`). Android açılış ekranı: qara fon + `drawable/splash_logo.png`. Mənbə şəkilləri yenidən düzəldiləndə (məs. şəffaf fonlu yeni loqo gələndə) ikonları həmin əmrlə yenidən yarat.
+- **Restoran siyahısı:** sətir əvəzinə ŞƏKİLLİ KART (örtük şəkli və ya boş yer, endirim nişanı `10%`, ürək, ad, məlumat sətri, xəritə və "Rezerv" düyməsi). A-Z/Z-A düyməsi yuxarı zolaqdan çıp sırasına köçürüldü (dar ekranda sığmırdı).
+- **Brauzerdə baxıb təsdiq edilib** (Flutter web, 360 genişlik, açıq və tünd): siyahı və restoran səhifəsi. Telefonda (APK) görünüşü hələ BAXILMAYIB. Restoran şəkilləri yüklənməyib, kartlarda boş yer göstəricisi görünür.
+- **Hələ dizayn edilməyənlər:** rezerv pəncərəsi/kodu ekranı, restoran (owner/ofisiant) paneli, qeydiyyat və giriş ekranları yeni temanın rəngləri ilə avtomatik görünür, amma ayrıca "maket"lə işlənməyib.
+- **Test:** 305 mobil test. Qeyri-sabit `active_reservations_test` (vaxt 29:5x tələb edirdi, yüklü kompüterdə düşürdü) düzəldildi.
+
 ## İstifadə şərtləri və restoran razılaşması (2026-10-29, boşluq #21)
 - **İki mətn (QARALAMA, hüquqi baxış LAZIMDIR):** "İstifadə şərtləri" (hamı üçün: müştəri, owner, ofisiant) və "Restoran razılaşması" (owner: endirimi vermək, 15 dəq cavab, 30 dəq masa, telefon nömrələrindən yalnız rezerv üçün istifadə, məlumatların düzgünlüyü, ofisiantlara cavabdehlik, dayandırma/çıxış, mübahisə, Azərbaycan qanunu). 3 dildə: `mobile/lib/features/legal/legal_documents.dart`. Hazırda restoranlar üçün HARA PULSUZDUR (razılaşmada belə yazılıb; haqq gələndə əvvəlcədən xəbər veriləcək). Tarix: `legalTextsUpdated`.
 - **Kim nəyi qəbul edir (istifadəçinin seçimi):** owner qeydiyyatda İKİ qutu (şərtlər + məxfilik siyasəti, restoran razılaşması), ofisiant BİR qutu (şərtlər + məxfilik); müştəri yalnız oxuyur (xoş gəldin və giriş ekranında "İstifadə şərtləri" linki, "Haqqında" ekranında hər iki mətn). Mətnlərin yolları `/terms` və `/restaurant-agreement` (`/venue-...` YOX: `/venue` ilə başlayan yollar giriş tələb edir).
@@ -176,7 +186,7 @@ dotnet ef database update --project src/external/Hara.Persistence --startup-proj
 ```
 Admin istifadəçi yalnız **Development-də** və yalnız **yoxdursa** backend start olanda yaradılır (parolu heç vaxt yeniləmir).
 
-**Testlər:** `cd mobile && flutter analyze && flutter test` (295 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
+**Testlər:** `cd mobile && flutter analyze && flutter test` (305 test: giriş/token yenilənməsi, qarşılama/giriş/qeydiyyat axınları, sahibkar/ofisiant ekranları, hesabı silmə, məxfilik siyasəti və s.). **Backend-də və frontend-də avtomatik test yoxdur** (canlı curl/skriptlərlə və brauzerlə yoxlanıb). **Mobil ↔ backend uyğunluq testi** (`mobile/live_test/live_contract_test.dart`) `flutter test`-ə daxil deyil: boş atılacaq bazaya qarşı həqiqi backend-i (5081) tələb edir, bax "Canlı test" aşağıda.
 
 **Lokal (git-də olmayan) fayl:** `.claude/launch.json` (Claude Code önizləmə konfiqurasiyası: `hara-admin-frontend`, `hara-mobile-web`, `hara-mobile-web-5081`). Yeni maşında yenidən yaradılmalıdır.
 

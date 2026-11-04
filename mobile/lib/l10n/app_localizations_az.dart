@@ -982,4 +982,16 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get termsAcceptButton => 'Qəbul et və davam et';
+
+  @override
+  String get appearanceTitle => 'Görünüş';
+
+  @override
+  String get themeSystem => 'Telefon ayarı';
+
+  @override
+  String get themeLight => 'Açıq';
+
+  @override
+  String get themeDark => 'Tünd';
 }

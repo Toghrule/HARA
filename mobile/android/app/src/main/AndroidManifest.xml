@@ -6,7 +6,7 @@
     <!-- Approximate location only: enough to sort restaurants by distance, and the person is never asked for precise location. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
-        android:label="hara"
+        android:label="HARA"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

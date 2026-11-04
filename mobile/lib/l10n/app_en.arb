@@ -323,5 +323,9 @@
   "mustAccept": "Please tick the box to continue.",
   "termsGateTitle": "Please accept the terms",
   "termsGateBody": "These texts are new or have changed. To keep using HARA for your restaurant, please read and accept them.",
-  "termsAcceptButton": "Accept and continue"
+  "termsAcceptButton": "Accept and continue",
+  "appearanceTitle": "Appearance",
+  "themeSystem": "Phone setting",
+  "themeLight": "Light",
+  "themeDark": "Dark"
 }

@@ -113,6 +113,10 @@ void main() {
 
   group('the customer', () {
     Future<AppHarness> openList(WidgetTester tester, List<Restaurant> restaurants) async {
+    // Restaurants are cards with a picture now: a tall screen keeps all of them built.
+    tester.view.physicalSize = const Size(800, 1800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
       final app = AppHarness(continuedAsCustomer: true, restaurants: restaurants);
       await app.pump(tester);
 
@@ -120,7 +124,7 @@ void main() {
     }
 
     Finder reserveButtonOf(String name) => find.descendant(
-          of: find.widgetWithText(ListTile, name),
+          of: find.widgetWithText(Card, name),
           matching: find.widgetWithText(FilledButton, 'Reserve'),
         );
 

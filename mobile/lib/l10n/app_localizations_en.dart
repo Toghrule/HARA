@@ -982,4 +982,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get termsAcceptButton => 'Accept and continue';
+
+  @override
+  String get appearanceTitle => 'Appearance';
+
+  @override
+  String get themeSystem => 'Phone setting';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
 }

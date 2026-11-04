@@ -980,4 +980,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get termsAcceptButton => 'Принять и продолжить';
+
+  @override
+  String get appearanceTitle => 'Оформление';
+
+  @override
+  String get themeSystem => 'Как на телефоне';
+
+  @override
+  String get themeLight => 'Светлая';
+
+  @override
+  String get themeDark => 'Тёмная';
 }

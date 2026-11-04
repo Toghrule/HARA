@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/widgets/hara_logo.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../legal/legal_text_screen.dart';
@@ -19,7 +20,7 @@ class WelcomeScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('HARA'), actions: const [LanguageMenu()]),
+      appBar: AppBar(title: const HaraLogo(), actions: const [LanguageMenu()]),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(

@@ -69,6 +69,10 @@ void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   Future<AppHarness> open(WidgetTester tester, {List<Restaurant>? restaurants, LocationService? location}) async {
+    // Restaurants are cards with a picture now: a tall screen keeps all of them built.
+    tester.view.physicalSize = const Size(800, 1800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     final app = AppHarness(continuedAsCustomer: true, restaurants: restaurants ?? [_alpha, _bravo, _charlie], locationService: location);
     await app.pump(tester);
 
@@ -469,7 +473,7 @@ void main() {
       expect(find.byKey(const Key('dot-1')), findsOneWidget);
       expect(find.byKey(const Key('dot-2')), findsOneWidget);
 
-      await tester.drag(find.byKey(const Key('gallery')), const Offset(-300, 0));
+      await tester.drag(find.byKey(const Key('gallery')), const Offset(-700, 0));
       await tester.pumpAndSettle();
       // The second photo is now the active one: the dots that are not active are the first and the third.
       expect(find.byKey(const Key('dot-0')), findsOneWidget);

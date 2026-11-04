@@ -38,7 +38,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('HARA'), findsOneWidget);
+    // The title is the logo (an image labelled HARA for screen readers).
+    expect(find.byKey(const Key('appLogo')), findsOneWidget);
+    expect(find.bySemanticsLabel('HARA'), findsOneWidget);
     expect(find.text('No restaurants yet.'), findsOneWidget);
   });
 }

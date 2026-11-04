@@ -332,7 +332,13 @@ void main() {
       expect(find.byKey(const Key('waitingTitle')), findsNothing);
       expect(find.text('S68NRG'), findsOneWidget);
       expect(find.byKey(const Key('confirmedByRestaurant')), findsOneWidget);
-      expect(find.textContaining('Valid for 29:5'), findsOneWidget, reason: 'the 30 minutes started when the restaurant accepted');
+      // The clock is real, so a slow machine may have used up a few seconds (or a whole minute) by now: what matters is that
+      // the 30 minutes are fresh, not the 9 that were left when the request was made.
+      expect(
+        find.byWidgetPredicate((widget) => widget is Text && RegExp(r'Valid for (29|30):').hasMatch(widget.data ?? '')),
+        findsOneWidget,
+        reason: 'the 30 minutes started when the restaurant accepted',
+      );
       expect(container.read(activeReservationsProvider).single.status, ReservationState.active);
     });
 

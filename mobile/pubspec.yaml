@@ -28,7 +28,20 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/logo/logo.png
+    - assets/logo/mark.png
+
+# The app icon (the logo's H and pin on black), made from assets/logo with: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/logo/icon.png
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: assets/logo/icon_foreground.png
+  remove_alpha_ios: true

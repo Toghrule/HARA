@@ -74,8 +74,9 @@ Future<_FakeRestaurantsRepository> _pumpHome(
   WidgetTester tester, {
   int count = 45,
   bool ignorePaging = false,
+  double height = 900,
 }) async {
-  tester.view.physicalSize = const Size(500, 900);
+  tester.view.physicalSize = Size(500, height);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
 
@@ -150,7 +151,8 @@ void main() {
   });
 
   testWidgets('a list that fits on one page loads no more', (tester) async {
-    final repository = await _pumpHome(tester, count: 5);
+    // A tall screen, so all five cards (each with a picture) are on it.
+    final repository = await _pumpHome(tester, count: 5, height: 1800);
 
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -274,6 +276,6 @@ void main() {
     // Only the one match. If the late page were merged in, the old restaurants would be back and there
     // would be many more rows.
     expect(find.text('Test Restoran 33'), findsOneWidget);
-    expect(find.byType(ListTile), findsNWidgets(1));
+    expect(find.byType(Card), findsNWidgets(1)); // a restaurant is a card
   });
 }

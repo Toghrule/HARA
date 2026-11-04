@@ -283,5 +283,9 @@
   "mustAccept": "Davam etmək üçün qutunu işarələyin.",
   "termsGateTitle": "Zəhmət olmasa şərtləri qəbul edin",
   "termsGateBody": "Bu mətnlər yenidir və ya dəyişib. Restoranınız üçün HARA-dan istifadəyə davam etmək üçün onları oxuyub qəbul edin.",
-  "termsAcceptButton": "Qəbul et və davam et"
+  "termsAcceptButton": "Qəbul et və davam et",
+  "appearanceTitle": "Görünüş",
+  "themeSystem": "Telefon ayarı",
+  "themeLight": "Açıq",
+  "themeDark": "Tünd"
 }

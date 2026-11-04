@@ -12,6 +12,7 @@ import 'core/push/push_events.dart';
 import 'core/push/push_service.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_mode_provider.dart';
 import 'features/auth/data/customer_choice.dart';
 import 'l10n/app_localizations.dart';
 
@@ -52,6 +53,7 @@ class HaraApp extends ConsumerWidget {
       title: 'HARA',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
+      themeMode: ref.watch(themeModeProvider),
       routerConfig: router,
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,

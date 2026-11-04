@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/auth/auth_controller.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/hara_logo.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
@@ -22,7 +23,6 @@ import '../../../reservations/presentation/widgets/active_reservations_banner.da
 import '../../data/restaurant.dart';
 import '../maps_launcher.dart';
 import '../providers/restaurant_search_provider.dart';
-import '../providers/restaurant_sort_provider.dart';
 import '../providers/restaurants_provider.dart';
 
 class RestaurantsScreen extends ConsumerStatefulWidget {
@@ -74,12 +74,11 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
   @override
   Widget build(BuildContext context) {
     final restaurantsAsync = ref.watch(restaurantsProvider);
-    final sort = ref.watch(restaurantSortProvider);
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HARA'),
+        title: const HaraLogo(),
         actions: [
           IconButton(
             tooltip: l10n.aboutTooltip,
@@ -93,11 +92,6 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
             onPressed: () => context.push(ref.read(authControllerProvider) != null ? '/venue' : '/welcome'),
           ),
           const LanguageMenu(),
-          TextButton.icon(
-            onPressed: () => ref.read(restaurantSortProvider.notifier).toggle(),
-            icon: const Icon(Icons.swap_vert),
-            label: Text(sort.label),
-          ),
         ],
       ),
       body: Column(
@@ -201,10 +195,10 @@ class _RestaurantList extends ConsumerWidget {
       );
     }
 
-    return ListView.separated(
+    return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
       itemCount: state.items.length + 1,
-      separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
         if (index == state.items.length) return _ListFooter(state: state);
 
@@ -235,32 +229,97 @@ class _RestaurantTile extends ConsumerWidget {
       if (!restaurant.availability.acceptingRequests) availabilityText(l10n, restaurant.availability),
     ];
 
-    return ListTile(
-      leading: IconButton(
-        key: Key('fav-${restaurant.id}'),
-        tooltip: isFavorite ? l10n.removeFavorite : l10n.addFavorite,
-        icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: isFavorite ? Theme.of(context).colorScheme.error : null),
-        onPressed: () => ref.read(favoritesProvider.notifier).toggle(restaurant.id),
+    final scheme = Theme.of(context).colorScheme;
+    final cover = restaurant.photoUris.isEmpty ? null : restaurant.photoUris.first;
+    final placeholder = ColoredBox(
+      color: scheme.surfaceContainerHigh,
+      child: Center(child: Icon(Icons.restaurant, size: 36, color: scheme.onSurfaceVariant)),
+    );
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        key: Key('restaurant-${restaurant.id}'),
+        onTap: () => context.push('/restaurants/${restaurant.id}'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 120,
+              width: double.infinity,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (cover == null)
+                    placeholder
+                  else
+                    Image.network(
+                      cover.toString(),
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => placeholder,
+                      loadingBuilder: (context, child, progress) => progress == null ? child : placeholder,
+                    ),
+                  if (restaurant.discountPercent > 0)
+                    Positioned(
+                      left: 10,
+                      bottom: 10,
+                      child: Container(
+                        key: Key('discount-${restaurant.id}'),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                        decoration: BoxDecoration(color: scheme.secondary, borderRadius: BorderRadius.circular(12)),
+                        child: Text('${restaurant.discountPercent}%', style: TextStyle(color: scheme.onSecondary, fontWeight: FontWeight.w700)),
+                      ),
+                    ),
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: Material(
+                      color: Colors.black54,
+                      shape: const CircleBorder(),
+                      child: IconButton(
+                        key: Key('fav-${restaurant.id}'),
+                        tooltip: isFavorite ? l10n.removeFavorite : l10n.addFavorite,
+                        icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: isFavorite ? Colors.redAccent : Colors.white),
+                        onPressed: () => ref.read(favoritesProvider.notifier).toggle(restaurant.id),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 8, 6),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(restaurant.name, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 2),
+                  Text(
+                    lines.join('\n'),
+                    key: Key('tile-info-${restaurant.id}'),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        tooltip: l10n.openInGoogleMaps,
+                        icon: const Icon(Icons.map_outlined),
+                        onPressed: () => openInGoogleMaps(restaurant),
+                      ),
+                      const Spacer(),
+                      FilledButton(
+                        // Closed (or closing so soon it takes no more requests): the server would refuse it anyway.
+                        onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
+                        child: Text(l10n.reserve),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      title: Text(restaurant.name),
-      subtitle: Text(lines.join('\n'), key: Key('tile-info-${restaurant.id}')),
-      isThreeLine: lines.length > 1,
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            tooltip: l10n.openInGoogleMaps,
-            icon: const Icon(Icons.map_outlined),
-            onPressed: () => openInGoogleMaps(restaurant),
-          ),
-          FilledButton.tonal(
-            // Closed (or closing so soon it takes no more requests): the server would refuse it anyway.
-            onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
-            child: Text(l10n.reserve),
-          ),
-        ],
-      ),
-      onTap: () => context.push('/restaurants/${restaurant.id}'),
     );
   }
 }
