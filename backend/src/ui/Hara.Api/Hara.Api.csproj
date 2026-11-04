@@ -13,6 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The public web pages of the legal texts (made by tools/generate-legal-pages.js from the app's texts). -->
+    <Content Include="Legal\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\core\Hara.Application\Hara.Application.csproj" />
     <ProjectReference Include="..\..\external\Hara.Infrastructure\Hara.Infrastructure.csproj" />
     <ProjectReference Include="..\..\external\Hara.Persistence\Hara.Persistence.csproj" />

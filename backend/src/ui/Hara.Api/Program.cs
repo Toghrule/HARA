@@ -140,6 +140,15 @@ app.MapGet("/health", () => Results.Ok(new { status = "healthy" }))
     .WithName("HealthCheck")
     .AllowAnonymous();
 
+// The legal texts as public web pages (the app stores ask for an address of the privacy policy). Open to everybody.
+foreach (var (route, file) in new[] { ("/privacy", "privacy.html"), ("/terms", "terms.html"), ("/restaurant-agreement", "restaurant-agreement.html") })
+{
+    var pagePath = Path.Combine(AppContext.BaseDirectory, "Legal", file);
+    app.MapGet(route, () => File.Exists(pagePath) ? Results.File(pagePath, "text/html; charset=utf-8") : Results.NotFound())
+        .ExcludeFromDescription()
+        .AllowAnonymous();
+}
+
 app.MapAuthEndpoints();
 app.MapPasswordResetsEndpoints();
 app.MapRestaurantsEndpoints();
