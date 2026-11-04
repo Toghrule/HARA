@@ -1,7 +1,9 @@
 ﻿using Hara.Application.Restaurants.Commands.CreateRestaurant;
+using Hara.Application.Restaurants.Commands.CreateRestaurantOwner;
 using Hara.Application.Restaurants.Commands.DeleteRestaurant;
 using Hara.Application.Restaurants.Commands.UpdateRestaurant;
 using Hara.Application.Restaurants.Queries.GetRestaurantById;
+using Hara.Application.Restaurants.Queries.GetRestaurantOwner;
 using Hara.Application.Restaurants.Queries.GetRestaurants;
 using MediatR;
 
@@ -53,6 +55,21 @@ public static class RestaurantsEndpoints
             })
             .WithName("AdminUpdateRestaurant");
 
+        admin.MapGet("/{id:guid}/owner", async (Guid id, ISender sender, CancellationToken cancellationToken) =>
+            {
+                var owner = await sender.Send(new GetRestaurantOwnerQuery(id), cancellationToken);
+                return owner is null ? Results.NoContent() : Results.Ok(owner);
+            })
+            .WithName("AdminGetRestaurantOwner");
+
+        // A restaurant the admin created without a sign-up gets its owner here: the admin picks the email and password and hands them over.
+        admin.MapPost("/{id:guid}/owner", async (Guid id, CreateOwnerBody body, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(new CreateRestaurantOwnerCommand(id, body.Email, body.Password, body.FullName, body.PhoneNumber), cancellationToken);
+                return Results.NoContent();
+            })
+            .WithName("AdminCreateRestaurantOwner");
+
         admin.MapDelete("/{id:guid}", async (Guid id, ISender sender, CancellationToken cancellationToken) =>
             {
                 await sender.Send(new DeleteRestaurantCommand(id), cancellationToken);
@@ -62,6 +79,8 @@ public static class RestaurantsEndpoints
 
         return app;
     }
+
+    private sealed record CreateOwnerBody(string Email, string Password, string FullName, string? PhoneNumber);
 
     private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive, string? DescriptionRu = null, string? DescriptionEn = null, IReadOnlyList<string>? Cuisines = null, IReadOnlyList<string>? GalleryUrls = null);
 

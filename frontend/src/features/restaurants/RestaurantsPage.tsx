@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowDownAZ, ArrowUpZA, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowDownAZ, ArrowUpZA, Pencil, Plus, Trash2, UserCog } from "lucide-react";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { Button } from "../../components/ui/Button";
 import { Badge } from "../../components/ui/Badge";
@@ -10,6 +10,7 @@ import { useToast } from "../../components/ui/Toast";
 import { ApiError } from "../../lib/api";
 import { useDeleteRestaurant, useRestaurants } from "./api";
 import { RestaurantFormDialog } from "./RestaurantFormDialog";
+import { OwnerDialog } from "./OwnerDialog";
 import type { RestaurantDto } from "../../types";
 
 export function RestaurantsPage() {
@@ -20,6 +21,7 @@ export function RestaurantsPage() {
     open: false,
     restaurant: null,
   });
+  const [ownerOf, setOwnerOf] = useState<RestaurantDto | null>(null);
   const [pendingDelete, setPendingDelete] = useState<RestaurantDto | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
@@ -98,6 +100,9 @@ export function RestaurantsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
+                      <Button type="button" variant="ghost" size="sm" title="Owner account" onClick={() => setOwnerOf(restaurant)}>
+                        <UserCog className="h-4 w-4" />
+                      </Button>
                       <Button
                         type="button"
                         variant="ghost"
@@ -123,6 +128,7 @@ export function RestaurantsPage() {
         onClose={() => setFormState({ open: false, restaurant: null })}
         restaurant={formState.restaurant}
       />
+      <OwnerDialog restaurant={ownerOf} onClose={() => setOwnerOf(null)} />
       <ConfirmDialog
         open={pendingDelete !== null}
         title="Delete restaurant"

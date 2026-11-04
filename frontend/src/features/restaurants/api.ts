@@ -35,3 +35,27 @@ export function useDeleteRestaurant() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
   });
 }
+
+export interface RestaurantOwner {
+  fullName: string;
+  email: string;
+  phoneNumber: string | null;
+}
+
+/** Who runs a restaurant; undefined while it has no owner yet. */
+export function useRestaurantOwner(restaurantId: string | undefined) {
+  return useQuery({
+    queryKey: ["admin-restaurant-owner", restaurantId],
+    queryFn: async () => (await api.get<RestaurantOwner | undefined>(`/api/admin/restaurants/${restaurantId}/owner`)) ?? null,
+    enabled: !!restaurantId,
+  });
+}
+
+export function useCreateRestaurantOwner(restaurantId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { email: string; password: string; fullName: string; phoneNumber?: string }) =>
+      api.post(`/api/admin/restaurants/${restaurantId}/owner`, body),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-restaurant-owner", restaurantId] }),
+  });
+}
