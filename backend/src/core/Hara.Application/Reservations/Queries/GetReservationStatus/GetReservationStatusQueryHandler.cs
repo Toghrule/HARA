@@ -15,6 +15,14 @@ public class GetReservationStatusQueryHandler(IUnitOfWork unitOfWork) : IRequest
             .FirstOrDefaultAsync(r => r.Code == code, cancellationToken)
             ?? throw new NotFoundException(nameof(Reservation), code);
 
-        return ReservationStatusDto.FromEntity(reservation, DateTimeOffset.UtcNow);
+        // Whether this phone number already rated the restaurant, so the app does not offer the stars again.
+        var rating = reservation.Status == ReservationStatus.Redeemed
+            ? await unitOfWork.Repository<RestaurantRating>().Query()
+                .Where(r => r.RestaurantId == reservation.RestaurantId && r.PhoneNumber == reservation.PhoneNumber)
+                .Select(r => (int?)r.Stars)
+                .FirstOrDefaultAsync(cancellationToken)
+            : null;
+
+        return ReservationStatusDto.FromEntity(reservation, DateTimeOffset.UtcNow, rating);
     }
 }

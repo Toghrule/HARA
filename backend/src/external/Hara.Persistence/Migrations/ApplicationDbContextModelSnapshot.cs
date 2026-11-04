@@ -508,6 +508,40 @@ namespace Hara.Persistence.Migrations
                     b.ToTable("Reservations");
                 });
 
+            modelBuilder.Entity("Hara.Domain.Reservations.RestaurantRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("LastModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<Guid>("RestaurantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId", "PhoneNumber")
+                        .IsUnique();
+
+                    b.ToTable("RestaurantRatings", t =>
+                        {
+                            t.HasCheckConstraint("CK_RestaurantRatings_Stars", "\"Stars\" BETWEEN 1 AND 5");
+                        });
+                });
+
             modelBuilder.Entity("Hara.Domain.Restaurants.Restaurant", b =>
                 {
                     b.Property<Guid>("Id")
@@ -576,6 +610,12 @@ namespace Hara.Persistence.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<int>("RatingCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RatingTotal")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -1026,6 +1066,17 @@ namespace Hara.Persistence.Migrations
                         .HasForeignKey("RespondedByUserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("Hara.Domain.Restaurants.Restaurant", "Restaurant")
+                        .WithMany()
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("Hara.Domain.Reservations.RestaurantRating", b =>
+                {
                     b.HasOne("Hara.Domain.Restaurants.Restaurant", "Restaurant")
                         .WithMany()
                         .HasForeignKey("RestaurantId")

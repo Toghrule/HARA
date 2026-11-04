@@ -53,6 +53,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<EmailVerification> EmailVerifications => Set<EmailVerification>();
 
+    public DbSet<RestaurantRating> RestaurantRatings => Set<RestaurantRating>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

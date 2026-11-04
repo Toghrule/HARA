@@ -68,6 +68,15 @@ public class Restaurant : BaseAuditableEntity
     /// <summary>Photos of the restaurant, as the upload endpoint returned them, in the order they are shown. Set by the admin.</summary>
     public List<string> GalleryUrls { get; set; } = [];
 
+    /// <summary>How many customers rated this restaurant (see <see cref="Reservations.RestaurantRating"/>).</summary>
+    public int RatingCount { get; set; }
+
+    /// <summary>The sum of all stars given, so the average is <see cref="RatingTotal"/> / <see cref="RatingCount"/>.</summary>
+    public int RatingTotal { get; set; }
+
+    /// <summary>The average stars to one decimal, or <c>null</c> while nobody has rated.</summary>
+    public double? RatingAverage => RatingCount == 0 ? null : Math.Round((double)RatingTotal / RatingCount, 1);
+
     /// <summary>What this restaurant offers at <paramref name="utcNow"/>: open, closing soon or closed.</summary>
     public Availability AvailabilityAt(DateTimeOffset utcNow) =>
         OpeningSchedule.Evaluate(OpeningHours, LastRequestMinutesBeforeClose, utcNow.ToOffset(AzerbaijanOffset).DateTime);

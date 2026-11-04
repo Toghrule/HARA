@@ -2,6 +2,7 @@ using Hara.Api.RateLimiting;
 using Hara.Application.Devices;
 using Hara.Application.Reservations.Commands.CancelReservation;
 using Hara.Application.Reservations.Commands.CreateReservation;
+using Hara.Application.Reservations.Commands.RateReservation;
 using Hara.Application.Reservations.Queries.GetReservations;
 using Hara.Application.Reservations.Queries.GetReservationStatus;
 using Hara.Application.Statistics.Queries.GetRestaurantStats;
@@ -12,6 +13,8 @@ namespace Hara.Api.Endpoints;
 
 /// <summary>A phone's Firebase notification token and the language to write its notifications in.</summary>
 public sealed record DeviceBody(string Token, string? Language);
+
+public sealed record RatingBody(int Stars);
 
 public static class ReservationsEndpoints
 {
@@ -38,6 +41,17 @@ public static class ReservationsEndpoints
                 Results.Ok(await sender.Send(new CancelReservationCommand(code), cancellationToken)))
             .WithTags("Reservations")
             .WithName("CancelReservation")
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimitPolicies.ReservationCancels);
+
+        // After the restaurant confirmed the code: the customer rates it, once per phone number per restaurant.
+        app.MapPost("/api/reservations/{code}/rating", async (string code, RatingBody body, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(new RateReservationCommand(code, body.Stars), cancellationToken);
+                return Results.NoContent();
+            })
+            .WithTags("Reservations")
+            .WithName("RateReservation")
             .AllowAnonymous()
             .RequireRateLimiting(RateLimitPolicies.ReservationCancels);
 

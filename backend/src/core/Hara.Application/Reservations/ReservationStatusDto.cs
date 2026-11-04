@@ -10,15 +10,18 @@ namespace Hara.Application.Reservations;
 /// <param name="Status">Effective state: pending, active, redeemed, cancelled, declined, or expired/unanswered once its deadline has passed.</param>
 /// <param name="ExpiresAt">When the reservation window ends.</param>
 /// <param name="RedeemedAt">When staff redeemed the code, if they did.</param>
+/// <param name="Rating">The stars this phone number already gave the restaurant, or <c>null</c> if it has not rated.</param>
 public sealed record ReservationStatusDto(
     string Code,
     ReservationStatus Status,
     DateTimeOffset ExpiresAt,
-    DateTimeOffset? RedeemedAt)
+    DateTimeOffset? RedeemedAt,
+    int? Rating = null)
 {
-    public static ReservationStatusDto FromEntity(Reservation reservation, DateTimeOffset now) => new(
+    public static ReservationStatusDto FromEntity(Reservation reservation, DateTimeOffset now, int? rating = null) => new(
         reservation.Code,
         reservation.EffectiveStatus(now),
         reservation.ExpiresAt,
-        reservation.RedeemedAt);
+        reservation.RedeemedAt,
+        rating);
 }
