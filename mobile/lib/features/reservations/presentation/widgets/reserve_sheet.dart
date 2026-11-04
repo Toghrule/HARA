@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../restaurants/data/restaurant.dart';
 import '../../data/reservation.dart';
@@ -62,7 +63,9 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final scheme = theme.colorScheme;
     final discount = widget.restaurant.discountPercent;
     final l10n = AppLocalizations.of(context);
 
@@ -73,15 +76,33 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.reserveTable, style: textTheme.titleLarge),
-            const SizedBox(height: 4),
-            Text(widget.restaurant.name, style: textTheme.titleMedium),
-            const SizedBox(height: 4),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(color: scheme.primaryContainer, borderRadius: BorderRadius.circular(16)),
+                  child: Icon(Icons.table_restaurant_outlined, color: scheme.onPrimaryContainer, size: 28),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.reserveTable, style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 2),
+                      Text(widget.restaurant.name, style: textTheme.titleMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                    ],
+                  ),
+                ),
+                if (discount > 0) DiscountBadge(percent: discount),
+              ],
+            ),
+            const SizedBox(height: 12),
             Text(
-              discount > 0
-                  ? l10n.reserveSheetFreeWithDiscount(discount)
-                  : l10n.reserveSheetFree,
-              style: textTheme.bodyMedium,
+              discount > 0 ? l10n.reserveSheetFreeWithDiscount(discount) : l10n.reserveSheetFree,
+              style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -92,40 +113,39 @@ class _ReserveSheetState extends ConsumerState<ReserveSheet> {
               decoration: InputDecoration(
                 labelText: l10n.phoneNumber,
                 hintText: '+994 50 123 45 67',
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.phone_outlined),
+                border: const OutlineInputBorder(),
               ),
               onSubmitted: (_) => _submit(),
             ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const Icon(Icons.timer_outlined, size: 18),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    l10n.requestNotice(l10n.minutesShort(reservationHoldMinutes)),
-                    key: const Key('holdNotice'),
-                    style: textTheme.bodyMedium,
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: scheme.secondaryContainer.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(12)),
+              child: Row(
+                children: [
+                  Icon(Icons.timer_outlined, size: 20, color: scheme.onSecondaryContainer),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      l10n.requestNotice(l10n.minutesShort(reservationHoldMinutes)),
+                      key: const Key('holdNotice'),
+                      style: textTheme.bodyMedium?.copyWith(color: scheme.onSecondaryContainer),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             if (_error != null) ...[
               const SizedBox(height: 12),
-              Text(
-                _error!,
-                style: textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error),
-              ),
+              Text(_error!, style: textTheme.bodyMedium?.copyWith(color: scheme.error)),
             ],
             const SizedBox(height: 20),
             FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
               onPressed: _submitting ? null : _submit,
               child: _submitting
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
                   : Text(l10n.sendRequest),
             ),
           ],

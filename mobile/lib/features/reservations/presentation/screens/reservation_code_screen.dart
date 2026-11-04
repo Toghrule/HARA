@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/reservation.dart';
 import '../../data/reservation_state.dart';
@@ -213,8 +214,21 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
       children: [
         Text(reservation.restaurantName, style: theme.textTheme.headlineSmall, textAlign: TextAlign.center),
         const SizedBox(height: 24),
-        Icon(Icons.hourglass_top, size: 64, color: theme.colorScheme.primary),
-        const SizedBox(height: 16),
+        Center(
+          child: CountdownRing(
+            remaining: _remaining(reservation),
+            total: const Duration(minutes: 15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.hourglass_top, size: 28, color: theme.colorScheme.primary),
+                const SizedBox(height: 4),
+                Text(_countdown(_remaining(reservation)), style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
         Text(
           l10n.waitingTitle,
           key: const Key('waitingTitle'),
@@ -270,7 +284,7 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
       children: [
         Text(reservation.restaurantName, style: theme.textTheme.headlineSmall, textAlign: TextAlign.center),
         const SizedBox(height: 24),
-        Icon(icon, size: 64, color: success ? theme.colorScheme.primary : theme.colorScheme.error),
+        Center(child: IconBadge(icon: icon, color: success ? theme.colorScheme.primary : theme.colorScheme.error)),
         const SizedBox(height: 16),
         Text(title, key: const Key('outcomeTitle'), style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
         const SizedBox(height: 8),
@@ -316,36 +330,74 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
             ],
           ),
         ],
-        const SizedBox(height: 24),
-        Text(l10n.yourCode, style: textTheme.labelLarge, textAlign: TextAlign.center),
-        const SizedBox(height: 8),
+        const SizedBox(height: 20),
         Card(
-          color: expired ? theme.colorScheme.surfaceContainerHighest : theme.colorScheme.primaryContainer,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  reservation.code,
-                  style: textTheme.displayMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 6,
-                    decoration: expired ? TextDecoration.lineThrough : null,
+          margin: EdgeInsets.zero,
+          clipBehavior: Clip.antiAlias,
+          color: expired ? theme.colorScheme.surfaceContainerHighest : theme.colorScheme.surfaceContainerLowest,
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                color: expired ? theme.colorScheme.outlineVariant : theme.colorScheme.primaryContainer,
+                child: Row(
+                  children: [
+                    Icon(Icons.confirmation_number_outlined, color: theme.colorScheme.onPrimaryContainer),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(l10n.yourCode, style: textTheme.titleMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.w600))),
+                    if (reservation.discountPercent > 0) DiscountBadge(percent: reservation.discountPercent),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          reservation.code,
+                          style: textTheme.displayMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 8,
+                            decoration: expired ? TextDecoration.lineThrough : null,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: l10n.copyCode,
+                      icon: const Icon(Icons.copy),
+                      onPressed: () async {
+                        await Clipboard.setData(ClipboardData(text: reservation.code));
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.codeCopied)));
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: TearLine()),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                child: Center(
+                  child: CountdownRing(
+                    remaining: remaining,
+                    total: Duration(minutes: reservation.durationMinutes),
+                    size: 112,
+                    color: expired ? theme.colorScheme.error : null,
+                    child: Text(
+                      _countdown(remaining),
+                      style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700, color: expired ? theme.colorScheme.error : null),
+                    ),
                   ),
                 ),
-                IconButton(
-                  tooltip: l10n.copyCode,
-                  icon: const Icon(Icons.copy),
-                  onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: reservation.code));
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.codeCopied)));
-                    }
-                  },
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
