@@ -50,6 +50,10 @@ void main() {
 
   group('statistics', () {
     testWidgets('the owner sees the restaurant\'s day, month and year, and their own count', (tester) async {
+      // Tall, so all three cards fit without scrolling.
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
       final (_, venue) = await open(tester, owner: true);
       venue.stats = const VenueStats(
         today: PeriodCounts(accepted: 3, redeemed: 2),

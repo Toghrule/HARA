@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/data/reservation.dart';
 import '../../data/venue_models.dart';
@@ -63,7 +64,16 @@ class _RequestsTabState extends ConsumerState<RequestsTab> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
                   height: constraints.maxHeight,
-                  child: Center(child: Text(l10n.noRequestsWaiting, key: const Key('noRequests'))),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const IconBadge(icon: Icons.notifications_none_rounded),
+                        const SizedBox(height: 16),
+                        Text(l10n.noRequestsWaiting, key: const Key('noRequests'), style: Theme.of(context).textTheme.titleMedium),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             );
@@ -116,33 +126,58 @@ class _RequestCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
+    final scheme = theme.colorScheme;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(request.phoneNumber, style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
-            const SizedBox(height: 4),
-            Text(l10n.sentAt(formatClock(request.createdAt)), style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
-            _AnswerCountdown(deadline: request.expiresAt),
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(color: scheme.primaryContainer, borderRadius: BorderRadius.circular(14)),
+                  child: Icon(Icons.phone_in_talk_outlined, color: scheme.onPrimaryContainer),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(request.phoneNumber, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+                      Text(l10n.sentAt(formatClock(request.createdAt)), style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 12),
+            _AnswerCountdown(deadline: request.expiresAt),
+            const SizedBox(height: 14),
             Row(
               children: [
                 Expanded(
-                  child: TextButton(
+                  child: OutlinedButton(
                     key: Key('decline-${request.code}'),
                     onPressed: busy ? null : onDecline,
-                    style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: scheme.error,
+                      side: BorderSide(color: scheme.error.withValues(alpha: 0.6)),
+                      minimumSize: const Size.fromHeight(48),
+                    ),
                     child: Text(l10n.decline),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 Expanded(
                   flex: 2,
                   child: FilledButton(
                     key: Key('accept-${request.code}'),
                     onPressed: busy ? null : onAccept,
+                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                     child: busy
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
                         : Text(l10n.acceptRequest),
@@ -188,10 +223,28 @@ class _AnswerCountdownState extends State<_AnswerCountdown> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Text(
-      l10n.answerWithin(formatCountdown(widget.deadline.difference(DateTime.now()))),
-      style: Theme.of(context).textTheme.bodyMedium,
-      textAlign: TextAlign.center,
+    final scheme = Theme.of(context).colorScheme;
+    final left = widget.deadline.difference(DateTime.now());
+    final urgent = left < const Duration(minutes: 3);
+    final background = urgent ? scheme.tertiaryContainer : scheme.secondaryContainer.withValues(alpha: 0.6);
+    final foreground = urgent ? scheme.onTertiaryContainer : scheme.onSecondaryContainer;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(12)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.timer_outlined, size: 18, color: foreground),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              l10n.answerWithin(formatCountdown(left)),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: foreground, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

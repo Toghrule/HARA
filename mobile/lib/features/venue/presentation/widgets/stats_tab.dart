@@ -62,18 +62,37 @@ class _PeriodCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    final scheme = Theme.of(context).colorScheme;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _Number(label: l10n.statsAccepted, value: counts.accepted, valueKey: Key('$keyPrefix-accepted'))),
-                Expanded(child: _Number(label: l10n.statsCame, value: counts.redeemed, valueKey: Key('$keyPrefix-came'))),
+                Expanded(
+                  child: _Number(
+                    label: l10n.statsAccepted,
+                    value: counts.accepted,
+                    valueKey: Key('$keyPrefix-accepted'),
+                    background: scheme.primaryContainer,
+                    foreground: scheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _Number(
+                    label: l10n.statsCame,
+                    value: counts.redeemed,
+                    valueKey: Key('$keyPrefix-came'),
+                    background: scheme.secondaryContainer,
+                    foreground: scheme.onSecondaryContainer,
+                  ),
+                ),
               ],
             ),
           ],
@@ -84,20 +103,26 @@ class _PeriodCard extends StatelessWidget {
 }
 
 class _Number extends StatelessWidget {
-  const _Number({required this.label, required this.value, required this.valueKey});
+  const _Number({required this.label, required this.value, required this.valueKey, required this.background, required this.foreground});
 
   final String label;
   final int value;
   final Key valueKey;
+  final Color background;
+  final Color foreground;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('$value', key: valueKey, style: Theme.of(context).textTheme.headlineMedium),
-        Text(label, style: Theme.of(context).textTheme.bodySmall),
-      ],
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('$value', key: valueKey, style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: foreground, fontWeight: FontWeight.w800)),
+          Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: foreground)),
+        ],
+      ),
     );
   }
 }
