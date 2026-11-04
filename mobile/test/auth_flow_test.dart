@@ -86,6 +86,8 @@ void main() {
     Future<AppHarness> openLogin(WidgetTester tester, {FakeVenueRepository? venue}) async {
       final app = AppHarness(venueRepository: venue ?? FakeVenueRepository(me: approvedOwner()));
       await app.pump(tester);
+      await tester.ensureVisible(find.byKey(const Key('signIn')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('signIn')));
       await tester.pumpAndSettle();
 
@@ -164,6 +166,8 @@ void main() {
 
       final app = AppHarness(venueRepository: FakeVenueRepository(me: pendingOwner()));
       await app.pump(tester);
+      await tester.ensureVisible(find.byKey(const Key('registerAsOwner')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('registerAsOwner')));
       await tester.pumpAndSettle();
 
@@ -179,6 +183,7 @@ void main() {
     }) async {
       Future<void> type(String key, String value) async {
         await tester.ensureVisible(find.byKey(Key(key)));
+        await tester.pump();
         await tester.enterText(find.byKey(Key(key)), value);
       }
 
@@ -192,6 +197,7 @@ void main() {
       for (final box in accept) {
         final checkbox = find.descendant(of: find.byKey(Key(box)), matching: find.byType(Checkbox));
         await tester.ensureVisible(checkbox);
+        await tester.pump();
         await tester.tap(checkbox);
         await tester.pump();
       }
@@ -199,6 +205,7 @@ void main() {
 
     Future<void> submit(WidgetTester tester) async {
       await tester.ensureVisible(find.byKey(const Key('submit')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('submit')));
       await tester.pumpAndSettle();
     }
@@ -310,6 +317,7 @@ void main() {
       expect(tester.widget<EditableText>(field).obscureText, isTrue);
 
       await tester.ensureVisible(find.byTooltip('Show password').first);
+      await tester.pump();
       await tester.tap(find.byTooltip('Show password').first);
       await tester.pump();
 
@@ -326,6 +334,8 @@ void main() {
 
       final app = AppHarness(venueRepository: FakeVenueRepository(me: pendingStaff()));
       await app.pump(tester);
+      await tester.ensureVisible(find.byKey(const Key('registerAsStaff')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('registerAsStaff')));
       await tester.pumpAndSettle();
 
@@ -335,6 +345,7 @@ void main() {
     Future<void> fillAccount(WidgetTester tester) async {
       Future<void> type(String key, String value) async {
         await tester.ensureVisible(find.byKey(Key(key)));
+        await tester.pump();
         await tester.enterText(find.byKey(Key(key)), value);
       }
 
@@ -345,12 +356,14 @@ void main() {
       // Signing up needs the terms of use accepted.
       final checkbox = find.descendant(of: find.byKey(const Key('acceptTerms')), matching: find.byType(Checkbox));
       await tester.ensureVisible(checkbox);
+      await tester.pump();
       await tester.tap(checkbox);
       await tester.pump();
     }
 
     Future<void> submit(WidgetTester tester) async {
       await tester.ensureVisible(find.byKey(const Key('submit')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('submit')));
       await tester.pumpAndSettle();
     }
@@ -386,6 +399,7 @@ void main() {
       await tester.pump();
       for (final key in ['fullName', 'email', 'password', 'confirmPassword']) {
         await tester.ensureVisible(find.byKey(Key(key)));
+        await tester.pump();
         await tester.enterText(
           find.byKey(Key(key)),
           switch (key) {

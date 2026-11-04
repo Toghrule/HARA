@@ -28,9 +28,17 @@ class WelcomeScreen extends ConsumerWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Text(l10n.welcomeTitle, style: textTheme.headlineSmall),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(28),
+                  child: ColoredBox(
+                    color: Colors.black,
+                    child: Image.asset('assets/logo/logo.png', key: const Key('welcomeLogo'), height: 180, fit: BoxFit.contain),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(l10n.welcomeTitle, style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700), textAlign: TextAlign.center),
                 const SizedBox(height: 4),
-                Text(l10n.welcomeSubtitle, style: textTheme.bodyMedium),
+                Text(l10n.welcomeSubtitle, style: textTheme.bodyMedium, textAlign: TextAlign.center),
                 const SizedBox(height: 20),
                 _Section(
                   icon: Icons.restaurant_menu,
@@ -38,6 +46,7 @@ class WelcomeScreen extends ConsumerWidget {
                   text: l10n.customerSectionText,
                   children: [
                     FilledButton(
+                      style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                       key: const Key('continueAsCustomer'),
                       onPressed: () async {
                         await ref.read(customerChoiceProvider.notifier).choose();
@@ -104,13 +113,18 @@ class _Section extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Expanded(child: Text(title, style: theme.textTheme.titleMedium)),
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(14)),
+                  child: Icon(icon, color: theme.colorScheme.onPrimaryContainer),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700))),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(text, style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 12),
+            Text(text, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             const SizedBox(height: 16),
             ...children,
           ],

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_controller.dart';
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../legal/legal_text_screen.dart';
@@ -76,6 +77,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
+                  const SizedBox(height: 8),
+                  const Center(child: IconBadge(icon: Icons.storefront_outlined)),
+                  const SizedBox(height: 24),
                   TextFormField(
                     key: const Key('email'),
                     controller: _email,
@@ -102,6 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ],
                   const SizedBox(height: 20),
                   FilledButton(
+                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                     key: const Key('submit'),
                     onPressed: _submitting ? null : _submit,
                     child: _submitting
