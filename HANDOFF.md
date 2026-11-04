@@ -1,9 +1,17 @@
 # HARA — Handoff (yeni söhbət üçün)
 
 Bu fayl yeni söhbətin (insan və ya Claude) layihə haqqında heç nə bilmədən işə başlaması üçündür.
-Vəziyyət **2026-11-04**-ə görədir. Hər şeydən əvvəl `git log --oneline -10` və `git status` ilə faylın hələ də aktual olduğunu yoxlayın.
+Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline -10` və `git status` ilə faylın hələ də aktual olduğunu yoxlayın.
 
 ---
+
+## Biznes qərarları və bitirilən işlər (2026-11-05)
+- **Qərarlar (istifadəçi):** rezerv rezerv olaraq qalır, endirimi restoran təyin edir; restoran rezervi tətbiqdə rədd/dayandırmır (telefonla razılaşırlar); №8, №9, №14, №17 problem deyil; şikayət email ilə; müştəri nömrələri əbədi qalır, istəsə silinir; admin təkdir (audit yoxdur). Sahibkarı admin özü yoxlayır (**sonra bunun üçün sistem qurulacaq, istifadəçiyə xatırlat**). Filial = ayrıca restoran, adının qabağına bölgə adı yazılır (xüsusi funksiya yoxdur).
+- **№10 Admin sahibkara hesab verir:** admin paneldə Restaurants cədvəlində "Owner account" düyməsi (`OwnerDialog`). Sahibi olmayan restoran üçün ad, email, parol (generator var) yazılır, "Copy" ilə sahibkara verilir. `POST/GET /api/admin/restaurants/{id}/owner`. Email kodu LAZIM DEYİL (admin tanıyır); sahibkar ilk girişdə şərtləri qəbul edir. Bir restoranın bir sahibi. Yoxlama: API 19, brauzerdə admin paneli.
+- **№13 Ofisiant parol bərpası:** owner ilə eyni axın (admin zəng edib təsdiqləyir); admin siyahısında "Waiter" nişanı. Giriş ekranında link "Parolu unutdunuz?". Yoxlama: API 12.
+- **№16 Qiymətləndirmə:** yalnız ulduz (1-5), mətn yoxdur. Yalnız restoranın kodu TƏSDİQLƏDİYİ müştəri qiymət verə bilər; bir telefon nömrəsi bir restorana BİR dəfə (unikal indeks). `POST /api/reservations/{code}/rating`; status cavabında `rating` (bu telefonun verdiyi). Restoranda `RatingCount`/`RatingTotal` saxlanır, cavabda `ratingAverage` (bir onluq) və `ratingCount`. Mobil: təsdiqlənmiş kod siyahıda "necə idi?" kartı kimi qalır (5 ulduz, bir toxunuş), sonra silinir; ortalama restoran kartında və səhifəsində `★ 4.5 (12)`. Admin paneldə qiymətlər göstərilmir. Yoxlama: API 24, mobil +13 test. Migration `AddRestaurantRatings`.
+- **№20 İctimai məxfilik ünvanı:** API `/privacy`, `/terms`, `/restaurant-agreement` (az/en/ru, dil düymələri) verir: `https://api.hara.rest/privacy`. Mətnlər mobil tətbiqdən `node tools/generate-legal-pages.js` ilə yaradılır (fayllar `backend/src/ui/Hara.Api/Legal/`, repoda). Mətn dəyişəndə skripti yenidən işlət və commit et. Mağaza üçün daha səliqəli ünvan istəsən (`hara.rest/privacy`) Cloudflare-də ayrıca yönləndirmə lazım olacaq.
+- **Test mühiti qeydi:** `backend/secrets/local-settings.json` mühit dəyişənlərindən ÜSTÜN gəlir (admin parolu da orada). İzolə test API-ni repodan kənar qovluqdan (bin/Staging kopyası) işə sal, yoxsa real admin parolu/açar işləyər.
 
 ## Email təsdiqi (2026-11-04) — saxta/spam hesablara qarşı
 - **Axın:** owner və ofisiant qeydiyyatdan sonra emailinə 6 rəqəmli kod gəlir (15 dəq keçərli), tətbiqdə yazır (`EmailVerifyScreen`). Təsdiqlənənə qədər HEÇ NƏ işləmir: `VenueAccess` 403 verir ("Please confirm your email first."), `GET /api/venue/me` → `emailToVerify` (təsdiqsiz üçün ünvan, təsdiqlənibsə null). Təsdiqsiz hesab = `EmailVerifications` cədvəlində sətir var; təsdiqdə sətir silinir (köhnə hesablarda sətir yoxdur, onlar təsdiqli sayılır).
