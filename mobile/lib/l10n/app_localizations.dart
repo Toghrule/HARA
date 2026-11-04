@@ -1857,6 +1857,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We couldn\'t send the confirmation email. Check the address and try again.'**
   String get emailCouldNotSend;
+
+  /// No description provided for @rateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How was {restaurant}?'**
+  String rateTitle(String restaurant);
+
+  /// No description provided for @rateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the stars to rate it. You can do this once.'**
+  String get rateSubtitle;
+
+  /// No description provided for @rateThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your rating!'**
+  String get rateThanks;
+
+  /// No description provided for @starsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stars'**
+  String starsLabel(int count);
+
+  /// No description provided for @ratingShort.
+  ///
+  /// In en, this message translates to:
+  /// **'★ {average} ({count})'**
+  String ratingShort(String average, int count);
+
+  /// No description provided for @redeemedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Code confirmed'**
+  String get redeemedTitle;
+
+  /// No description provided for @redeemedText.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant confirmed your code. Enjoy your meal! You can rate the restaurant from the list.'**
+  String get redeemedText;
 }
 
 class _AppLocalizationsDelegate

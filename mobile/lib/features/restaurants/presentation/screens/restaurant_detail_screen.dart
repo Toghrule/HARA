@@ -94,6 +94,17 @@ class _Details extends ConsumerWidget {
                   children: [for (final code in restaurant.cuisines) Chip(label: Text(l10n.cuisineName(code)))],
                 ),
               ],
+              if (restaurant.ratingAverage != null) ...[
+                const SizedBox(height: 8),
+                Row(
+                  key: const Key('rating'),
+                  children: [
+                    const Icon(Icons.star_rounded, size: 20, color: Color(0xFFE4B744)),
+                    const SizedBox(width: 4),
+                    Text(l10n.ratingShort(restaurant.ratingAverage!.toStringAsFixed(1), restaurant.ratingCount), style: theme.textTheme.bodyLarge),
+                  ],
+                ),
+              ],
               if (restaurant.discountPercent > 0) ...[
                 const SizedBox(height: 12),
                 Chip(

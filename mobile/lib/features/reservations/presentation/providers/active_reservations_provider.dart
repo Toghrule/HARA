@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,6 +63,18 @@ class ActiveReservations extends StateNotifier<List<Reservation>> {
     await _save();
   }
 
+  /// Sends the customer's stars for a confirmed reservation and, once the server has them (or says they were already given),
+  /// forgets the reservation. Any other failure is thrown so the screen can say what went wrong.
+  Future<void> rate(String code, int stars) async {
+    try {
+      await _repository().rate(code, stars);
+    } on DioException catch (error) {
+      // Already rated (or the code is gone): nothing is left to ask.
+      if (error.response?.statusCode != 400 && error.response?.statusCode != 404) rethrow;
+    }
+    await remove(code);
+  }
+
   /// Forgets a reservation once it has ended, been cancelled, or the customer closed its notice.
   Future<void> remove(String code) async {
     await _ready;
@@ -121,7 +134,14 @@ class ActiveReservations extends StateNotifier<List<Reservation>> {
             }
           case ReservationState.declined || ReservationState.unanswered:
             await _update(reservation.copyWith(status: info.state));
-          case ReservationState.redeemed || ReservationState.cancelled || ReservationState.expired:
+          case ReservationState.redeemed:
+            // The restaurant confirmed the code: stays as an invitation to rate, unless this phone already rated.
+            if (info.rating != null) {
+              await remove(reservation.code);
+            } else {
+              await _update(reservation.copyWith(status: ReservationState.redeemed));
+            }
+          case ReservationState.cancelled || ReservationState.expired:
             await remove(reservation.code);
         }
       } catch (_) {

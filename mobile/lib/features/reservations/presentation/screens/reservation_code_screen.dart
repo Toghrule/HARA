@@ -135,9 +135,10 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
     }
   }
 
-  /// Leaves the screen; a notice about a declined or unanswered request is closed with it.
+  /// Leaves the screen; a notice about a declined or unanswered request is closed with it. A confirmed code stays on the list
+  /// as an invitation to rate the restaurant.
   Future<void> _done(Reservation reservation) async {
-    if (!reservation.status.isInProgress) {
+    if (reservation.status == ReservationState.declined || reservation.status == ReservationState.unanswered) {
       unawaited(ref.read(activeReservationsProvider.notifier).remove(reservation.code));
     }
     if (mounted) context.go('/');
@@ -184,6 +185,14 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
                     icon: Icons.hourglass_disabled,
                     title: l10n.unansweredTitle,
                     text: l10n.unansweredText,
+                  ),
+                ReservationState.redeemed => _buildOutcome(
+                    context,
+                    reservation,
+                    icon: Icons.check_circle_outline,
+                    title: l10n.redeemedTitle,
+                    text: l10n.redeemedText,
+                    success: true,
                   ),
                 _ => _buildCode(context, reservation),
               },
@@ -250,6 +259,7 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
     required IconData icon,
     required String title,
     required String text,
+    bool success = false,
   }) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
@@ -260,7 +270,7 @@ class _ReservationCodeScreenState extends ConsumerState<ReservationCodeScreen> {
       children: [
         Text(reservation.restaurantName, style: theme.textTheme.headlineSmall, textAlign: TextAlign.center),
         const SizedBox(height: 24),
-        Icon(icon, size: 64, color: theme.colorScheme.error),
+        Icon(icon, size: 64, color: success ? theme.colorScheme.primary : theme.colorScheme.error),
         const SizedBox(height: 16),
         Text(title, key: const Key('outcomeTitle'), style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
         const SizedBox(height: 8),

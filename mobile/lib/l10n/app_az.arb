@@ -304,5 +304,12 @@
   "emailCodeWait": "Yeni kod istəməzdən əvvəl bir az gözləyin.",
   "emailCodeTooManyAsks": "Çox kod istənildi. Bir az sonra yenidən cəhd edin.",
   "emailCodeSixDigits": "Kod altı rəqəmdir.",
-  "emailCouldNotSend": "Təsdiq məktubunu göndərə bilmədik. Ünvanı yoxlayıb yenidən cəhd edin."
+  "emailCouldNotSend": "Təsdiq məktubunu göndərə bilmədik. Ünvanı yoxlayıb yenidən cəhd edin.",
+  "rateTitle": "{restaurant} necə idi?",
+  "rateSubtitle": "Qiymət vermək üçün ulduzlara toxunun. Bunu bir dəfə etmək olar.",
+  "rateThanks": "Qiymətiniz üçün təşəkkürlər!",
+  "starsLabel": "{count} ulduz",
+  "ratingShort": "★ {average} ({count})",
+  "redeemedTitle": "Kod təsdiqləndi",
+  "redeemedText": "Restoran kodunuzu təsdiqlədi. Nuş olsun! Restorana siyahıdan qiymət verə bilərsiniz."
 }

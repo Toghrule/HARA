@@ -89,6 +89,11 @@ class _FakeReservationsRepository extends ReservationsRepository {
 
   final List<String> cancelled = [];
 
+  /// Stars this phone already gave (per code), as the status check reports them; and the stars sent through the app.
+  final Map<String, int> ratings = {};
+  final List<(String, int)> rated = [];
+  Object? rateError;
+
   /// What the server says per code; a code that is absent counts as still active, a `null` value as unknown (404).
   final Map<String, ReservationState?> statuses = {};
   Object? statusError;
@@ -105,7 +110,7 @@ class _FakeReservationsRepository extends ReservationsRepository {
     final state = statuses.containsKey(code) ? statuses[code] : (_storedStates[code] ?? ReservationState.active);
     if (state == null) return null;
 
-    return ReservationStatusInfo(state: state, expiresAt: deadlines[code] ?? _storedDeadlines[code] ?? DateTime.now().add(const Duration(minutes: 20)));
+    return ReservationStatusInfo(state: state, expiresAt: deadlines[code] ?? _storedDeadlines[code] ?? DateTime.now().add(const Duration(minutes: 20)), rating: ratings[code]);
   }
 
   @override
@@ -118,6 +123,18 @@ class _FakeReservationsRepository extends ReservationsRepository {
 
   @override
   Future<void> cancel(String code) async => cancelled.add(code);
+
+  @override
+  Future<void> rate(String code, int stars) async {
+    if (rateError != null) throw rateError!;
+    rated.add((code, stars));
+  }
+}
+
+DioException serverTrouble(int status) {
+  final options = RequestOptions(path: '/status');
+
+  return DioException(requestOptions: options, response: Response(requestOptions: options, statusCode: status));
 }
 
 void main() {
@@ -239,7 +256,10 @@ void main() {
         _reservation(expiresIn: const Duration(minutes: 20), code: 'USED11'),
         _reservation(expiresIn: const Duration(minutes: 20), code: 'LIVE44'),
       ]);
-      await pumpApp(tester, configure: (repository) => repository.statuses['USED11'] = ReservationState.redeemed);
+      await pumpApp(tester, configure: (repository) {
+        repository.statuses['USED11'] = ReservationState.redeemed;
+        repository.ratings['USED11'] = 5;
+      });
 
       expect(find.textContaining('Code USED11'), findsNothing);
       expect(find.textContaining('Code LIVE44'), findsOneWidget);
@@ -251,6 +271,7 @@ void main() {
       expect(reservations.statusChecks, 1);
 
       reservations.statuses['S68NRG'] = ReservationState.redeemed;
+      reservations.ratings['S68NRG'] = 5;
       await tester.pump(const Duration(seconds: 61));
       await tester.pumpAndSettle();
 
@@ -271,9 +292,69 @@ void main() {
       await container.read(activeReservationsProvider.notifier).refresh();
       await tester.pumpAndSettle();
 
-      expect(find.text('This reservation is no longer active'), findsOneWidget);
+      expect(find.text('Code confirmed'), findsOneWidget);
       expect(find.textContaining('Valid for'), findsNothing);
       expect(find.widgetWithText(TextButton, 'Cancel reservation'), findsNothing);
+    });
+
+    testWidgets('a code the restaurant confirmed becomes an invitation to rate, with five stars', (tester) async {
+      _store([_reservation(expiresIn: const Duration(minutes: 20), code: 'USED11')]);
+      await pumpApp(tester, configure: (repository) => repository.statuses['USED11'] = ReservationState.redeemed);
+
+      expect(find.byKey(const Key('ratingCard-USED11')), findsOneWidget);
+      expect(find.text('How was Test Restoran?'), findsOneWidget);
+      expect(find.byKey(const Key('star-5')), findsOneWidget);
+      expect(find.textContaining('Code USED11'), findsNothing);
+    });
+
+    testWidgets('tapping a star sends it once and the invitation goes away', (tester) async {
+      _store([_reservation(expiresIn: const Duration(minutes: 20), code: 'USED11')]);
+      await pumpApp(tester, configure: (repository) => repository.statuses['USED11'] = ReservationState.redeemed);
+
+      await tester.tap(find.byKey(const Key('star-4')));
+      await tester.pumpAndSettle();
+
+      expect(reservations.rated, [('USED11', 4)]);
+      expect(find.byKey(const Key('ratingCard-USED11')), findsNothing);
+      expect(find.text('Thank you for your rating!'), findsOneWidget);
+    });
+
+    testWidgets('the invitation can be closed without rating', (tester) async {
+      _store([_reservation(expiresIn: const Duration(minutes: 20), code: 'USED11')]);
+      await pumpApp(tester, configure: (repository) => repository.statuses['USED11'] = ReservationState.redeemed);
+
+      await tester.tap(find.byKey(const Key('closeNotice-USED11')));
+      await tester.pumpAndSettle();
+
+      expect(reservations.rated, isEmpty);
+      expect(find.byKey(const Key('ratingCard-USED11')), findsNothing);
+    });
+
+    testWidgets('a server that says the phone already rated just clears the invitation', (tester) async {
+      _store([_reservation(expiresIn: const Duration(minutes: 20), code: 'USED11')]);
+      await pumpApp(tester, configure: (repository) {
+        repository.statuses['USED11'] = ReservationState.redeemed;
+        repository.rateError = serverTrouble(400);
+      });
+
+      await tester.tap(find.byKey(const Key('star-2')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('ratingCard-USED11')), findsNothing);
+    });
+
+    testWidgets('a failure to reach the server keeps the invitation so the customer can try again', (tester) async {
+      _store([_reservation(expiresIn: const Duration(minutes: 20), code: 'USED11')]);
+      await pumpApp(tester, configure: (repository) {
+        repository.statuses['USED11'] = ReservationState.redeemed;
+        repository.rateError = serverTrouble(500);
+      });
+
+      await tester.tap(find.byKey(const Key('star-5')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('ratingCard-USED11')), findsOneWidget);
+      expect(find.byKey(const Key('star-5')), findsOneWidget);
     });
 
     testWidgets('the card disappears by itself when the time is up', (tester) async {
@@ -450,12 +531,6 @@ void main() {
     });
   });
   group('checking with the server', () {
-    DioException serverTrouble(int status) {
-      final options = RequestOptions(path: '/status');
-
-      return DioException(requestOptions: options, response: Response(requestOptions: options, statusCode: status));
-    }
-
     Future<(ProviderContainer, _FakeReservationsRepository)> containerWith(List<Reservation> kept) async {
       _store(kept);
       final repository = _FakeReservationsRepository();
@@ -480,6 +555,7 @@ void main() {
         ..['USED11'] = ReservationState.redeemed
         ..['CANC22'] = ReservationState.cancelled
         ..['GONE33'] = null;
+      repository.ratings['USED11'] = 4; // already rated, so nothing is left to ask
 
       await container.read(activeReservationsProvider.notifier).refresh();
 
@@ -507,6 +583,7 @@ void main() {
         _reservation(expiresIn: const Duration(minutes: 20), code: 'USED11'),
       ]);
       repository.statuses['USED11'] = ReservationState.redeemed;
+      repository.ratings['USED11'] = 3;
       await container.read(activeReservationsProvider.notifier).refresh();
 
       final next = ProviderContainer();

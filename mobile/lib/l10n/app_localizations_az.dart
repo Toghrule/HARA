@@ -1052,4 +1052,33 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get emailCouldNotSend =>
       'Təsdiq məktubunu göndərə bilmədik. Ünvanı yoxlayıb yenidən cəhd edin.';
+
+  @override
+  String rateTitle(String restaurant) {
+    return '$restaurant necə idi?';
+  }
+
+  @override
+  String get rateSubtitle =>
+      'Qiymət vermək üçün ulduzlara toxunun. Bunu bir dəfə etmək olar.';
+
+  @override
+  String get rateThanks => 'Qiymətiniz üçün təşəkkürlər!';
+
+  @override
+  String starsLabel(int count) {
+    return '$count ulduz';
+  }
+
+  @override
+  String ratingShort(String average, int count) {
+    return '★ $average ($count)';
+  }
+
+  @override
+  String get redeemedTitle => 'Kod təsdiqləndi';
+
+  @override
+  String get redeemedText =>
+      'Restoran kodunuzu təsdiqlədi. Nuş olsun! Restorana siyahıdan qiymət verə bilərsiniz.';
 }

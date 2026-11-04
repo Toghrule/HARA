@@ -1052,4 +1052,33 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get emailCouldNotSend =>
       'Не удалось отправить письмо с подтверждением. Проверьте адрес и попробуйте снова.';
+
+  @override
+  String rateTitle(String restaurant) {
+    return 'Как вам $restaurant?';
+  }
+
+  @override
+  String get rateSubtitle =>
+      'Нажмите на звёзды, чтобы оценить. Это можно сделать один раз.';
+
+  @override
+  String get rateThanks => 'Спасибо за оценку!';
+
+  @override
+  String starsLabel(int count) {
+    return 'Звёзд: $count';
+  }
+
+  @override
+  String ratingShort(String average, int count) {
+    return '★ $average ($count)';
+  }
+
+  @override
+  String get redeemedTitle => 'Код подтверждён';
+
+  @override
+  String get redeemedText =>
+      'Ресторан подтвердил ваш код. Приятного аппетита! Оценить ресторан можно из списка.';
 }

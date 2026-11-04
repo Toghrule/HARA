@@ -16,6 +16,8 @@ class Restaurant {
     this.availability = Availability.open,
     this.cuisines = const [],
     this.galleryUrls = const [],
+    this.ratingAverage,
+    this.ratingCount = 0,
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
@@ -36,6 +38,8 @@ class Restaurant {
             : Availability.fromJson(json['availability'] as Map<String, dynamic>),
         cuisines: [for (final code in (json['cuisines'] as List<dynamic>?) ?? const []) code as String],
         galleryUrls: [for (final url in (json['galleryUrls'] as List<dynamic>?) ?? const []) url as String],
+        ratingAverage: (json['ratingAverage'] as num?)?.toDouble(),
+        ratingCount: (json['ratingCount'] as num?)?.toInt() ?? 0,
       );
 
   final String id;
@@ -59,6 +63,12 @@ class Restaurant {
 
   /// Relative URLs of the photos, in display order.
   final List<String> galleryUrls;
+
+  /// The average stars (one decimal), or `null` while nobody has rated.
+  final double? ratingAverage;
+
+  /// How many customers rated.
+  final int ratingCount;
 
   /// Every photo to show, the cover first, without repeats.
   List<Uri> get photoUris => {

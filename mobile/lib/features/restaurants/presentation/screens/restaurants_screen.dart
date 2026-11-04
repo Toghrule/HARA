@@ -224,6 +224,7 @@ class _RestaurantTile extends ConsumerWidget {
 
     final lines = [
       distance == null ? restaurant.address : '${restaurant.address} · $distance',
+      if (restaurant.ratingAverage != null) l10n.ratingShort(restaurant.ratingAverage!.toStringAsFixed(1), restaurant.ratingCount),
       if (restaurant.discountPercent > 0) l10n.discountWithCode(restaurant.discountPercent),
       // Only when it matters: a restaurant that is open needs no extra line here.
       if (!restaurant.availability.acceptingRequests) availabilityText(l10n, restaurant.availability),

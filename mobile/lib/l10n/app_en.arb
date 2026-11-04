@@ -346,5 +346,15 @@
   "emailCodeWait": "Wait a moment before asking for another code.",
   "emailCodeTooManyAsks": "Too many codes were asked for. Please try again in a while.",
   "emailCodeSixDigits": "The code is six digits.",
-  "emailCouldNotSend": "We couldn't send the confirmation email. Check the address and try again."
+  "emailCouldNotSend": "We couldn't send the confirmation email. Check the address and try again.",
+  "rateTitle": "How was {restaurant}?",
+  "@rateTitle": {"placeholders":{"restaurant":{"type":"String"}}},
+  "rateSubtitle": "Tap the stars to rate it. You can do this once.",
+  "rateThanks": "Thank you for your rating!",
+  "starsLabel": "{count} stars",
+  "@starsLabel": {"placeholders":{"count":{"type":"int"}}},
+  "ratingShort": "★ {average} ({count})",
+  "@ratingShort": {"placeholders":{"average":{"type":"String"},"count":{"type":"int"}}},
+  "redeemedTitle": "Code confirmed",
+  "redeemedText": "The restaurant confirmed your code. Enjoy your meal! You can rate the restaurant from the list."
 }

@@ -1053,4 +1053,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get emailCouldNotSend =>
       'We couldn\'t send the confirmation email. Check the address and try again.';
+
+  @override
+  String rateTitle(String restaurant) {
+    return 'How was $restaurant?';
+  }
+
+  @override
+  String get rateSubtitle => 'Tap the stars to rate it. You can do this once.';
+
+  @override
+  String get rateThanks => 'Thank you for your rating!';
+
+  @override
+  String starsLabel(int count) {
+    return '$count stars';
+  }
+
+  @override
+  String ratingShort(String average, int count) {
+    return '★ $average ($count)';
+  }
+
+  @override
+  String get redeemedTitle => 'Code confirmed';
+
+  @override
+  String get redeemedText =>
+      'The restaurant confirmed your code. Enjoy your meal! You can rate the restaurant from the list.';
 }
