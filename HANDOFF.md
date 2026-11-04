@@ -57,7 +57,8 @@ Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ## Pilot (real insanlarla sınaq) — 2026-10-28
 - `start-pilot.bat` AYRI mühit qaldırır: baza `hara_pilot`, API `localhost:5082` (Production), admin panel `localhost:5175`, Cloudflare quick tunnel (`tools/cloudflared/cloudflared.exe`, gitignore, rəsmi hash yoxlanıb). Gündəlik dev (5080/5173/5174, baza `hara`) toxunulmaz. Tunel ünvanı `tools/cloudflared/current-url.txt`-dədir.
-- **Məhdudiyyət:** quick tunnel ünvanı hər yenidən başlamada dəyişir, APK isə ünvana bağlıdır (`--dart-define=API_BASE_URL`). Sabit ünvan üçün Cloudflare hesabı + domen (named tunnel) və ya VPS lazımdır.
+- **SABİT ÜNVAN (2026-11-04):** domen `hara.rest` (Namecheap, 1 il, yenilənmə qiyməti ~$33, Auto-Renew söndürülməlidir), DNS Cloudflare-dədir (pulsuz plan). Adlandırılmış tunel `hara-pilot` (id `6c06bba7-aa51-4cc7-9248-faebbe414f1f`), `api.hara.rest` -> bu PC-dəki pilot API (5082). `start-pilot.bat` onu işlədir (giriş `%USERPROFILE%\.cloudflared\cert.pem` və tunel açarı `...\6c06bba7-....json` bu PC-dədir; açarı GİTƏ ATMA). Başqa PC-də bu fayllar yoxdursa skript müvəqqəti trycloudflare ünvanına keçir. APK `https://api.hara.rest` ilə build olunur (workflow default). Pilot API işləməyəndə (PC söndü, tunel bağlandı) tətbiq qoşulmur.
+- Köhnə qeyd: quick tunnel ünvanı hər yenidən başlamada dəyişirdi (`--dart-define=API_BASE_URL`); artıq lazım deyil.
 - Server proxy arxasındadır: `UseForwardedHeaders` yalnız lokal proxy-ni (loopback) etibarlı sayır, limitlər real müştəri IP-sinə görə işləyir.
 
 ## 1. Layihənin məqsədi

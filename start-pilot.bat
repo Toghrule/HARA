@@ -109,9 +109,31 @@ echo.
 echo  Step 5/5: Tunnel ^(the public address^)
 set "TUNNEL_LOG=%ROOT%\tools\cloudflared\tunnel.log"
 set "TUNNEL_URL_FILE=%ROOT%\tools\cloudflared\current-url.txt"
+rem  The fixed address: a named tunnel on our own domain. It needs the Cloudflare login on this PC
+rem  (%USERPROFILE%\.cloudflared\cert.pem). Without it the script falls back to a temporary address.
+set "NAMED_TUNNEL=hara-pilot"
+set "NAMED_URL=https://api.hara.rest"
 del "%TUNNEL_LOG%" "%TUNNEL_URL_FILE%" >nul 2>&1
+if exist "%USERPROFILE%\.cloudflared\cert.pem" goto :namedtunnel
 start "HARA Pilot Tunnel" cmd /k ""%CLOUDFLARED%" tunnel --url http://localhost:%API_PORT% --logfile "%TUNNEL_LOG%""
+goto :waitquick
 
+:namedtunnel
+start "HARA Pilot Tunnel" cmd /k ""%CLOUDFLARED%" tunnel --logfile "%TUNNEL_LOG%" run --url http://localhost:%API_PORT% %NAMED_TUNNEL%"
+set "TRIES=0"
+:waitnamed
+powershell -NoProfile -Command "try { $r = Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 '%NAMED_URL%/health'; if ($r.StatusCode -eq 200) { exit 0 } else { exit 1 } } catch { exit 1 }"
+if errorlevel 1 (
+    set /a TRIES+=1
+    if !TRIES! GEQ 20 goto :nourl
+    ping -n 3 127.0.0.1 >nul
+    goto :waitnamed
+)
+> "%TUNNEL_URL_FILE%" set /p "=%NAMED_URL%" <nul
+set "PUBLIC_URL=%NAMED_URL%"
+goto :summary
+
+:waitquick
 set "TRIES=0"
 :waiturl
 if exist "%TUNNEL_LOG%" powershell -NoProfile -Command "$m = Select-String -Path '%TUNNEL_LOG%' -Pattern 'https://[a-z0-9-]+\.trycloudflare\.com' -ErrorAction SilentlyContinue | Select-Object -First 1; if ($m) { $m.Matches[0].Value | Set-Content -NoNewline '%TUNNEL_URL_FILE%' }"
@@ -133,7 +155,8 @@ echo  Pilot is starting.
 echo    Admin panel (pilot data):  http://localhost:%ADMIN_PORT%
 echo    Public address:            !PUBLIC_URL!
 echo  The address is also saved in tools\cloudflared\current-url.txt.
-echo  It changes every time the tunnel restarts, and the phone app must be built with the current one.
+echo  On our own domain ^(api.hara.rest^) the address never changes. A temporary trycloudflare.com address
+echo  ^(used when this PC has no Cloudflare login^) changes on every restart, and the phone app must be built with it.
 echo  Keep this PC awake while testing.
 echo ============================================================
 
