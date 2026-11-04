@@ -12,8 +12,10 @@ public class GetVenueStaffQueryHandler(VenueAccess access, IUnitOfWork unitOfWor
     {
         var owner = await access.RequireApprovedOwnerAsync(cancellationToken);
 
+        // A waiter whose email is not confirmed yet is not shown: made-up addresses must not clutter the list.
+        var unconfirmed = unitOfWork.Repository<EmailVerification>().Query().Select(v => v.UserId);
         var members = await unitOfWork.Repository<RestaurantMember>().Query()
-            .Where(m => m.RestaurantId == owner.RestaurantId)
+            .Where(m => m.RestaurantId == owner.RestaurantId && !unconfirmed.Contains(m.UserId))
             .ToListAsync(cancellationToken);
 
         return members

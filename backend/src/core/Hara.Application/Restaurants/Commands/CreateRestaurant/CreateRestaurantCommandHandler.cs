@@ -54,6 +54,12 @@ public class CreateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
 
         if (submission.OwnerUserId is { } ownerUserId)
         {
+            var emailUnconfirmed = await unitOfWork.Repository<EmailVerification>().Query().AnyAsync(v => v.UserId == ownerUserId, cancellationToken);
+            if (emailUnconfirmed)
+            {
+                throw new ValidationException("fromSubmissionId", "This owner has not confirmed their email yet.");
+            }
+
             var alreadyMember = await unitOfWork.Repository<RestaurantMember>().Query()
                 .AnyAsync(m => m.UserId == ownerUserId, cancellationToken);
             if (alreadyMember)

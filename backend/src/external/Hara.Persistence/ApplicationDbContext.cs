@@ -51,6 +51,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<TermsAcceptance> TermsAcceptances => Set<TermsAcceptance>();
 
+    public DbSet<EmailVerification> EmailVerifications => Set<EmailVerification>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

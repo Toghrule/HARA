@@ -27,6 +27,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(builder.Configuration, builder.Environment);
 builder.Services.AddHaraRateLimiting(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHostedService<Hara.Api.Services.UnconfirmedAccountsCleanup>();
 builder.Services.AddScoped<Hara.Application.Common.Interfaces.ICurrentUserService, Hara.Api.Services.CurrentUserService>();
 
 var jwtSection = builder.Configuration.GetSection(JwtOptions.SectionName);

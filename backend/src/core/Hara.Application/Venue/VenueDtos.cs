@@ -32,8 +32,9 @@ public sealed record VenueRestaurantDto(
 /// <param name="FullName">The person's name, when known.</param>
 /// <param name="Restaurant">The restaurant, once approved.</param>
 /// <param name="Note">The reason given when an owner registration was declined.</param>
+/// <param name="EmailToVerify">The email address whose confirmation code is awaited, or <c>null</c> once it is confirmed. Until then the person can do nothing for a restaurant.</param>
 /// <param name="PendingTerms">The legal texts still to be accepted: <c>terms</c> and/or <c>venueAgreement</c>. Empty when all are accepted; until then the person can do nothing for the restaurant.</param>
-public sealed record VenueMeDto(string Role, string Status, string? FullName, VenueRestaurantDto? Restaurant, string? Note, IReadOnlyList<string>? PendingTerms = null);
+public sealed record VenueMeDto(string Role, string Status, string? FullName, VenueRestaurantDto? Restaurant, string? Note, IReadOnlyList<string>? PendingTerms = null, string? EmailToVerify = null);
 
 /// <summary>A person on a restaurant's team, for the owner's staff screen.</summary>
 public sealed record StaffMemberDto(

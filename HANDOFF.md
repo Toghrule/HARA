@@ -1,9 +1,19 @@
 # HARA — Handoff (yeni söhbət üçün)
 
 Bu fayl yeni söhbətin (insan və ya Claude) layihə haqqında heç nə bilmədən işə başlaması üçündür.
-Vəziyyət **2026-10-08**-ə görədir. Hər şeydən əvvəl `git log --oneline -10` və `git status` ilə faylın hələ də aktual olduğunu yoxlayın.
+Vəziyyət **2026-11-04**-ə görədir. Hər şeydən əvvəl `git log --oneline -10` və `git status` ilə faylın hələ də aktual olduğunu yoxlayın.
 
 ---
+
+## Email təsdiqi (2026-11-04) — saxta/spam hesablara qarşı
+- **Axın:** owner və ofisiant qeydiyyatdan sonra emailinə 6 rəqəmli kod gəlir (15 dəq keçərli), tətbiqdə yazır (`EmailVerifyScreen`). Təsdiqlənənə qədər HEÇ NƏ işləmir: `VenueAccess` 403 verir ("Please confirm your email first."), `GET /api/venue/me` → `emailToVerify` (təsdiqsiz üçün ünvan, təsdiqlənibsə null). Təsdiqsiz hesab = `EmailVerifications` cədvəlində sətir var; təsdiqdə sətir silinir (köhnə hesablarda sətir yoxdur, onlar təsdiqli sayılır).
+- **Qoruma:** kod SHA-256 + sətir duzu ilə hash olunur; 5 yanlış cəhd kodu ləğv edir; yeni kod 60 san-dən tez olmaz, saatda ən çox 5 göndəriş; təsdiqsiz hesab 24 saatdan sonra silinir (`UnconfirmedAccountsCleanup`, `Cleanup:UnconfirmedAccountsEverySeconds`, defolt 3600). Eyni emailə təsdiqsiz hesab varsa yenidən qeydiyyat onu əvəz edir (başqasının ünvanı ilə yer tutmaq olmur). Təsdiqsiz ofisiant owner-in "gözləyənlər" siyahısında və admin sorğularında görünmür.
+- **Endpoint-lər:** `POST /api/venue/email/verify {code}`, `POST /api/venue/email/resend {language}`; qeydiyyat sorğusuna `language` (az/ru/en, məktubun dili).
+- **Göndərmə:** `IEmailSender`. İnkişafda (`Email:LogInstead=true`, `appsettings.Development.json`) məktub yalnız loga yazılır. Production-da `SmtpEmailSender` (MailKit). Ayarlar yoxdursa göndərmə alınmır və qeydiyyat "couldn't send" ilə RƏDD olunur.
+- **⚠ HƏLƏ EDİLMƏLİ (istifadəçi):** Brevo (və ya Resend) hesabı aç, `hara.rest` domenini əlavə et, onların verdiyi DNS qeydlərini (SPF/DKIM) Cloudflare-də əlavə et, SMTP açarı yarat və `backend/secrets/local-settings.json`-a yaz: `"Email": {"Host": "...", "Port": 587, "UserName": "...", "Password": "..."}` (göndərən `noreply@hara.rest`, ad `HARA`). Bu olmayana qədər real (Production) API-də yeni owner/ofisiant qeydiyyatı alınmaz. Açar repoya DÜŞMƏMƏLİDİR (repo ictimaidir).
+- **Migration:** `AddEmailVerifications` — real `hara` bazasına HƏLƏ tətbiq olunmayıb.
+- **Yoxlama:** API 83 yoxlama (izolə bazada, repoda YOXDUR; əvvəlki skriptlər də yeni axına uyğunlaşdırıldı: iş saatları 37, statistika 19, parol 46, şərtlər 46, kəşf 37), real SMTP yolu saxta server ilə, mutasiya yoxlamaları (VenueAccess blokunu sönürəndə test düşdü). Mobil +8 test (cəmi 313).
+- **Edilmədi:** email dəyişdirmə, "emailim yanlış yazılıb" üçün ayrıca axın (indi çıxış edib yenidən qeydiyyat), müştəri üçün email yoxdur (hesabları yoxdur).
 
 ## Dizayn: tema, loqo, ikon (2026-11-04)
 - **Mənbə:** istifadəçinin loqosu `mobile/assets/logo/H.png` (2000x2000, QARA fon, qızılı-bənövşəyi qradiyentli H, ortada bənövşəyi pin, altda kiçik "hara" yazısı). Rənglər: qızılı `#E4B744`, mis `#BB8069`, bənövşəyi `#9E4CB6` (pin) və `#7B2D9E`.

@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="FirebaseAdmin" Version="3.7.0" />
+    <PackageReference Include="MailKit" Version="4.9.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.0" />
   </ItemGroup>
 

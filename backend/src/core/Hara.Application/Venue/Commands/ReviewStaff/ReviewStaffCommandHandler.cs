@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Hara.Application.Venue.Commands.ReviewStaff;
 
-public class ReviewStaffCommandHandler(VenueAccess access, IUnitOfWork unitOfWork)
+public class ReviewStaffCommandHandler(VenueAccess access, IUnitOfWork unitOfWork, EmailConfirmation.EmailVerificationService emailVerification)
     : IRequestHandler<ReviewStaffCommand, StaffMemberDto>
 {
     public async Task<StaffMemberDto> Handle(ReviewStaffCommand request, CancellationToken cancellationToken)
@@ -17,6 +17,12 @@ public class ReviewStaffCommandHandler(VenueAccess access, IUnitOfWork unitOfWor
 
         // Someone else's waiter looks exactly like a missing one, so owners can't probe other restaurants.
         if (member is null || member.RestaurantId != owner.RestaurantId || member.Role != MemberRole.Staff)
+        {
+            throw new NotFoundException(nameof(RestaurantMember), request.MemberId);
+        }
+
+        // A waiter who has not confirmed their email is as good as not there.
+        if (await emailVerification.IsPendingAsync(member.UserId, cancellationToken))
         {
             throw new NotFoundException(nameof(RestaurantMember), request.MemberId);
         }

@@ -39,6 +39,7 @@ class AuthController extends StateNotifier<AuthSession?> implements TokenSource 
     required String address,
     String? restaurantPhoneNumber,
     String? description,
+    String? language,
   }) async =>
       _start(await _repository.registerOwner(
         email: email,
@@ -49,6 +50,7 @@ class AuthController extends StateNotifier<AuthSession?> implements TokenSource 
         address: address,
         restaurantPhoneNumber: restaurantPhoneNumber,
         description: description,
+        language: language,
       ));
 
   Future<void> registerStaff({
@@ -57,6 +59,7 @@ class AuthController extends StateNotifier<AuthSession?> implements TokenSource 
     required String fullName,
     String? phoneNumber,
     required String restaurantId,
+    String? language,
   }) async =>
       _start(await _repository.registerStaff(
         email: email,
@@ -64,6 +67,7 @@ class AuthController extends StateNotifier<AuthSession?> implements TokenSource 
         fullName: fullName,
         phoneNumber: phoneNumber,
         restaurantId: restaurantId,
+        language: language,
       ));
 
   /// Signs out on this device right away, then tells the server so the refresh token stops working.

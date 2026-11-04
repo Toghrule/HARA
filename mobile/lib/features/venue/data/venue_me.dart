@@ -55,7 +55,7 @@ class VenueRestaurant {
 
 /// The answer of `GET /api/venue/me`.
 class VenueMe {
-  const VenueMe({required this.isOwner, required this.status, this.fullName, this.restaurant, this.note, this.pendingTerms = const []});
+  const VenueMe({required this.isOwner, required this.status, this.fullName, this.restaurant, this.note, this.pendingTerms = const [], this.emailToVerify});
 
   factory VenueMe.fromJson(Map<String, dynamic> json) => VenueMe(
         isOwner: json['role'] == 'Owner',
@@ -64,6 +64,7 @@ class VenueMe {
         restaurant: json['restaurant'] == null ? null : VenueRestaurant.fromJson(json['restaurant'] as Map<String, dynamic>),
         note: json['note'] as String?,
         pendingTerms: [for (final name in (json['pendingTerms'] as List<dynamic>?) ?? const []) name as String],
+        emailToVerify: json['emailToVerify'] as String?,
       );
 
   final bool isOwner;
@@ -78,4 +79,7 @@ class VenueMe {
 
   /// The legal texts still to be accepted (`terms`, `venueAgreement`). Until the list is empty nothing else is shown.
   final List<String> pendingTerms;
+
+  /// The address whose emailed code is awaited. While it is set the person can do nothing else; `null` once confirmed.
+  final String? emailToVerify;
 }

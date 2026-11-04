@@ -168,6 +168,7 @@ class FakeAuthRepository extends AuthRepository {
     required String address,
     String? restaurantPhoneNumber,
     String? description,
+    String? language,
   }) async {
     calls.add({
       'call': 'registerOwner',
@@ -179,6 +180,7 @@ class FakeAuthRepository extends AuthRepository {
       'address': address,
       'restaurantPhoneNumber': restaurantPhoneNumber,
       'description': description,
+      'language': language,
     });
     if (error != null) throw error!;
 
@@ -192,6 +194,7 @@ class FakeAuthRepository extends AuthRepository {
     required String fullName,
     String? phoneNumber,
     required String restaurantId,
+    String? language,
   }) async {
     calls.add({
       'call': 'registerStaff',
@@ -200,6 +203,7 @@ class FakeAuthRepository extends AuthRepository {
       'fullName': fullName,
       'phoneNumber': phoneNumber,
       'restaurantId': restaurantId,
+      'language': language,
     });
     if (error != null) throw error!;
 

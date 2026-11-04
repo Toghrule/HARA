@@ -219,6 +219,7 @@ void main() {
         'address': 'Baku, Nizami 1',
         'restaurantPhoneNumber': null,
         'description': null,
+        'language': 'en',
       });
       expect(app.currentPath, '/venue');
       expect(find.text('Waiting for approval'), findsOneWidget);

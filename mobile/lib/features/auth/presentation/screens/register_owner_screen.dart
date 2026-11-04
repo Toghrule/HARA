@@ -77,6 +77,7 @@ class _RegisterOwnerScreenState extends ConsumerState<RegisterOwnerScreen> {
             address: _address.text.trim(),
             restaurantPhoneNumber: _orNull(_restaurantPhone),
             description: _orNull(_description),
+            language: l10n.localeName,
           );
       if (mounted) context.go('/venue');
     } catch (error) {
@@ -128,7 +129,7 @@ class _RegisterOwnerScreenState extends ConsumerState<RegisterOwnerScreen> {
                     enabled: !_submitting,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(labelText: l10n.emailLabel, border: const OutlineInputBorder()),
+                    decoration: InputDecoration(labelText: l10n.emailLabel, helperText: l10n.emailWillBeConfirmed, border: const OutlineInputBorder()),
                     validator: validators.email,
                   ),
                   gap,

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hara.Application.Venue.Queries.GetMyVenueStatus;
 
-public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOfWork, ICurrentUserService currentUser, Legal.LegalAcceptance legal)
+public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOfWork, ICurrentUserService currentUser, Legal.LegalAcceptance legal, EmailConfirmation.EmailVerificationService emailVerification)
     : IRequestHandler<GetMyVenueStatusQuery, VenueMeDto>
 {
     public async Task<VenueMeDto> Handle(GetMyVenueStatusQuery request, CancellationToken cancellationToken)
@@ -15,6 +15,7 @@ public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOf
         var userId = currentUser.UserId ?? throw new ForbiddenException();
 
         var pendingTerms = (await legal.PendingAsync(userId, cancellationToken)).Select(Legal.LegalAcceptance.NameOf).ToList();
+        var emailToVerify = await emailVerification.PendingEmailAsync(userId, cancellationToken);
 
         var member = await access.FindMembershipAsync(cancellationToken);
         if (member is not null)
@@ -27,7 +28,8 @@ public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOf
                     ? VenueRestaurantDto.FromEntity(member.Restaurant)
                     : null,
                 null,
-                pendingTerms);
+                pendingTerms,
+                emailToVerify);
         }
 
         // An owner has no membership until the admin creates their restaurant; until then their
@@ -39,11 +41,11 @@ public class GetMyVenueStatusQueryHandler(VenueAccess access, IUnitOfWork unitOf
 
         if (submission is null)
         {
-            return new VenueMeDto("None", "None", null, null, null, pendingTerms);
+            return new VenueMeDto("None", "None", null, null, null, pendingTerms, emailToVerify);
         }
 
         var status = submission.Status == SubmissionStatus.Rejected ? MemberStatus.Rejected.ToString() : MemberStatus.Pending.ToString();
 
-        return new VenueMeDto(MemberRole.Owner.ToString(), status, submission.SubmitterName, null, submission.AdminNote, pendingTerms);
+        return new VenueMeDto(MemberRole.Owner.ToString(), status, submission.SubmitterName, null, submission.AdminNote, pendingTerms, emailToVerify);
     }
 }

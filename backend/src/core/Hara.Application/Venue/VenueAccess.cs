@@ -11,7 +11,7 @@ namespace Hara.Application.Venue;
 /// role in the access token is not enough on its own, because an owner can remove a waiter after the
 /// token was issued.
 /// </summary>
-public class VenueAccess(IUnitOfWork unitOfWork, ICurrentUserService currentUser, Legal.LegalAcceptance legal)
+public class VenueAccess(IUnitOfWork unitOfWork, ICurrentUserService currentUser, Legal.LegalAcceptance legal, EmailConfirmation.EmailVerificationService emailVerification)
 {
     /// <summary>The signed-in person's membership, whatever its status, or <c>null</c> if they have none.</summary>
     public async Task<RestaurantMember?> FindMembershipAsync(CancellationToken cancellationToken)
@@ -35,6 +35,12 @@ public class VenueAccess(IUnitOfWork unitOfWork, ICurrentUserService currentUser
         if (member is null || member.Status != MemberStatus.Approved || member.Restaurant is null)
         {
             throw new ForbiddenException("Your account is not approved for a restaurant yet.");
+        }
+
+        // An account whose email was never confirmed (the code that was emailed) can do nothing yet.
+        if (await emailVerification.IsPendingAsync(member.UserId, cancellationToken))
+        {
+            throw new ForbiddenException("Please confirm your email first.");
         }
 
         // Whoever has not accepted the current terms (a text changed since they signed up) has to do that first.

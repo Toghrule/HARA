@@ -28,6 +28,16 @@ class VenueRepository {
     return (response.data ?? []).map((json) => VenueReservation.fromJson(json as Map<String, dynamic>)).toList();
   }
 
+  /// Types in the six-digit code that was emailed at sign-up. Wrong, expired or too many tries: a 400 with the reason.
+  Future<void> verifyEmail(String code) async {
+    await _apiClient.dio.post<void>('/api/venue/email/verify', data: {'code': code});
+  }
+
+  /// Asks for a new code (the old one stops working). [language] is the language of the email.
+  Future<void> resendEmailCode(String language) async {
+    await _apiClient.dio.post<void>('/api/venue/email/resend', data: {'language': language});
+  }
+
   /// Accepts the current legal texts that are still pending. A version of `0` is for a text that is not pending.
   Future<void> acceptTerms({required int termsVersion, required int venueAgreementVersion}) async {
     await _apiClient.dio.post<void>('/api/venue/terms/accept', data: {'termsVersion': termsVersion, 'venueAgreementVersion': venueAgreementVersion});

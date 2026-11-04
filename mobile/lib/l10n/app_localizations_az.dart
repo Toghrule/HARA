@@ -994,4 +994,62 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get themeDark => 'Tünd';
+
+  @override
+  String get emailConfirmTitle => 'Emailinizi təsdiqləyin';
+
+  @override
+  String emailConfirmBody(String email) {
+    return '$email ünvanına altı rəqəmli kod göndərdik. Qeydiyyatı tamamlamaq üçün onu bura yazın.';
+  }
+
+  @override
+  String get emailCodeLabel => 'Məktubdakı kod';
+
+  @override
+  String get emailConfirmButton => 'Təsdiqlə';
+
+  @override
+  String get emailResend => 'Kodu yenidən göndər';
+
+  @override
+  String emailResendIn(int seconds) {
+    return '$seconds san sonra yenidən göndərmək olar';
+  }
+
+  @override
+  String get emailResent => 'Yeni kod göndərildi.';
+
+  @override
+  String get emailChangeAddress => 'Ünvan səhvdir? Yenidən başla';
+
+  @override
+  String get emailConfirmed => 'Email təsdiqləndi.';
+
+  @override
+  String get emailWillBeConfirmed =>
+      'Ünvanı təsdiqləmək üçün ona kod göndərəcəyik.';
+
+  @override
+  String get emailCodeWrong => 'Kod düzgün deyil.';
+
+  @override
+  String get emailCodeExpired => 'Kodun vaxtı bitib. Yenisini istəyin.';
+
+  @override
+  String get emailCodeTooManyTries => 'Çox səhv cəhd oldu. Yeni kod istəyin.';
+
+  @override
+  String get emailCodeWait => 'Yeni kod istəməzdən əvvəl bir az gözləyin.';
+
+  @override
+  String get emailCodeTooManyAsks =>
+      'Çox kod istənildi. Bir az sonra yenidən cəhd edin.';
+
+  @override
+  String get emailCodeSixDigits => 'Kod altı rəqəmdir.';
+
+  @override
+  String get emailCouldNotSend =>
+      'Təsdiq məktubunu göndərə bilmədik. Ünvanı yoxlayıb yenidən cəhd edin.';
 }

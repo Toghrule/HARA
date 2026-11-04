@@ -287,5 +287,22 @@
   "appearanceTitle": "Оформление",
   "themeSystem": "Как на телефоне",
   "themeLight": "Светлая",
-  "themeDark": "Тёмная"
+  "themeDark": "Тёмная",
+  "emailConfirmTitle": "Подтвердите email",
+  "emailConfirmBody": "Мы отправили шестизначный код на {email}. Введите его здесь, чтобы завершить регистрацию.",
+  "emailCodeLabel": "Код из письма",
+  "emailConfirmButton": "Подтвердить",
+  "emailResend": "Отправить код ещё раз",
+  "emailResendIn": "Отправить ещё раз через {seconds} с",
+  "emailResent": "Новый код отправлен.",
+  "emailChangeAddress": "Неверный адрес? Начать заново",
+  "emailConfirmed": "Email подтверждён.",
+  "emailWillBeConfirmed": "Мы отправим на этот адрес код для подтверждения.",
+  "emailCodeWrong": "Неверный код.",
+  "emailCodeExpired": "Срок действия кода истёк. Запросите новый.",
+  "emailCodeTooManyTries": "Слишком много неверных попыток. Запросите новый код.",
+  "emailCodeWait": "Подождите немного, прежде чем запрашивать новый код.",
+  "emailCodeTooManyAsks": "Слишком много запросов кода. Попробуйте позже.",
+  "emailCodeSixDigits": "Код состоит из шести цифр.",
+  "emailCouldNotSend": "Не удалось отправить письмо с подтверждением. Проверьте адрес и попробуйте снова."
 }

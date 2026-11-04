@@ -25,6 +25,7 @@ class AuthRepository {
     required String address,
     String? restaurantPhoneNumber,
     String? description,
+    String? language,
   }) =>
       _session('/api/auth/register-owner', {
         'email': email,
@@ -38,6 +39,8 @@ class AuthRepository {
         // The registration screen does not let go without both boxes ticked.
         'acceptedTermsVersion': termsVersion,
         'acceptedVenueAgreementVersion': venueAgreementVersion,
+        // The language of the email with the confirmation code.
+        'language': language,
       });
 
   /// Signs up a waiter for an existing restaurant. The restaurant's owner has to approve them.
@@ -47,6 +50,7 @@ class AuthRepository {
     required String fullName,
     String? phoneNumber,
     required String restaurantId,
+    String? language,
   }) =>
       _session('/api/auth/register-staff', {
         'email': email,
@@ -55,6 +59,7 @@ class AuthRepository {
         'phoneNumber': phoneNumber,
         'restaurantId': restaurantId,
         'acceptedTermsVersion': termsVersion,
+        'language': language,
       });
 
   /// Trades a refresh token for a new session, or `null` when the server no longer accepts it (the person

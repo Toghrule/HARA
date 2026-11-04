@@ -95,6 +95,7 @@ class _RegisterStaffScreenState extends ConsumerState<RegisterStaffScreen> {
             fullName: _fullName.text.trim(),
             phoneNumber: _phone.text.trim().isEmpty ? null : _phone.text.trim(),
             restaurantId: _selected!.id,
+            language: l10n.localeName,
           );
       if (mounted) context.go('/venue');
     } catch (error) {
@@ -171,7 +172,7 @@ class _RegisterStaffScreenState extends ConsumerState<RegisterStaffScreen> {
                     enabled: !_submitting,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(labelText: l10n.emailLabel, border: const OutlineInputBorder()),
+                    decoration: InputDecoration(labelText: l10n.emailLabel, helperText: l10n.emailWillBeConfirmed, border: const OutlineInputBorder()),
                     validator: validators.email,
                   ),
                   gap,

@@ -287,5 +287,22 @@
   "appearanceTitle": "Görünüş",
   "themeSystem": "Telefon ayarı",
   "themeLight": "Açıq",
-  "themeDark": "Tünd"
+  "themeDark": "Tünd",
+  "emailConfirmTitle": "Emailinizi təsdiqləyin",
+  "emailConfirmBody": "{email} ünvanına altı rəqəmli kod göndərdik. Qeydiyyatı tamamlamaq üçün onu bura yazın.",
+  "emailCodeLabel": "Məktubdakı kod",
+  "emailConfirmButton": "Təsdiqlə",
+  "emailResend": "Kodu yenidən göndər",
+  "emailResendIn": "{seconds} san sonra yenidən göndərmək olar",
+  "emailResent": "Yeni kod göndərildi.",
+  "emailChangeAddress": "Ünvan səhvdir? Yenidən başla",
+  "emailConfirmed": "Email təsdiqləndi.",
+  "emailWillBeConfirmed": "Ünvanı təsdiqləmək üçün ona kod göndərəcəyik.",
+  "emailCodeWrong": "Kod düzgün deyil.",
+  "emailCodeExpired": "Kodun vaxtı bitib. Yenisini istəyin.",
+  "emailCodeTooManyTries": "Çox səhv cəhd oldu. Yeni kod istəyin.",
+  "emailCodeWait": "Yeni kod istəməzdən əvvəl bir az gözləyin.",
+  "emailCodeTooManyAsks": "Çox kod istənildi. Bir az sonra yenidən cəhd edin.",
+  "emailCodeSixDigits": "Kod altı rəqəmdir.",
+  "emailCouldNotSend": "Təsdiq məktubunu göndərə bilmədik. Ünvanı yoxlayıb yenidən cəhd edin."
 }

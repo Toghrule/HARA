@@ -1755,6 +1755,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark'**
   String get themeDark;
+
+  /// No description provided for @emailConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your email'**
+  String get emailConfirmTitle;
+
+  /// No description provided for @emailConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a six-digit code to {email}. Type it here to finish signing up.'**
+  String emailConfirmBody(String email);
+
+  /// No description provided for @emailCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Code from the email'**
+  String get emailCodeLabel;
+
+  /// No description provided for @emailConfirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get emailConfirmButton;
+
+  /// No description provided for @emailResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the code again'**
+  String get emailResend;
+
+  /// No description provided for @emailResendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Send again in {seconds} s'**
+  String emailResendIn(int seconds);
+
+  /// No description provided for @emailResent.
+  ///
+  /// In en, this message translates to:
+  /// **'A new code is on its way.'**
+  String get emailResent;
+
+  /// No description provided for @emailChangeAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong address? Start over'**
+  String get emailChangeAddress;
+
+  /// No description provided for @emailConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Email confirmed.'**
+  String get emailConfirmed;
+
+  /// No description provided for @emailWillBeConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'We will email a code to this address to confirm it.'**
+  String get emailWillBeConfirmed;
+
+  /// No description provided for @emailCodeWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is not right.'**
+  String get emailCodeWrong;
+
+  /// No description provided for @emailCodeExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has expired. Ask for a new one.'**
+  String get emailCodeExpired;
+
+  /// No description provided for @emailCodeTooManyTries.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong tries. Ask for a new code.'**
+  String get emailCodeTooManyTries;
+
+  /// No description provided for @emailCodeWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait a moment before asking for another code.'**
+  String get emailCodeWait;
+
+  /// No description provided for @emailCodeTooManyAsks.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many codes were asked for. Please try again in a while.'**
+  String get emailCodeTooManyAsks;
+
+  /// No description provided for @emailCodeSixDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'The code is six digits.'**
+  String get emailCodeSixDigits;
+
+  /// No description provided for @emailCouldNotSend.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t send the confirmation email. Check the address and try again.'**
+  String get emailCouldNotSend;
 }
 
 class _AppLocalizationsDelegate

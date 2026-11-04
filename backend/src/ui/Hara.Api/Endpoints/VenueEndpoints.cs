@@ -1,6 +1,8 @@
 using Hara.Application.ChangeRequests.Commands.CreateChangeRequest;
 using Hara.Application.ChangeRequests.Queries.GetVenueChangeRequests;
+using Hara.Api.RateLimiting;
 using Hara.Application.Devices;
+using Hara.Application.EmailConfirmation;
 using Hara.Application.Legal;
 using Hara.Application.Venue.Commands.RedeemVenueReservation;
 using Hara.Application.Venue.Commands.RemoveStaff;
@@ -41,6 +43,23 @@ public static class VenueEndpoints
                 return Results.NoContent();
             })
             .WithName("AcceptTerms");
+
+        // Confirming the email address: the code that was emailed at sign-up. Nothing else works until it is typed in.
+        venue.MapPost("/email/verify", async (VerifyEmailCommand command, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(command, cancellationToken);
+                return Results.NoContent();
+            })
+            .RequireRateLimiting(RateLimitPolicies.Login)
+            .WithName("VerifyEmail");
+
+        venue.MapPost("/email/resend", async (ResendEmailCodeCommand command, ISender sender, CancellationToken cancellationToken) =>
+            {
+                await sender.Send(command, cancellationToken);
+                return Results.NoContent();
+            })
+            .RequireRateLimiting(RateLimitPolicies.Login)
+            .WithName("ResendEmailCode");
 
         venue.MapGet("/stats", async (ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new GetVenueStatsQuery(), cancellationToken)))

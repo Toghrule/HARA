@@ -992,4 +992,64 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get themeDark => 'Тёмная';
+
+  @override
+  String get emailConfirmTitle => 'Подтвердите email';
+
+  @override
+  String emailConfirmBody(String email) {
+    return 'Мы отправили шестизначный код на $email. Введите его здесь, чтобы завершить регистрацию.';
+  }
+
+  @override
+  String get emailCodeLabel => 'Код из письма';
+
+  @override
+  String get emailConfirmButton => 'Подтвердить';
+
+  @override
+  String get emailResend => 'Отправить код ещё раз';
+
+  @override
+  String emailResendIn(int seconds) {
+    return 'Отправить ещё раз через $seconds с';
+  }
+
+  @override
+  String get emailResent => 'Новый код отправлен.';
+
+  @override
+  String get emailChangeAddress => 'Неверный адрес? Начать заново';
+
+  @override
+  String get emailConfirmed => 'Email подтверждён.';
+
+  @override
+  String get emailWillBeConfirmed =>
+      'Мы отправим на этот адрес код для подтверждения.';
+
+  @override
+  String get emailCodeWrong => 'Неверный код.';
+
+  @override
+  String get emailCodeExpired => 'Срок действия кода истёк. Запросите новый.';
+
+  @override
+  String get emailCodeTooManyTries =>
+      'Слишком много неверных попыток. Запросите новый код.';
+
+  @override
+  String get emailCodeWait =>
+      'Подождите немного, прежде чем запрашивать новый код.';
+
+  @override
+  String get emailCodeTooManyAsks =>
+      'Слишком много запросов кода. Попробуйте позже.';
+
+  @override
+  String get emailCodeSixDigits => 'Код состоит из шести цифр.';
+
+  @override
+  String get emailCouldNotSend =>
+      'Не удалось отправить письмо с подтверждением. Проверьте адрес и попробуйте снова.';
 }

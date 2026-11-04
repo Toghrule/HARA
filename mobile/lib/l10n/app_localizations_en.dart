@@ -994,4 +994,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeDark => 'Dark';
+
+  @override
+  String get emailConfirmTitle => 'Confirm your email';
+
+  @override
+  String emailConfirmBody(String email) {
+    return 'We sent a six-digit code to $email. Type it here to finish signing up.';
+  }
+
+  @override
+  String get emailCodeLabel => 'Code from the email';
+
+  @override
+  String get emailConfirmButton => 'Confirm';
+
+  @override
+  String get emailResend => 'Send the code again';
+
+  @override
+  String emailResendIn(int seconds) {
+    return 'Send again in $seconds s';
+  }
+
+  @override
+  String get emailResent => 'A new code is on its way.';
+
+  @override
+  String get emailChangeAddress => 'Wrong address? Start over';
+
+  @override
+  String get emailConfirmed => 'Email confirmed.';
+
+  @override
+  String get emailWillBeConfirmed =>
+      'We will email a code to this address to confirm it.';
+
+  @override
+  String get emailCodeWrong => 'That code is not right.';
+
+  @override
+  String get emailCodeExpired => 'This code has expired. Ask for a new one.';
+
+  @override
+  String get emailCodeTooManyTries =>
+      'Too many wrong tries. Ask for a new code.';
+
+  @override
+  String get emailCodeWait => 'Wait a moment before asking for another code.';
+
+  @override
+  String get emailCodeTooManyAsks =>
+      'Too many codes were asked for. Please try again in a while.';
+
+  @override
+  String get emailCodeSixDigits => 'The code is six digits.';
+
+  @override
+  String get emailCouldNotSend =>
+      'We couldn\'t send the confirmation email. Check the address and try again.';
 }

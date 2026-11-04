@@ -19,4 +19,5 @@ public sealed record RegisterStaffCommand(
     string FullName,
     string? PhoneNumber,
     Guid RestaurantId,
-    int AcceptedTermsVersion = 0) : IRequest<LoginResult>;
+    int AcceptedTermsVersion = 0,
+    string? Language = null) : IRequest<LoginResult>;

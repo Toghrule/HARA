@@ -16,6 +16,7 @@ import '../../data/venue_me.dart';
 import '../../data/venue_models.dart';
 import '../providers/venue_providers.dart';
 import '../widgets/code_confirm_tab.dart';
+import 'email_verify_screen.dart';
 import 'terms_gate_screen.dart';
 import '../widgets/delete_account_dialog.dart';
 import '../widgets/requests_tab.dart';
@@ -34,7 +35,12 @@ class VenueHomeScreen extends ConsumerWidget {
     final meAsync = ref.watch(venueMeProvider);
     final me = meAsync.valueOrNull;
 
-    // New or changed terms come first: nothing else works until they are accepted.
+    // An address that has not been confirmed yet comes before everything: without it nothing else is worth showing.
+    if (me != null && me.emailToVerify != null) {
+      return EmailVerifyScreen(email: me.emailToVerify!, actions: const [_AccountActions()]);
+    }
+
+    // New or changed terms come next: nothing else works until they are accepted.
     if (me != null && me.pendingTerms.isNotEmpty) {
       return TermsGateScreen(pending: me.pendingTerms, actions: const [_AccountActions()]);
     }

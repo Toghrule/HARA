@@ -115,6 +115,28 @@ class FakeVenueRepository extends VenueRepository {
     me = VenueMe(isOwner: me.isOwner, status: me.status, fullName: me.fullName, restaurant: me.restaurant, note: me.note);
   }
 
+  /// Codes typed into the email confirmation and languages asked for a new one; the right code is `rightCode`.
+  final List<String> typedCodes = [];
+  final List<String> resends = [];
+  String rightCode = '123456';
+  Object? verifyError;
+
+  @override
+  Future<void> verifyEmail(String code) async {
+    typedCodes.add(code);
+    if (verifyError != null) throw verifyError!;
+    if (code != rightCode) throw serverFailure(400, {'errors': {'code': ['That code is not right.']}});
+
+    // Like the server: the address is confirmed, so the app goes on.
+    me = VenueMe(isOwner: me.isOwner, status: me.status, fullName: me.fullName, restaurant: me.restaurant, note: me.note);
+  }
+
+  @override
+  Future<void> resendEmailCode(String language) async {
+    if (verifyError != null) throw verifyError!;
+    resends.add(language);
+  }
+
   /// What the owner saved as opening hours, in order; `hoursError` makes the call fail.
   final List<({List<DayHours> days, int lead})> savedHours = [];
   Object? hoursError;

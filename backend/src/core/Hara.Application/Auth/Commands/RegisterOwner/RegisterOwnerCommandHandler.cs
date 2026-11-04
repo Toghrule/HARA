@@ -2,6 +2,7 @@ using FluentValidation.Results;
 using Hara.Application.Auth.Commands.Login;
 using Hara.Application.Common.Exceptions;
 using Hara.Application.Common.Interfaces;
+using Hara.Application.EmailConfirmation;
 using Hara.Application.Legal;
 using Hara.Domain.Members;
 using Hara.Domain.Restaurants;
@@ -10,12 +11,15 @@ using ValidationException = Hara.Application.Common.Exceptions.ValidationExcepti
 
 namespace Hara.Application.Auth.Commands.RegisterOwner;
 
-public class RegisterOwnerCommandHandler(IIdentityService identityService, IUnitOfWork unitOfWork)
+public class RegisterOwnerCommandHandler(IIdentityService identityService, IUnitOfWork unitOfWork, EmailVerificationService verification)
     : IRequestHandler<RegisterOwnerCommand, LoginResult>
 {
     public async Task<LoginResult> Handle(RegisterOwnerCommand request, CancellationToken cancellationToken)
     {
         var email = request.Email.Trim();
+
+        // An address whose earlier sign-up never confirmed it is free again.
+        await verification.ClearUnconfirmedAccountAsync(email, cancellationToken);
 
         var registration = await identityService.RegisterAsync(email, request.Password, Roles.Owner, cancellationToken);
         if (!registration.Succeeded)
@@ -45,6 +49,18 @@ public class RegisterOwnerCommandHandler(IIdentityService identityService, IUnit
         {
             // Don't leave an account behind that has no registration for the admin to review.
             await identityService.DeleteUserAsync(registration.UserId!.Value, cancellationToken);
+            throw;
+        }
+
+        // The account exists but can do nothing until the emailed code is typed in; if no email can be sent there is nothing
+        // to confirm with, so the sign-up is undone.
+        try
+        {
+            await verification.IssueAsync(registration.UserId!.Value, email, request.Language, cancellationToken);
+        }
+        catch
+        {
+            await verification.RemoveUnconfirmedAccountAsync(registration.UserId!.Value, cancellationToken);
             throw;
         }
 

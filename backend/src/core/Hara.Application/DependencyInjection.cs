@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(assembly);
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddScoped<Legal.LegalAcceptance>();
+        services.AddScoped<EmailConfirmation.EmailVerificationService>();
         services.AddScoped<Venue.VenueAccess>();
         services.AddScoped<Notifications.ReservationNotifier>();
 

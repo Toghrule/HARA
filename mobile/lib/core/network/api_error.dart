@@ -29,6 +29,28 @@ String apiErrorMessage(Object error, AppLocalizations l10n) {
   return l10n.errorSomethingWrong;
 }
 
+/// What went wrong when the confirmation code was typed or asked for again, in the app's language (the server's reasons are
+/// English); anything unknown falls back to [apiErrorMessage].
+String emailCodeErrorMessage(Object error, AppLocalizations l10n) {
+  if (error is DioException && error.response?.statusCode == 400) {
+    final data = error.response?.data;
+    final errors = data is Map<String, dynamic> ? data['errors'] : null;
+    final messages = errors is Map ? errors.values.expand((value) => value is List ? value : const []).map((value) => '$value'.toLowerCase()) : const <String>[];
+
+    for (final message in messages) {
+      if (message.contains('not right')) return l10n.emailCodeWrong;
+      if (message.contains('expired')) return l10n.emailCodeExpired;
+      if (message.contains('too many wrong')) return l10n.emailCodeTooManyTries;
+      if (message.contains('wait a moment')) return l10n.emailCodeWait;
+      if (message.contains('too many codes')) return l10n.emailCodeTooManyAsks;
+      if (message.contains('six digits')) return l10n.emailCodeSixDigits;
+      if (message.contains("couldn't send")) return l10n.emailCouldNotSend;
+    }
+  }
+
+  return apiErrorMessage(error, l10n);
+}
+
 /// Like [apiErrorMessage], but turns the server's English sign-up complaints (email taken, weak password)
 /// into messages in the app's language.
 String registrationErrorMessage(Object error, AppLocalizations l10n) {
@@ -42,6 +64,7 @@ String registrationErrorMessage(Object error, AppLocalizations l10n) {
 
         if (key == 'password') return l10n.passwordRules;
         if (key == 'email') {
+          if (messages.any((message) => message.toLowerCase().contains("couldn't send"))) return l10n.emailCouldNotSend;
           return messages.any((message) => message.toLowerCase().contains('taken')) ? l10n.emailTaken : l10n.invalidEmail;
         }
       }
