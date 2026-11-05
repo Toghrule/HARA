@@ -1,0 +1,8 @@
+tunnel: TUNNEL-ID
+credentials-file: /etc/cloudflared/credentials.json
+ingress:
+  - hostname: api.hara.rest
+    service: http://localhost:8080
+  - hostname: admin.hara.rest
+    service: http://localhost:8081
+  - service: http_status:404

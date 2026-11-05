@@ -8,6 +8,7 @@ using Hara.Persistence;
 using Hara.Persistence.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -104,6 +105,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// On a server (Database:MigrateOnStart=true) the database is brought up to date when the API starts, so a new version that changes
+// the tables just works. Off by default: on a PC the migrations are applied by hand or by start-pilot.bat.
+if (app.Configuration.GetValue<bool>("Database:MigrateOnStart"))
+{
+    using var migrationScope = app.Services.CreateScope();
+    await migrationScope.ServiceProvider.GetRequiredService<Hara.Persistence.ApplicationDbContext>().Database.MigrateAsync();
+}
+
 // Creates the admin account from configuration if it does not exist yet (does nothing without AdminUser settings).
 using (var scope = app.Services.CreateScope())
 {
@@ -113,10 +122,19 @@ using (var scope = app.Services.CreateScope())
 // Behind a tunnel or reverse proxy on this machine (cloudflared, nginx) every request arrives from 127.0.0.1. Trusting its
 // forwarded headers (only from a proxy on this machine, the default) makes the rate limits count each real client
 // separately instead of all of them together.
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+// In a container the proxy reaches the API from the Docker network, not from 127.0.0.1: ForwardedHeaders:TrustedNetworks
+// (for example "172.16.0.0/12") names the networks whose forwarded headers are believed. Only set it when the API can be
+// reached through the proxy alone.
+var forwardedOptions = new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+};
+foreach (var network in app.Configuration.GetSection("ForwardedHeaders:TrustedNetworks").Get<string[]>() ?? [])
+{
+    var parts = network.Split('/');
+    forwardedOptions.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(System.Net.IPAddress.Parse(parts[0]), int.Parse(parts[1])));
+}
+app.UseForwardedHeaders(forwardedOptions);
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionHandlingMiddleware>();

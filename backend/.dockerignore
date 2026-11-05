@@ -1,0 +1,5 @@
+**/bin
+**/obj
+secrets
+**/App_Data
+**/.vs

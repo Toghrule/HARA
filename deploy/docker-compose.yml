@@ -1,0 +1,64 @@
+# HARA on a server: database, API, admin panel and the Cloudflare tunnel that gives them their addresses
+# (api.hara.rest and admin.hara.rest). Nothing is open to the internet except through the tunnel.
+#
+#   cd deploy && docker compose up -d --build
+#
+# Secrets are NOT in this file: .env (database password) and secrets/ (see secrets.example/) are made on the server by hand.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hara
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in deploy/.env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hara"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: ../backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=hara;Username=postgres;Password=${POSTGRES_PASSWORD}
+      Database__MigrateOnStart: "true"
+      Cors__AllowedOrigins__0: ${ADMIN_ORIGIN:-https://admin.hara.rest}
+      # The tunnel reaches the API from the Docker network: believe the real-client headers it adds (the API is only reachable through it).
+      ForwardedHeaders__TrustedNetworks__0: 172.16.0.0/12
+      ForwardedHeaders__TrustedNetworks__1: 192.168.0.0/16
+      ForwardedHeaders__TrustedNetworks__2: 10.0.0.0/8
+    volumes:
+      - ./secrets:/app/secrets:ro
+      - uploads:/app/App_Data
+    ports:
+      - "127.0.0.1:${API_PORT:-8080}:8080"
+
+  admin:
+    build:
+      context: ../frontend
+      dockerfile: ../deploy/admin.Dockerfile
+      args:
+        VITE_API_BASE_URL: ${API_PUBLIC_URL:-https://api.hara.rest}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${ADMIN_PORT:-8081}:80"
+
+  tunnel:
+    image: cloudflare/cloudflared:2024.12.2
+    restart: unless-stopped
+    network_mode: host
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./cloudflared:/etc/cloudflared:ro
+    profiles: ["tunnel"]
+
+volumes:
+  pgdata:
+  uploads:

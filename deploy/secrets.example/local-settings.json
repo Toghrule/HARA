@@ -1,0 +1,5 @@
+{
+  "Jwt": { "SigningKey": "A-LONG-RANDOM-STRING-AT-LEAST-64-CHARACTERS-MAKE-A-NEW-ONE" },
+  "AdminUser": { "Email": "admin@hara.local", "Password": "THE-ADMIN-PASSWORD" },
+  "Email": { "Host": "smtp.resend.com", "Port": 587, "UserName": "resend", "Password": "THE-RESEND-KEY" }
+}

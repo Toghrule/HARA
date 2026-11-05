@@ -5,6 +5,11 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Server (VPS) hazırlığı (2026-11-05)
+- `deploy/` qovluğu: `docker-compose.yml` (Postgres + API + admin panel nginx + Cloudflare tuneli), `backend/Dockerfile`, `admin.Dockerfile`, `export-from-pc.sh`, `restore-on-server.sh`, `backup.sh`, `update.sh`, addım-addım `SERVER.md`. Kompüterdə ayrı Docker mühitində TAM sınaqdan keçirilib (miqrasiya, admin giriş, CORS, müştəri başına limit, məlumat+şəkil köçürməsi). Serverin özü HƏLƏ qurulmayıb (VPS hesabı istifadəçinin işidir).
+- API-yə iki yeni ayar: `Database:MigrateOnStart=true` (server başlayanda miqrasiyanı özü tətbiq edir) və `ForwardedHeaders:TrustedNetworks` (Docker şəbəkəsindən gələn real müştəri IP-sinə inanmaq üçün; yoxsa hamı bir limit paylaşar).
+- Keçiddən sonra baza = serverdəki; kompüterdəki `hara_pilot` köhnəlir. Admin panel `https://admin.hara.rest`.
+
 ## Test yeniləmə kanalı: Firebase App Distribution (2026-11-05)
 - **İşləyir, telefonda yoxlanıb.** GitHub Actions "Android APK" (Run workflow) APK-nı HARA-nın SABİT açarı ilə imzalayır (PKCS12, `backend/secrets/hara-release.p12`, gitignored; GitHub sirləri: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `FIREBASE_SERVICE_ACCOUNT`) və Firebase layihəsi `hara1st`-də `testers` qrupuna göndərir (5 testçi). Build nömrəsi hər işdə artır, ona görə yeniləmə köhnənin üstünə qurulur.
 - **AÇARI İTİRMƏ:** `backend/secrets` qovluğunun surəti başqa yerdə də saxlanmalıdır; itsə mağazada eyni tətbiq kimi yeniləmək olmur. Google Play (25 dollar, bir dəfə) real buraxılış üçün sonraya saxlanılıb, eyni açar işləyəcək.

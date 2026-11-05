@@ -545,3 +545,10 @@ backend/secrets/
 
 # Downloaded helper programs (cloudflared), not part of the project
 tools/
+
+# Server deployment: the real secrets are made on the server and never committed.
+deploy/.env
+deploy/secrets/
+deploy/cloudflared/config.yml
+deploy/cloudflared/credentials.json
+deploy/backups/
