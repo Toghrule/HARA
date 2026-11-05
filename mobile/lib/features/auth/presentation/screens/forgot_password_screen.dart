@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/auth/password_reset_storage.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/language_menu.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/password_reset_repository.dart';
 import '../form_validators.dart';
@@ -270,7 +271,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       ];
 
   List<Widget> _waiting(AppLocalizations l10n, ThemeData theme) => [
-        Icon(Icons.hourglass_top, size: 48, color: theme.colorScheme.primary),
+        Center(child: IconBadge(icon: Icons.hourglass_top, size: 88, color: theme.colorScheme.primary)),
         const SizedBox(height: 12),
         Text(l10n.resetWaitingTitle, key: const Key('resetWaiting'), style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
         const SizedBox(height: 8),
@@ -329,7 +330,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   }
 
   List<Widget> _declined(AppLocalizations l10n, ThemeData theme) => [
-        Icon(Icons.block, size: 48, color: theme.colorScheme.error),
+        Center(child: IconBadge(icon: Icons.block, size: 88, color: theme.colorScheme.error)),
         const SizedBox(height: 12),
         Text(l10n.resetRejected, key: const Key('resetDeclined'), textAlign: TextAlign.center),
         const SizedBox(height: 20),

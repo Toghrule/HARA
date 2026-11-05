@@ -62,12 +62,15 @@ class TeamTab extends ConsumerWidget {
 
           return ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             children: [
               if (waiting.isNotEmpty) ...[
                 _Heading(l10n.waitingForYou),
                 for (final member in waiting)
-                  ListTile(
+                  Card(
+                    color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.5),
+                    child: ListTile(
+                    leading: _Initial(member.fullName),
                     key: Key('member-${member.id}'),
                     title: Text(member.fullName),
                     subtitle: Text([member.email, if (member.phoneNumber != null) member.phoneNumber!].join('\n')),
@@ -90,11 +93,14 @@ class TeamTab extends ConsumerWidget {
                       ],
                     ),
                   ),
-                const Divider(),
+                  ),
+                const SizedBox(height: 8),
               ],
               _Heading(l10n.teamMembers),
               for (final member in team)
-                ListTile(
+                Card(
+                  child: ListTile(
+                  leading: _Initial(member.fullName),
                   key: Key('member-${member.id}'),
                   title: Text(member.fullName),
                   subtitle: Text(
@@ -112,6 +118,7 @@ class TeamTab extends ConsumerWidget {
                           icon: const Icon(Icons.person_remove_outlined),
                           onPressed: () => _remove(context, ref, member),
                         ),
+                ),
                 ),
               if (team.every((member) => member.isOwner) && waiting.isEmpty)
                 Padding(
@@ -141,4 +148,22 @@ class _Heading extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
         child: Text(text, style: Theme.of(context).textTheme.titleSmall),
       );
+}
+
+/// The first letter of a name in a round mark.
+class _Initial extends StatelessWidget {
+  const _Initial(this.name);
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final letter = name.trim().isEmpty ? '?' : name.trim().characters.first.toUpperCase();
+
+    return CircleAvatar(
+      backgroundColor: scheme.primaryContainer,
+      child: Text(letter, style: TextStyle(color: scheme.onPrimaryContainer, fontWeight: FontWeight.w700)),
+    );
+  }
 }

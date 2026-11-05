@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_controller.dart';
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/venue_repository.dart';
 import '../providers/venue_providers.dart';
@@ -128,7 +129,7 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Icon(Icons.mark_email_unread_outlined, size: 64, color: theme.colorScheme.primary),
+                const Center(child: IconBadge(icon: Icons.mark_email_unread_outlined)),
                 const SizedBox(height: 16),
                 Text(l10n.emailConfirmBody(widget.email), key: const Key('verifyBody'), style: theme.textTheme.bodyLarge, textAlign: TextAlign.center),
                 const SizedBox(height: 20),
@@ -154,6 +155,7 @@ class _EmailVerifyScreenState extends ConsumerState<EmailVerifyScreen> {
                 ],
                 const SizedBox(height: 20),
                 FilledButton(
+                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                   key: const Key('verifyConfirm'),
                   onPressed: _submitting ? null : _confirm,
                   child: _submitting ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(l10n.emailConfirmButton),

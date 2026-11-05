@@ -73,8 +73,9 @@ class _ReservationsTabState extends ConsumerState<ReservationsTab> {
 
                 return ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
                   itemCount: reservations.length,
-                  separatorBuilder: (context, index) => const Divider(height: 1),
+                  separatorBuilder: (context, index) => const SizedBox(height: 8),
                   itemBuilder: (context, index) => _ReservationTile(reservation: reservations[index], onTap: _open),
                 );
               },
@@ -102,7 +103,15 @@ class _ReservationTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-    return ListTile(
+    final scheme = theme.colorScheme;
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: ListTile(
+      leading: CircleAvatar(
+        backgroundColor: reservation.isUsable ? scheme.primaryContainer : scheme.surfaceContainerHighest,
+        child: Icon(reservation.isUsable ? Icons.event_seat : Icons.event_seat_outlined, color: reservation.isUsable ? scheme.onPrimaryContainer : scheme.onSurfaceVariant),
+      ),
       key: Key('reservation-${reservation.code}'),
       title: Text(reservation.code, style: theme.textTheme.titleMedium?.copyWith(letterSpacing: 2, fontWeight: FontWeight.w600)),
       subtitle: Text(
@@ -114,6 +123,7 @@ class _ReservationTile extends StatelessWidget {
         textAlign: TextAlign.end,
       ),
       onTap: () => onTap(reservation),
+    ),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/auth/auth_controller.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/language_menu.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../legal/privacy_policy_screen.dart';
 import '../acceptance_box.dart';
@@ -109,6 +110,8 @@ class _RegisterOwnerScreenState extends ConsumerState<RegisterOwnerScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
+                  const Center(child: IconBadge(icon: Icons.storefront_outlined, size: 80)),
+                  const SizedBox(height: 16),
                   Text(l10n.registerOwnerIntro, style: textTheme.bodyMedium),
                   const SizedBox(height: 24),
                   Text(l10n.sectionAccount, style: textTheme.titleMedium),
@@ -226,6 +229,7 @@ class _RegisterOwnerScreenState extends ConsumerState<RegisterOwnerScreen> {
                   ],
                   const SizedBox(height: 24),
                   FilledButton(
+                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                     key: const Key('submit'),
                     onPressed: _submitting ? null : _submit,
                     child: _submitting
