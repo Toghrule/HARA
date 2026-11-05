@@ -5,6 +5,9 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Tək baza (2026-11-05)
+- **Hər şey `hara_pilot` bazasından oxuyur:** telefon tətbiqi (pilot API 5082, `api.hara.rest`), pilot panel (5175) VƏ gündəlik server (5080, panel 5173, Flutter veb 5174). `restart-dev-environment.bat` gündəlik API-yə `ConnectionStrings__DefaultConnection` ilə `hara_pilot` verir. Köhnə `hara` bazası qalır (silinməyib), artıq istifadə olunmur. Yeni migrasiya əlavə olunanda onu `hara_pilot`-a tətbiq et (`start-pilot.bat` bunu özü edir). Gündəlik API email göndərmir (yalnız loga yazır), real email yalnız pilot API-dən gedir. KinderVille `hara`-dan `hara_pilot`-a köçürülüb.
+
 ## Biznes qərarları və bitirilən işlər (2026-11-05)
 - **Qərarlar (istifadəçi):** rezerv rezerv olaraq qalır, endirimi restoran təyin edir; restoran rezervi tətbiqdə rədd/dayandırmır (telefonla razılaşırlar); №8, №9, №14, №17 problem deyil; şikayət email ilə; müştəri nömrələri əbədi qalır, istəsə silinir; admin təkdir (audit yoxdur). Sahibkarı admin özü yoxlayır (**sonra bunun üçün sistem qurulacaq, istifadəçiyə xatırlat**). Filial = ayrıca restoran, adının qabağına bölgə adı yazılır (xüsusi funksiya yoxdur).
 - **№10 Admin sahibkara hesab verir:** admin paneldə Restaurants cədvəlində "Owner account" düyməsi (`OwnerDialog`). Sahibi olmayan restoran üçün ad, email, parol (generator var) yazılır, "Copy" ilə sahibkara verilir. `POST/GET /api/admin/restaurants/{id}/owner`. Email kodu LAZIM DEYİL (admin tanıyır); sahibkar ilk girişdə şərtləri qəbul edir. Bir restoranın bir sahibi. Yoxlama: API 19, brauzerdə admin paneli.

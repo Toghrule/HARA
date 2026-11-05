@@ -120,6 +120,8 @@ echo   [OK] Backend project: !BACKEND_CSPROJ!
 call :KillPort %BACKEND_PORT% "Backend API"
 
 echo   -^> Starting backend ^(dotnet run^) in a new window...
+rem One database for everything: the dev API uses hara_pilot, the same one the pilot API (the phone app) uses.
+set "ConnectionStrings__DefaultConnection=Host=localhost;Port=5432;Database=hara_pilot;Username=postgres;Password=postgres"
 start "HARA Backend API" /D "%ROOT%" cmd /k dotnet run --project "!BACKEND_CSPROJ!"
 
 call :WaitForPort %BACKEND_PORT% "Backend API" 60
