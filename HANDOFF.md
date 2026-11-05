@@ -5,6 +5,10 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Test yeniləmə kanalı: Firebase App Distribution (2026-11-05)
+- **İşləyir, telefonda yoxlanıb.** GitHub Actions "Android APK" (Run workflow) APK-nı HARA-nın SABİT açarı ilə imzalayır (PKCS12, `backend/secrets/hara-release.p12`, gitignored; GitHub sirləri: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `FIREBASE_SERVICE_ACCOUNT`) və Firebase layihəsi `hara1st`-də `testers` qrupuna göndərir (5 testçi). Build nömrəsi hər işdə artır, ona görə yeniləmə köhnənin üstünə qurulur.
+- **AÇARI İTİRMƏ:** `backend/secrets` qovluğunun surəti başqa yerdə də saxlanmalıdır; itsə mağazada eyni tətbiq kimi yeniləmək olmur. Google Play (25 dollar, bir dəfə) real buraxılış üçün sonraya saxlanılıb, eyni açar işləyəcək.
+
 ## Tək baza (2026-11-05)
 - **Hər şey `hara_pilot` bazasından oxuyur:** telefon tətbiqi (pilot API 5082, `api.hara.rest`), pilot panel (5175) VƏ gündəlik server (5080, panel 5173, Flutter veb 5174). `restart-dev-environment.bat` gündəlik API-yə `ConnectionStrings__DefaultConnection` ilə `hara_pilot` verir. Köhnə `hara` bazası qalır (silinməyib), artıq istifadə olunmur. Yeni migrasiya əlavə olunanda onu `hara_pilot`-a tətbiq et (`start-pilot.bat` bunu özü edir). Gündəlik API email göndərmir (yalnız loga yazır), real email yalnız pilot API-dən gedir. KinderVille `hara`-dan `hara_pilot`-a köçürülüb.
 
