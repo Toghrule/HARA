@@ -3,6 +3,12 @@ name: Android APK
 # Builds an installable Android app (APK) on GitHub's servers, so no Android tools are needed on any PC.
 # Run it by hand: GitHub -> Actions -> "Android APK" -> Run workflow, and give the server address the app
 # should talk to (must be https). The APK is then under "Artifacts" on the finished run.
+#
+# With the secrets below set (GitHub -> Settings -> Secrets and variables -> Actions) the APK is signed with HARA's own
+# key, so a new version installs over the old one, and it is sent to the testers through Firebase App Distribution:
+#   ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS   the signing key
+#   FIREBASE_SERVICE_ACCOUNT                                                 the JSON key of a Firebase service account
+# Without them it still builds, signed with a throwaway key, and only offers the file as an artifact.
 on:
   workflow_dispatch:
     inputs:
@@ -18,6 +24,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HAS_SIGNING_KEY: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+      HAS_FIREBASE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT != '' }}
     defaults:
       run:
         working-directory: mobile
@@ -41,11 +50,30 @@ jobs:
       - name: Tests
         run: flutter test
 
+      - name: Signing key
+        if: env.HAS_SIGNING_KEY == 'true'
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "${{ runner.temp }}/hara-release.p12"
+          echo "ANDROID_KEYSTORE_PATH=${{ runner.temp }}/hara-release.p12" >> "$GITHUB_ENV"
+          echo "ANDROID_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "ANDROID_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> "$GITHUB_ENV"
+
+      # The build number goes up with every run, so each new version installs over the one before it.
       - name: Build APK
-        run: flutter build apk --release --dart-define=API_BASE_URL=${{ inputs.api_base_url || 'https://api.hara.rest' }}
+        run: flutter build apk --release --build-number=${{ github.run_number }} --dart-define=API_BASE_URL=${{ inputs.api_base_url || 'https://api.hara.rest' }}
 
       - uses: actions/upload-artifact@v4
         with:
           name: hara-android-apk
           path: mobile/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
+
+      - name: Send to the testers (Firebase App Distribution)
+        if: env.HAS_FIREBASE == 'true' && env.HAS_SIGNING_KEY == 'true'
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
+        with:
+          appId: 1:464617544539:android:10ac41d17f3b362701987e
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: testers
+          file: mobile/build/app/outputs/flutter-apk/app-release.apk
+          releaseNotes: "Build ${{ github.run_number }}: ${{ github.event.head_commit.message || 'manual run' }}"
