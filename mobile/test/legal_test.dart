@@ -226,6 +226,8 @@ void main() {
       await tester.tap(find.byKey(const Key('gate-terms')));
       await tester.tap(find.byKey(const Key('gate-venueAgreement')));
       await tester.pump();
+      await tester.ensureVisible(find.byKey(const Key('gateAccept')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('gateAccept')));
       await tester.pumpAndSettle();
 
@@ -238,6 +240,8 @@ void main() {
       final (_, venue) = await openAs(tester, _waiterWith(['terms']));
 
       await tester.tap(find.byKey(const Key('gate-terms')));
+      await tester.pump();
+      await tester.ensureVisible(find.byKey(const Key('gateAccept')));
       await tester.pump();
       await tester.tap(find.byKey(const Key('gateAccept')));
       await tester.pumpAndSettle();
@@ -265,6 +269,8 @@ void main() {
 
       await tester.tap(find.byKey(const Key('gate-terms')));
       await tester.tap(find.byKey(const Key('gate-venueAgreement')));
+      await tester.pump();
+      await tester.ensureVisible(find.byKey(const Key('gateAccept')));
       await tester.pump();
       await tester.tap(find.byKey(const Key('gateAccept')));
       await tester.pumpAndSettle();

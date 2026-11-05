@@ -9,6 +9,7 @@ import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/hara_logo.dart';
 import '../../../../core/widgets/language_menu.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../availability_text.dart';
@@ -166,6 +167,8 @@ class _RestaurantList extends ConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    const IconBadge(icon: Icons.restaurant_menu),
+                    const SizedBox(height: 16),
                     Text(
                       search.isNotEmpty
                           ? l10n.noRestaurantsMatch(search)

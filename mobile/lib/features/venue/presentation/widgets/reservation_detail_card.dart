@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../reservations/data/reservation_state.dart';
 import '../../data/venue_models.dart';
@@ -150,6 +151,14 @@ class _ReservationDetailCardState extends ConsumerState<ReservationDetailCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Center(
+              child: IconBadge(
+                icon: confirmed ? Icons.check_circle_outline : waiting ? Icons.hourglass_top : usable ? Icons.confirmation_number_outlined : Icons.block,
+                color: color,
+                size: 72,
+              ),
+            ),
+            const SizedBox(height: 12),
             Text(
               reservation.code,
               key: const Key('detailCode'),
@@ -203,6 +212,7 @@ class _ReservationDetailCardState extends ConsumerState<ReservationDetailCard> {
             if (waiting) ...[
               const SizedBox(height: 16),
               FilledButton(
+                style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                 key: const Key('acceptRequest'),
                 onPressed: _busy ? null : () => _run((repository) => repository.accept(_reservation.code), _Outcome.accepted),
                 child: _busy
@@ -220,6 +230,7 @@ class _ReservationDetailCardState extends ConsumerState<ReservationDetailCard> {
             if (usable) ...[
               const SizedBox(height: 16),
               FilledButton(
+                style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                 key: const Key('confirmCode'),
                 onPressed: _busy ? null : _confirm,
                 child: _busy

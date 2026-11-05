@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../restaurants/presentation/widgets/opening_hours_list.dart';
 import '../../data/venue_me.dart';
@@ -36,10 +37,17 @@ class RestaurantTab extends ConsumerWidget {
         children: [
           Card(
             child: ListTile(
-              leading: const Icon(Icons.storefront_outlined),
-              title: Text(restaurant.name, style: theme.textTheme.titleMedium),
+              contentPadding: const EdgeInsets.all(16),
+              leading: Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(16)),
+                child: Icon(Icons.storefront_outlined, color: theme.colorScheme.onPrimaryContainer, size: 28),
+              ),
+              title: Text(restaurant.name, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
               subtitle: Text('${restaurant.address}\n${l10n.discountLine(restaurant.discountPercent)}'),
               isThreeLine: true,
+              trailing: restaurant.discountPercent > 0 ? DiscountBadge(percent: restaurant.discountPercent) : null,
             ),
           ),
           const SizedBox(height: 8),

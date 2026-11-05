@@ -33,7 +33,12 @@ class AboutScreen extends ConsumerWidget {
           children: [
             const _AboutSection(),
             const _SocialLinksSection(),
-            const Divider(height: 32),
+            const SizedBox(height: 16),
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                children: [
             ListTile(
               leading: const Icon(Icons.support_agent_outlined),
               title: Text(l10n.contactUs),
@@ -84,6 +89,10 @@ class AboutScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/restaurant-agreement'),
             ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),

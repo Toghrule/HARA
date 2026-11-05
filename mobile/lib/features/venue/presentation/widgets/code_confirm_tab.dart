@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/venue_models.dart';
 import '../../data/venue_repository.dart';
@@ -64,6 +65,9 @@ class _CodeConfirmTabState extends ConsumerState<CodeConfirmTab> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        const SizedBox(height: 8),
+        const Center(child: IconBadge(icon: Icons.qr_code_2, size: 80)),
+        const SizedBox(height: 20),
         TextField(
           key: const Key('codeInput'),
           controller: _controller,
@@ -82,7 +86,8 @@ class _CodeConfirmTabState extends ConsumerState<CodeConfirmTab> {
           onSubmitted: (_) => _check(),
         ),
         const SizedBox(height: 12),
-        FilledButton.tonal(
+        FilledButton(
+          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
           key: const Key('checkCode'),
           onPressed: _checking ? null : _check,
           child: _checking

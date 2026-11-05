@@ -51,6 +51,7 @@ class RestaurantDetailScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 child: FilledButton.icon(
+                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                   onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
                   icon: const Icon(Icons.event_seat),
                   label: Text(l10n.reserveTable),

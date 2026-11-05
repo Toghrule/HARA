@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../legal/legal_documents.dart';
 import '../../../legal/legal_text_screen.dart';
@@ -86,6 +87,8 @@ class _TermsGateScreenState extends ConsumerState<TermsGateScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                const Center(child: IconBadge(icon: Icons.gavel_outlined)),
+                const SizedBox(height: 16),
                 Text(l10n.termsGateBody, key: const Key('gateBody'), style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 16),
                 if (widget.pending.contains('terms')) _box('terms', l10n.acceptTermsLabel, LegalText.terms),
@@ -96,6 +99,7 @@ class _TermsGateScreenState extends ConsumerState<TermsGateScreen> {
                 ],
                 const SizedBox(height: 20),
                 FilledButton(
+                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                   key: const Key('gateAccept'),
                   onPressed: _submitting || !_allTicked ? null : _accept,
                   child: _submitting

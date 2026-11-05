@@ -245,6 +245,8 @@ void main() {
     Future<void> checkCode(WidgetTester tester, String typed) async {
       await goToTab(tester, 'Confirm code');
       await tester.enterText(find.byKey(const Key('codeInput')), typed);
+      await tester.ensureVisible(find.byKey(const Key('checkCode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('checkCode')));
       await tester.pumpAndSettle();
     }
@@ -278,6 +280,8 @@ void main() {
       venue.reservations['AB12CD'] = reservationOf('AB12CD');
       await checkCode(tester, 'ab12cd');
 
+      await tester.ensureVisible(find.byKey(const Key('confirmCode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('confirmCode')));
       await tester.pumpAndSettle();
       expect(find.text('Confirm this code?'), findsOneWidget);
@@ -297,6 +301,8 @@ void main() {
       venue.reservations['AB12CD'] = reservationOf('AB12CD');
       await checkCode(tester, 'ab12cd');
 
+      await tester.ensureVisible(find.byKey(const Key('confirmCode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('confirmCode')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Cancel'));
@@ -357,6 +363,8 @@ void main() {
       });
       await checkCode(tester, 'ab12cd');
 
+      await tester.ensureVisible(find.byKey(const Key('confirmCode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('confirmCode')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('confirmDialogYes')));
@@ -731,6 +739,8 @@ void main() {
       await goToTab(tester, 'Confirm code');
 
       await tester.enterText(find.byKey(const Key('codeInput')), 'wait11');
+      await tester.ensureVisible(find.byKey(const Key('checkCode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('checkCode')));
       await tester.pumpAndSettle();
 
@@ -746,9 +756,13 @@ void main() {
       venue.reservations['WAIT11'] = reservationOf('WAIT11', status: ReservationState.pending, expiresIn: const Duration(minutes: 9), discountPercent: 12);
       await goToTab(tester, 'Confirm code');
       await tester.enterText(find.byKey(const Key('codeInput')), 'wait11');
+      await tester.ensureVisible(find.byKey(const Key('checkCode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('checkCode')));
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.byKey(const Key('acceptRequest')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('acceptRequest')));
       await tester.pumpAndSettle();
 
@@ -766,6 +780,8 @@ void main() {
       await goToTab(tester, 'Confirm code');
 
       await tester.enterText(find.byKey(const Key('codeInput')), 'late44');
+      await tester.ensureVisible(find.byKey(const Key('checkCode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('checkCode')));
       await tester.pumpAndSettle();
 
@@ -780,6 +796,8 @@ void main() {
       await goToTab(tester, 'Confirm code');
 
       await tester.enterText(find.byKey(const Key('codeInput')), 'nope55');
+      await tester.ensureVisible(find.byKey(const Key('checkCode')));
+      await tester.pump();
       await tester.tap(find.byKey(const Key('checkCode')));
       await tester.pumpAndSettle();
 
