@@ -58,7 +58,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive", "SortOrder");
 
-                    b.ToTable("Advertisements");
+                    b.ToTable("Advertisements", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.CompanyInfo.AboutUsContent", b =>
@@ -97,7 +97,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AboutUsContents");
+                    b.ToTable("AboutUsContents", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.CompanyInfo.ContactInfo", b =>
@@ -136,7 +136,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive", "SortOrder");
 
-                    b.ToTable("ContactInfos");
+                    b.ToTable("ContactInfos", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.CompanyInfo.SocialMediaLink", b =>
@@ -171,7 +171,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive", "SortOrder");
 
-                    b.ToTable("SocialMediaLinks");
+                    b.ToTable("SocialMediaLinks", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Devices.DeviceToken", b =>
@@ -208,7 +208,89 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DeviceTokens");
+                    b.ToTable("DeviceTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Hara.Domain.Discounts.DiscountCode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeviceId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<int>("DiscountPercent")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("LastModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly>("LocalDay")
+                        .HasColumnType("date");
+
+                    b.Property<DateTimeOffset?>("RedeemedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("RedeemedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RestaurantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("RedeemedByUserId");
+
+                    b.HasIndex("RestaurantId", "DeviceId", "LocalDay")
+                        .IsUnique();
+
+                    b.ToTable("DiscountCodes", (string)null);
+                });
+
+            modelBuilder.Entity("Hara.Domain.Discounts.RestaurantEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeviceId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("RestaurantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId", "CreatedAt");
+
+                    b.ToTable("RestaurantEvents", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Faq.FaqItem", b =>
@@ -259,7 +341,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive", "SortOrder");
 
-                    b.ToTable("FaqItems");
+                    b.ToTable("FaqItems", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Members.EmailVerification", b =>
@@ -314,7 +396,7 @@ namespace Hara.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("EmailVerifications");
+                    b.ToTable("EmailVerifications", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Members.PasswordResetRequest", b =>
@@ -360,7 +442,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PasswordResetRequests");
+                    b.ToTable("PasswordResetRequests", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Members.RestaurantMember", b =>
@@ -412,7 +494,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("RestaurantId", "Status");
 
-                    b.ToTable("RestaurantMembers");
+                    b.ToTable("RestaurantMembers", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Members.TermsAcceptance", b =>
@@ -443,7 +525,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("UserId", "Document");
 
-                    b.ToTable("TermsAcceptances");
+                    b.ToTable("TermsAcceptances", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Reservations.Reservation", b =>
@@ -505,7 +587,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("RestaurantId", "Status");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Reservations.RestaurantRating", b =>
@@ -536,7 +618,7 @@ namespace Hara.Persistence.Migrations
                     b.HasIndex("RestaurantId", "PhoneNumber")
                         .IsUnique();
 
-                    b.ToTable("RestaurantRatings", t =>
+                    b.ToTable("RestaurantRatings", null, t =>
                         {
                             t.HasCheckConstraint("CK_RestaurantRatings_Stars", "\"Stars\" BETWEEN 1 AND 5");
                         });
@@ -621,7 +703,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("Restaurants");
+                    b.ToTable("Restaurants", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Restaurants.RestaurantChangeRequest", b =>
@@ -693,7 +775,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("RestaurantId", "Status");
 
-                    b.ToTable("RestaurantChangeRequests");
+                    b.ToTable("RestaurantChangeRequests", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Domain.Restaurants.RestaurantSubmission", b =>
@@ -764,7 +846,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("RestaurantSubmissions");
+                    b.ToTable("RestaurantSubmissions", (string)null);
                 });
 
             modelBuilder.Entity("Hara.Persistence.Identity.ApplicationUser", b =>
@@ -862,7 +944,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -1010,6 +1092,33 @@ namespace Hara.Persistence.Migrations
                     b.Navigation("Reservation");
                 });
 
+            modelBuilder.Entity("Hara.Domain.Discounts.DiscountCode", b =>
+                {
+                    b.HasOne("Hara.Persistence.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("RedeemedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Hara.Domain.Restaurants.Restaurant", "Restaurant")
+                        .WithMany()
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("Hara.Domain.Discounts.RestaurantEvent", b =>
+                {
+                    b.HasOne("Hara.Domain.Restaurants.Restaurant", "Restaurant")
+                        .WithMany()
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
+                });
+
             modelBuilder.Entity("Hara.Domain.Members.EmailVerification", b =>
                 {
                     b.HasOne("Hara.Persistence.Identity.ApplicationUser", null)
@@ -1111,7 +1220,7 @@ namespace Hara.Persistence.Migrations
 
                             b1.HasKey("RestaurantId", "__synthesizedOrdinal");
 
-                            b1.ToTable("Restaurants");
+                            b1.ToTable("Restaurants", (string)null);
 
                             b1.ToJson("OpeningHours");
 

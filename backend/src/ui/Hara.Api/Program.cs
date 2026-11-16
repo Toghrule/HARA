@@ -172,6 +172,7 @@ app.MapPasswordResetsEndpoints();
 app.MapRestaurantsEndpoints();
 app.MapSubmissionsEndpoints();
 app.MapReservationsEndpoints();
+app.MapDiscountEndpoints();
 app.MapVenueEndpoints();
 app.MapChangeRequestsEndpoints();
 app.MapAdvertisementsEndpoints();

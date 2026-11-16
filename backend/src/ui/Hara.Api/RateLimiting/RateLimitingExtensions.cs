@@ -16,6 +16,8 @@ public static class RateLimitPolicies
     public const string Devices = "Devices";
     public const string PasswordResetRequests = "PasswordResetRequests";
     public const string PasswordResetChecks = "PasswordResetChecks";
+    public const string DiscountCodes = "DiscountCodes";
+    public const string RestaurantEvents = "RestaurantEvents";
 }
 
 public sealed class RateLimitPolicyOptions
@@ -54,6 +56,10 @@ public static class RateLimitingExtensions
             AddPerIpPolicy(options, configuration, RateLimitPolicies.PasswordResetRequests, defaultPermitLimit: 5);
             // The app asks every few seconds while the owner waits for HARA's answer.
             AddPerIpPolicy(options, configuration, RateLimitPolicies.PasswordResetChecks, defaultPermitLimit: 600);
+            // A code per tap; many customers of one cafe can share its wifi, so the limit is roomy.
+            AddPerIpPolicy(options, configuration, RateLimitPolicies.DiscountCodes, defaultPermitLimit: 60);
+            // Taps on restaurants: every page open and every tap on the map counts.
+            AddPerIpPolicy(options, configuration, RateLimitPolicies.RestaurantEvents, defaultPermitLimit: 600);
         });
 
         return services;

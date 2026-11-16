@@ -5,6 +5,7 @@ using Hara.Domain.Common;
 using Hara.Domain.Devices;
 using Hara.Domain.Faq;
 using Hara.Domain.Members;
+using Hara.Domain.Discounts;
 using Hara.Domain.Reservations;
 using Hara.Domain.Restaurants;
 using Hara.Persistence.Identity;
@@ -54,6 +55,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<EmailVerification> EmailVerifications => Set<EmailVerification>();
 
     public DbSet<RestaurantRating> RestaurantRatings => Set<RestaurantRating>();
+
+    public DbSet<DiscountCode> DiscountCodes => Set<DiscountCode>();
+
+    public DbSet<RestaurantEvent> RestaurantEvents => Set<RestaurantEvent>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -4,6 +4,7 @@ using Hara.Api.RateLimiting;
 using Hara.Application.Devices;
 using Hara.Application.EmailConfirmation;
 using Hara.Application.Legal;
+using Hara.Application.Venue;
 using Hara.Application.Venue.Commands.RedeemVenueReservation;
 using Hara.Application.Venue.Commands.RemoveStaff;
 using Hara.Application.Venue.Commands.RespondToReservation;
@@ -82,6 +83,15 @@ public static class VenueEndpoints
         venue.MapGet("/reservations", async (ReservationStatus? status, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new GetVenueReservationsQuery(status), cancellationToken)))
             .WithName("GetVenueReservations");
+
+        // Discount codes: the restaurant checks a code a customer shows, and confirms it (the discount is given, the customer is counted).
+        venue.MapGet("/discount-codes/{code}", async (string code, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetVenueDiscountCodeQuery(code), cancellationToken)))
+            .WithName("GetVenueDiscountCode");
+
+        venue.MapPost("/discount-codes/{code}/redeem", async (string code, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new RedeemVenueDiscountCodeCommand(code), cancellationToken)))
+            .WithName("RedeemVenueDiscountCode");
 
         venue.MapGet("/reservations/{code}", async (string code, ISender sender, CancellationToken cancellationToken) =>
                 Results.Ok(await sender.Send(new GetVenueReservationQuery(code), cancellationToken)))
