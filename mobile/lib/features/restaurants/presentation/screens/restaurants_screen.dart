@@ -12,6 +12,8 @@ import '../../../../core/widgets/language_menu.dart';
 import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/feature_flags.dart';
+import '../../../discounts/data/discounts_repository.dart';
+import '../../../discounts/presentation/discount_flow.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../availability_text.dart';
 import '../distance_text.dart';
@@ -309,9 +311,19 @@ class _RestaurantTile extends ConsumerWidget {
                       IconButton(
                         tooltip: l10n.openInGoogleMaps,
                         icon: const Icon(Icons.map_outlined),
-                        onPressed: () => openInGoogleMaps(restaurant),
+                        onPressed: () {
+                          unawaited(ref.read(discountsRepositoryProvider).recordEvent(restaurant.id, RestaurantEvent.directions));
+                          unawaited(openInGoogleMaps(restaurant));
+                        },
                       ),
                       const Spacer(),
+                      // Without reservations a restaurant that gives a discount offers the code instead.
+                      if (!FeatureFlags.reservationsEnabled && restaurant.discountPercent > 0)
+                        FilledButton(
+                          key: Key('getDiscount-${restaurant.id}'),
+                          onPressed: () => getDiscount(context, ref, restaurant),
+                          child: Text(l10n.getDiscount),
+                        ),
                       if (FeatureFlags.reservationsEnabled)
                         FilledButton(
                           // Closed (or closing so soon it takes no more requests): the server would refuse it anyway.

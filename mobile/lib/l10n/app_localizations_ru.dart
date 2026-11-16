@@ -1081,4 +1081,27 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get redeemedText =>
       'Ресторан подтвердил ваш код. Приятного аппетита! Оценить ресторан можно из списка.';
+
+  @override
+  String get getDiscount => 'Получить скидку';
+
+  @override
+  String get discountCodeTitle => 'Ваш код скидки';
+
+  @override
+  String get discountUsedTitle => 'Скидка подтверждена';
+
+  @override
+  String get discountUsedText =>
+      'Ресторан подтвердил ваш код. Приятного аппетита!';
+
+  @override
+  String get discountExpiredTitle => 'Срок действия кода истёк';
+
+  @override
+  String get discountExpiredText =>
+      'Код действовал 6 часов. Новый можно получить завтра.';
+
+  @override
+  String get discountDayNote => 'Один код на ресторан в день.';
 }

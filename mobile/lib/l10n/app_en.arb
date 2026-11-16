@@ -356,5 +356,12 @@
   "ratingShort": "★ {average} ({count})",
   "@ratingShort": {"placeholders":{"average":{"type":"String"},"count":{"type":"int"}}},
   "redeemedTitle": "Code confirmed",
-  "redeemedText": "The restaurant confirmed your code. Enjoy your meal! You can rate the restaurant from the list."
+  "redeemedText": "The restaurant confirmed your code. Enjoy your meal! You can rate the restaurant from the list.",
+  "getDiscount": "Get the discount",
+  "discountCodeTitle": "Your discount code",
+  "discountUsedTitle": "Discount confirmed",
+  "discountUsedText": "The restaurant confirmed your code. Enjoy your meal!",
+  "discountExpiredTitle": "This code has expired",
+  "discountExpiredText": "The code was valid for 6 hours. You can get a new one tomorrow.",
+  "discountDayNote": "One code per restaurant per day."
 }

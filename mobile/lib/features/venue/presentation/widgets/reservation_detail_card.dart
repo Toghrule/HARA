@@ -195,7 +195,9 @@ class _ReservationDetailCardState extends ConsumerState<ReservationDetailCard> {
               ),
             ],
             const SizedBox(height: 12),
-            Text(l10n.customerPhoneLine(reservation.phoneNumber), textAlign: TextAlign.center, style: theme.textTheme.bodyMedium),
+            // A discount code has no phone number: the customer is anonymous.
+            if (reservation.phoneNumber.isNotEmpty)
+              Text(l10n.customerPhoneLine(reservation.phoneNumber), textAlign: TextAlign.center, style: theme.textTheme.bodyMedium),
             if (waiting)
               Text(
                 l10n.answerWithin(formatCountdown(reservation.expiresAt.difference(DateTime.now()))),

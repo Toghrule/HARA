@@ -1081,4 +1081,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get redeemedText =>
       'The restaurant confirmed your code. Enjoy your meal! You can rate the restaurant from the list.';
+
+  @override
+  String get getDiscount => 'Get the discount';
+
+  @override
+  String get discountCodeTitle => 'Your discount code';
+
+  @override
+  String get discountUsedTitle => 'Discount confirmed';
+
+  @override
+  String get discountUsedText =>
+      'The restaurant confirmed your code. Enjoy your meal!';
+
+  @override
+  String get discountExpiredTitle => 'This code has expired';
+
+  @override
+  String get discountExpiredText =>
+      'The code was valid for 6 hours. You can get a new one tomorrow.';
+
+  @override
+  String get discountDayNote => 'One code per restaurant per day.';
 }

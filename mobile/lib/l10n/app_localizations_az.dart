@@ -1081,4 +1081,26 @@ class AppLocalizationsAz extends AppLocalizations {
   @override
   String get redeemedText =>
       'Restoran kodunuzu təsdiqlədi. Nuş olsun! Restorana siyahıdan qiymət verə bilərsiniz.';
+
+  @override
+  String get getDiscount => 'Endirimi əldə et';
+
+  @override
+  String get discountCodeTitle => 'Endirim kodunuz';
+
+  @override
+  String get discountUsedTitle => 'Endirim təsdiqləndi';
+
+  @override
+  String get discountUsedText => 'Restoran kodunuzu təsdiqlədi. Nuş olsun!';
+
+  @override
+  String get discountExpiredTitle => 'Kodun vaxtı bitib';
+
+  @override
+  String get discountExpiredText =>
+      'Kod 6 saat etibarlı idi. Sabah yenisini ala bilərsiniz.';
+
+  @override
+  String get discountDayNote => 'Hər restoran üçün gündə bir kod.';
 }

@@ -14,6 +14,8 @@ import '../../features/faq/presentation/screens/faq_screen.dart';
 import '../../features/legal/legal_documents.dart';
 import '../../features/legal/legal_text_screen.dart';
 import '../../features/legal/privacy_policy_screen.dart';
+import '../../features/discounts/data/discount_code.dart';
+import '../../features/discounts/presentation/discount_code_screen.dart';
 import '../../features/reservations/data/reservation.dart';
 import '../../features/reservations/presentation/screens/reservation_code_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurant_detail_screen.dart';
@@ -119,6 +121,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/restaurant-agreement',
         builder: (context, state) => const LegalTextScreen(text: LegalText.venueAgreement),
+      ),
+      GoRoute(
+        path: '/discount',
+        // The code travels as route `extra` (it does not survive a browser refresh); without it there is nothing to show.
+        redirect: (context, state) => state.extra is DiscountCode ? null : '/',
+        builder: (context, state) => DiscountCodeScreen(code: state.extra! as DiscountCode),
       ),
       GoRoute(
         path: '/reservation',

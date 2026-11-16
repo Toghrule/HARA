@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/feature_flags.dart';
 import '../../../core/network/api_client.dart';
 import '../../reservations/data/reservation_state.dart';
 import '../../restaurants/data/opening_hours.dart';
@@ -11,6 +12,9 @@ class VenueRepository {
   VenueRepository(this._apiClient);
 
   final ApiClient _apiClient;
+
+  /// What the restaurant checks and confirms: discount codes, or (when reservations are switched on) reservation codes.
+  String get _codeKind => FeatureFlags.reservationsEnabled ? 'reservations' : 'discount-codes';
 
   Future<VenueMe> getMe() async {
     final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/venue/me');
@@ -61,7 +65,7 @@ class VenueRepository {
 
   /// Looks up a code a customer shows. Only codes of this restaurant are found.
   Future<VenueReservation> lookup(String code) async {
-    final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/venue/reservations/${Uri.encodeComponent(code)}');
+    final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/venue/$_codeKind/${Uri.encodeComponent(code)}');
 
     return VenueReservation.fromJson(response.data!);
   }
@@ -82,7 +86,7 @@ class VenueRepository {
 
   /// Confirms a code: the customer is here and gets the discount. A code can only be confirmed once.
   Future<VenueReservation> redeem(String code) async {
-    final response = await _apiClient.dio.post<Map<String, dynamic>>('/api/venue/reservations/${Uri.encodeComponent(code)}/redeem');
+    final response = await _apiClient.dio.post<Map<String, dynamic>>('/api/venue/$_codeKind/${Uri.encodeComponent(code)}/redeem');
 
     return VenueReservation.fromJson(response.data!);
   }

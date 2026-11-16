@@ -311,5 +311,12 @@
   "starsLabel": "{count} ulduz",
   "ratingShort": "★ {average} ({count})",
   "redeemedTitle": "Kod təsdiqləndi",
-  "redeemedText": "Restoran kodunuzu təsdiqlədi. Nuş olsun! Restorana siyahıdan qiymət verə bilərsiniz."
+  "redeemedText": "Restoran kodunuzu təsdiqlədi. Nuş olsun! Restorana siyahıdan qiymət verə bilərsiniz.",
+  "getDiscount": "Endirimi əldə et",
+  "discountCodeTitle": "Endirim kodunuz",
+  "discountUsedTitle": "Endirim təsdiqləndi",
+  "discountUsedText": "Restoran kodunuzu təsdiqlədi. Nuş olsun!",
+  "discountExpiredTitle": "Kodun vaxtı bitib",
+  "discountExpiredText": "Kod 6 saat etibarlı idi. Sabah yenisini ala bilərsiniz.",
+  "discountDayNote": "Hər restoran üçün gündə bir kod."
 }

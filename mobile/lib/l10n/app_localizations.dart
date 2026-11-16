@@ -1899,6 +1899,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The restaurant confirmed your code. Enjoy your meal! You can rate the restaurant from the list.'**
   String get redeemedText;
+
+  /// No description provided for @getDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the discount'**
+  String get getDiscount;
+
+  /// No description provided for @discountCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your discount code'**
+  String get discountCodeTitle;
+
+  /// No description provided for @discountUsedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount confirmed'**
+  String get discountUsedTitle;
+
+  /// No description provided for @discountUsedText.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant confirmed your code. Enjoy your meal!'**
+  String get discountUsedText;
+
+  /// No description provided for @discountExpiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has expired'**
+  String get discountExpiredTitle;
+
+  /// No description provided for @discountExpiredText.
+  ///
+  /// In en, this message translates to:
+  /// **'The code was valid for 6 hours. You can get a new one tomorrow.'**
+  String get discountExpiredText;
+
+  /// No description provided for @discountDayNote.
+  ///
+  /// In en, this message translates to:
+  /// **'One code per restaurant per day.'**
+  String get discountDayNote;
 }
 
 class _AppLocalizationsDelegate

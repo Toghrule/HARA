@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/feature_flags.dart';
+import '../../../discounts/data/discounts_repository.dart';
+import '../../../discounts/presentation/discount_flow.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
 import '../availability_text.dart';
@@ -37,7 +41,7 @@ class RestaurantDetailScreen extends ConsumerWidget {
         ],
       ),
       body: restaurantAsync.when(
-        data: (restaurant) => _Details(restaurant: restaurant),
+        data: (restaurant) => _ViewRecorder(restaurantId: restaurant.id, child: _Details(restaurant: restaurant)),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => _ErrorView(
           message: error is DioException && error.response?.statusCode == 404
@@ -46,7 +50,20 @@ class RestaurantDetailScreen extends ConsumerWidget {
           onRetry: () => ref.invalidate(restaurantProvider(restaurantId)),
         ),
       ),
-      bottomNavigationBar: restaurant == null || !FeatureFlags.reservationsEnabled
+      bottomNavigationBar: restaurant != null && !FeatureFlags.reservationsEnabled && restaurant.discountPercent > 0
+          ? SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: FilledButton.icon(
+                  key: const Key('getDiscount'),
+                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+                  onPressed: () => getDiscount(context, ref, restaurant),
+                  icon: const Icon(Icons.local_offer_outlined),
+                  label: Text(l10n.getDiscount),
+                ),
+              ),
+            )
+          : restaurant == null || !FeatureFlags.reservationsEnabled
           ? null
           : SafeArea(
               child: Padding(
@@ -61,6 +78,28 @@ class RestaurantDetailScreen extends ConsumerWidget {
             ),
     );
   }
+}
+
+/// Tells HARA once, when the restaurant's page opens, that a customer looked at it (counted for the admin, anonymously).
+class _ViewRecorder extends ConsumerStatefulWidget {
+  const _ViewRecorder({required this.restaurantId, required this.child});
+
+  final String restaurantId;
+  final Widget child;
+
+  @override
+  ConsumerState<_ViewRecorder> createState() => _ViewRecorderState();
+}
+
+class _ViewRecorderState extends ConsumerState<_ViewRecorder> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(ref.read(discountsRepositoryProvider).recordEvent(widget.restaurantId, RestaurantEvent.view));
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class _Details extends ConsumerWidget {
@@ -122,7 +161,10 @@ class _Details extends ConsumerWidget {
           title: Text(restaurant.address),
           subtitle: distance == null ? null : Text(distance, key: const Key('distance')),
           trailing: const Icon(Icons.map_outlined),
-          onTap: () => openInGoogleMaps(restaurant),
+          onTap: () {
+            unawaited(ref.read(discountsRepositoryProvider).recordEvent(restaurant.id, RestaurantEvent.directions));
+            unawaited(openInGoogleMaps(restaurant));
+          },
         ),
         if (restaurant.openingHours.isNotEmpty)
           ExpansionTile(
