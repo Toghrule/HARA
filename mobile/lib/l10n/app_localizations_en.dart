@@ -1104,4 +1104,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discountDayNote => 'One code per restaurant per day.';
+
+  @override
+  String get navDiscover => 'Discover';
+
+  @override
+  String get navFavorites => 'Favourites';
+
+  @override
+  String get navMore => 'More';
+
+  @override
+  String get discountsSection => 'Discounts';
 }

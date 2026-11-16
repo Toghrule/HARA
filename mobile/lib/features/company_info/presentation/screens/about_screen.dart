@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/theme_mode_provider.dart';
 import '../../../../core/utils/open_link.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/hara_bottom_nav.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../data/about_us.dart';
 import '../../data/social_link.dart';
@@ -21,6 +22,7 @@ class AboutScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.aboutUs), actions: const [LanguageMenu()]),
+      bottomNavigationBar: const HaraBottomNav(current: HomeTab.more),
       body: RefreshIndicator(
         onRefresh: () async {
           ref

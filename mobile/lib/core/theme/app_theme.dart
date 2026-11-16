@@ -106,6 +106,13 @@ class AppTheme {
         actionsIconTheme: IconThemeData(color: gold),
         titleTextStyle: TextStyle(color: gold, fontSize: 20, fontWeight: FontWeight.w600),
       ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: scheme.surfaceContainerLowest,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: scheme.primaryContainer,
+        height: 68,
+        labelTextStyle: WidgetStatePropertyAll(TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: scheme.onSurface)),
+      ),
       tabBarTheme: const TabBarThemeData(
         labelColor: gold,
         unselectedLabelColor: Color(0xFFB4A6C0),

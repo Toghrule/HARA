@@ -272,7 +272,8 @@ void main() {
       });
       final app = await open(tester);
 
-      await tapChip(tester, 'chip-favorites');
+      await tester.tap(find.byKey(const Key('nav-favorites')));
+      await tester.pumpAndSettle();
 
       expect(app.restaurants.queries.last.query.ids, unorderedEquals(['a', 'c']));
       expect(find.text('Alpha Grill'), findsOneWidget);
@@ -290,7 +291,8 @@ void main() {
       final app = await open(tester);
       final before = app.restaurants.queries.length;
 
-      await tapChip(tester, 'chip-favorites');
+      await tester.tap(find.byKey(const Key('nav-favorites')));
+      await tester.pumpAndSettle();
 
       expect(find.text('No favorites yet. Tap the heart on a restaurant to keep it here.'), findsOneWidget);
       expect(app.restaurants.queries.length, before);
@@ -334,7 +336,7 @@ void main() {
 
       expect(location.requests, 1);
       expect(find.byKey(const Key('locationExplain')), findsNothing);
-      expect(find.text('Baku, Alpha Grill street · 10 m'), findsOneWidget);
+      expect(find.textContaining('Baku, Alpha Grill street · 10 m'), findsOneWidget);
       expect(find.textContaining('Baku, Bravo Pizza street · 4.'), findsOneWidget);
       expect((await SharedPreferences.getInstance()).getBool('location_asked'), isTrue);
     });
@@ -365,7 +367,7 @@ void main() {
 
       expect(find.byKey(const Key('locationExplain')), findsNothing);
       expect(location.requests, 0);
-      expect(find.text('Baku, Alpha Grill street · 10 m'), findsOneWidget);
+      expect(find.textContaining('Baku, Alpha Grill street · 10 m'), findsOneWidget);
     });
 
     testWidgets('"Nearest" sorts by distance, sending the position', (tester) async {

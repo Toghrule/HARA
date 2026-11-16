@@ -318,5 +318,9 @@
   "discountUsedText": "Ресторан подтвердил ваш код. Приятного аппетита!",
   "discountExpiredTitle": "Срок действия кода истёк",
   "discountExpiredText": "Код действовал 6 часов. Новый можно получить завтра.",
-  "discountDayNote": "Один код на ресторан в день."
+  "discountDayNote": "Один код на ресторан в день.",
+  "navDiscover": "Обзор",
+  "navFavorites": "Избранное",
+  "navMore": "Ещё",
+  "discountsSection": "Скидки"
 }

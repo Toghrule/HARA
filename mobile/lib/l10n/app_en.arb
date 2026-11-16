@@ -363,5 +363,9 @@
   "discountUsedText": "The restaurant confirmed your code. Enjoy your meal!",
   "discountExpiredTitle": "This code has expired",
   "discountExpiredText": "The code was valid for 6 hours. You can get a new one tomorrow.",
-  "discountDayNote": "One code per restaurant per day."
+  "discountDayNote": "One code per restaurant per day.",
+  "navDiscover": "Discover",
+  "navFavorites": "Favourites",
+  "navMore": "More",
+  "discountsSection": "Discounts"
 }

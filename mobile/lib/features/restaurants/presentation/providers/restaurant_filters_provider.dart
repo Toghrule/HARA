@@ -10,6 +10,8 @@ class RestaurantFiltersNotifier extends Notifier<RestaurantFilters> {
 
   void setNearest(bool value) => state = state.copyWith(nearest: value);
 
+  void setFavorites(bool value) => state = state.copyWith(favoritesOnly: value);
+
   void toggleFavorites() => state = state.copyWith(favoritesOnly: !state.favoritesOnly);
 
   /// Picks a cuisine; picking the one already chosen clears it.

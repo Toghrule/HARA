@@ -1941,6 +1941,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'One code per restaurant per day.'**
   String get discountDayNote;
+
+  /// No description provided for @navDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get navDiscover;
+
+  /// No description provided for @navFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get navFavorites;
+
+  /// No description provided for @navMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get navMore;
+
+  /// No description provided for @discountsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Discounts'**
+  String get discountsSection;
 }
 
 class _AppLocalizationsDelegate

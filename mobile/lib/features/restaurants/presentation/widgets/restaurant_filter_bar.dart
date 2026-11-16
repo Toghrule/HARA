@@ -56,13 +56,6 @@ class RestaurantFilterBar extends ConsumerWidget {
                 if (await ensureLocationForNearest(context, ref)) notifier.setNearest(true);
               },
             ),
-          _chip(
-            key: const Key('chip-favorites'),
-            label: l10n.filterFavorites,
-            icon: Icons.favorite_border,
-            selected: filters.favoritesOnly,
-            onSelected: (_) => notifier.toggleFavorites(),
-          ),
           for (final code in cuisineCodes)
             _chip(
               key: Key('chip-cuisine-$code'),

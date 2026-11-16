@@ -1104,4 +1104,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get discountDayNote => 'Один код на ресторан в день.';
+
+  @override
+  String get navDiscover => 'Обзор';
+
+  @override
+  String get navFavorites => 'Избранное';
+
+  @override
+  String get navMore => 'Ещё';
+
+  @override
+  String get discountsSection => 'Скидки';
 }

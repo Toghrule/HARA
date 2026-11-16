@@ -1103,4 +1103,16 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get discountDayNote => 'Hər restoran üçün gündə bir kod.';
+
+  @override
+  String get navDiscover => 'Kəşf et';
+
+  @override
+  String get navFavorites => 'Sevimlilər';
+
+  @override
+  String get navMore => 'Daha çox';
+
+  @override
+  String get discountsSection => 'Endirimlər';
 }

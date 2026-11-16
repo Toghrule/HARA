@@ -106,12 +106,24 @@ void main() {
       MaterialApp materialApp() => tester.widget<MaterialApp>(find.byType(MaterialApp));
       expect(materialApp().themeMode, ThemeMode.system);
 
-      await tester.tap(find.descendant(of: find.byKey(const Key('themeMode')), matching: find.text('Dark')));
+      final dark = find.descendant(of: find.byKey(const Key('themeMode')), matching: find.text('Dark'));
+
+      await tester.ensureVisible(dark);
+
+      await tester.pump();
+
+      await tester.tap(dark);
       await tester.pumpAndSettle();
       expect(materialApp().themeMode, ThemeMode.dark);
       expect(Theme.of(tester.element(find.byType(Scaffold).first)).colorScheme.primary, AppTheme.gold);
 
-      await tester.tap(find.descendant(of: find.byKey(const Key('themeMode')), matching: find.text('Light')));
+      final light = find.descendant(of: find.byKey(const Key('themeMode')), matching: find.text('Light'));
+
+      await tester.ensureVisible(light);
+
+      await tester.pump();
+
+      await tester.tap(light);
       await tester.pumpAndSettle();
       expect(materialApp().themeMode, ThemeMode.light);
       expect(Theme.of(tester.element(find.byType(Scaffold).first)).colorScheme.primary, AppTheme.deepPurple);
