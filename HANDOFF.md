@@ -5,6 +5,13 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Endirim kodu modeli, rezerv gizli (2026-11-16)
+- **Rezerv söndürülüb** (`FeatureFlags.reservationsEnabled=false`, mobil; kod silinməyib, `true` etsən hamısı qayıdır). Yeni məntiq: endirim verən restoranda müştəri "Endirimi əldə et" basır, kod alır (**6 saat** etibarlı, bir cihaz bir restorandan **gündə 1 kod**; vaxtı bitsə həmin gün yenisi verilmir). Restoran sahibi/ofisiant "Kod təsdiqlə" tabında təsdiqləyir: endirim verilir + HARA ilə gələn müştəri sayılır. "HARA ilə gəldim" düyməsi YOXDUR.
+- **Server:** cədvəllər `DiscountCodes`, `RestaurantEvents` (migration `AddDiscountCodesAndRestaurantEvents`, **real bazaya HƏLƏ tətbiq olunmayıb**); endpointlər `POST /api/restaurants/{id}/discount-code`, `GET /api/discount-codes/{code}`, `POST /api/restaurants/{id}/events` (view | directions), restoran tərəfi `/api/venue/discount-codes/{code}[/redeem]`, admin `/api/admin/visits[/monthly]`. Müştəri anonim cihaz nömrəsi ilə tanınır (tətbiq özü yaradır, telefonda saxlanır). Yoxlama: 55 serverdə, mobil +16.
+- **Admin panel:** yeni "Visits" səhifəsi (bu gün/həftə/ay/ümumi: kod alanlar, təsdiqlənənlər, səhifə açılışı, yol xəritəsi; aylıq nəticə + hər restoran üçün kopyalanan mətn).
+- **Dizayn (ReserveAz/Vilka üslubunda):** alt naviqasiya (Kəşf et / Sevimlilər / Daha çox), "Endirimlər" zolağı (3+ endirimli məkan olanda), böyük şəkilli kartlar (reytinq ada yanaşı), restoran səhifəsində endirim lövhəsi və bölmələr (Ünvan, Əlaqə, Haqqında). Xəritə tabı YOXDUR (Google Maps açarı lazımdır).
+- **Hələ edilməyib:** reytinq+rəy üçün müştəri hesabı (Google və ya telefon nömrəsi ilə profil; Firebase Auth qurulumu lazımdır). Mövcud reytinq (təsdiqlənmiş rezerv kodu ilə) rezerv söndüyü üçün gizlidir. Qalan ekranlar (xəritə, restoran tabları) köhnə dizaynla.
+
 ## Server (VPS) hazırlığı (2026-11-05)
 - `deploy/` qovluğu: `docker-compose.yml` (Postgres + API + admin panel nginx + Cloudflare tuneli), `backend/Dockerfile`, `admin.Dockerfile`, `export-from-pc.sh`, `restore-on-server.sh`, `backup.sh`, `update.sh`, addım-addım `SERVER.md`. Kompüterdə ayrı Docker mühitində TAM sınaqdan keçirilib (miqrasiya, admin giriş, CORS, müştəri başına limit, məlumat+şəkil köçürməsi). Serverin özü HƏLƏ qurulmayıb (VPS hesabı istifadəçinin işidir).
 - API-yə iki yeni ayar: `Database:MigrateOnStart=true` (server başlayanda miqrasiyanı özü tətbiq edir) və `ForwardedHeaders:TrustedNetworks` (Docker şəbəkəsindən gələn real müştəri IP-sinə inanmaq üçün; yoxsa hamı bir limit paylaşar).

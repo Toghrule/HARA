@@ -1116,4 +1116,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get discountsSection => 'Скидки';
+
+  @override
+  String get sectionAddress => 'Адрес';
+
+  @override
+  String get sectionContact => 'Контакты';
+
+  @override
+  String get sectionAbout => 'О заведении';
+
+  @override
+  String discountOffer(int percent) {
+    return 'Скидка $percent% на счёт';
+  }
 }

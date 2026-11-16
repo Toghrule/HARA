@@ -238,7 +238,7 @@ class _RestaurantTile extends ConsumerWidget {
     final lines = [
       if (cuisines.isNotEmpty) cuisines,
       distance == null ? restaurant.address : '${restaurant.address} · $distance',
-      if (restaurant.discountPercent > 0) l10n.discountWithCode(restaurant.discountPercent),
+      if (restaurant.discountPercent > 0) FeatureFlags.reservationsEnabled ? l10n.discountWithCode(restaurant.discountPercent) : l10n.discountOffer(restaurant.discountPercent),
       // Only when it matters: a restaurant that is open needs no extra line here.
       if (!restaurant.availability.acceptingRequests) availabilityText(l10n, restaurant.availability),
     ];
@@ -344,20 +344,34 @@ class _RestaurantTile extends ConsumerWidget {
                           unawaited(openInGoogleMaps(restaurant));
                         },
                       ),
-                      const Spacer(),
-                      // Without reservations a restaurant that gives a discount offers the code instead.
-                      if (!FeatureFlags.reservationsEnabled && restaurant.discountPercent > 0)
-                        FilledButton(
-                          key: Key('getDiscount-${restaurant.id}'),
-                          onPressed: () => getDiscount(context, ref, restaurant),
-                          child: Text(l10n.getDiscount),
+                      // The button takes what the map icon leaves, and its words are cut rather than overflow (a long language, a narrow phone).
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Without reservations a restaurant that gives a discount offers the code instead.
+                              if (!FeatureFlags.reservationsEnabled && restaurant.discountPercent > 0)
+                                Flexible(
+                                  child: FilledButton(
+                                    key: Key('getDiscount-${restaurant.id}'),
+                                    onPressed: () => getDiscount(context, ref, restaurant),
+                                    child: Text(l10n.getDiscount, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                  ),
+                                ),
+                              if (FeatureFlags.reservationsEnabled)
+                                Flexible(
+                                  child: FilledButton(
+                                    // Closed (or closing so soon it takes no more requests): the server would refuse it anyway.
+                                    onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
+                                    child: Text(l10n.reserve, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                      if (FeatureFlags.reservationsEnabled)
-                        FilledButton(
-                          // Closed (or closing so soon it takes no more requests): the server would refuse it anyway.
-                          onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
-                          child: Text(l10n.reserve),
-                        ),
+                      ),
                     ],
                   ),
                 ],

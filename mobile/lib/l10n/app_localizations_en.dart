@@ -1116,4 +1116,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discountsSection => 'Discounts';
+
+  @override
+  String get sectionAddress => 'Address';
+
+  @override
+  String get sectionContact => 'Contact';
+
+  @override
+  String get sectionAbout => 'About the place';
+
+  @override
+  String discountOffer(int percent) {
+    return '$percent% off your bill';
+  }
 }

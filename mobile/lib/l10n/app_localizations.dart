@@ -1965,6 +1965,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Discounts'**
   String get discountsSection;
+
+  /// No description provided for @sectionAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get sectionAddress;
+
+  /// No description provided for @sectionContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get sectionContact;
+
+  /// No description provided for @sectionAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About the place'**
+  String get sectionAbout;
+
+  /// No description provided for @discountOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% off your bill'**
+  String discountOffer(int percent);
 }
 
 class _AppLocalizationsDelegate

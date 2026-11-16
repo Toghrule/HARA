@@ -367,5 +367,10 @@
   "navDiscover": "Discover",
   "navFavorites": "Favourites",
   "navMore": "More",
-  "discountsSection": "Discounts"
+  "discountsSection": "Discounts",
+  "sectionAddress": "Address",
+  "sectionContact": "Contact",
+  "sectionAbout": "About the place",
+  "discountOffer": "{percent}% off your bill",
+  "@discountOffer": {"placeholders": {"percent": {"type": "int"}}}
 }

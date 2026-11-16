@@ -1115,4 +1115,18 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get discountsSection => 'Endirimlər';
+
+  @override
+  String get sectionAddress => 'Ünvan';
+
+  @override
+  String get sectionContact => 'Əlaqə';
+
+  @override
+  String get sectionAbout => 'Məkan haqqında';
+
+  @override
+  String discountOffer(int percent) {
+    return 'Hesabdan $percent% endirim';
+  }
 }

@@ -322,5 +322,9 @@
   "navDiscover": "Kəşf et",
   "navFavorites": "Sevimlilər",
   "navMore": "Daha çox",
-  "discountsSection": "Endirimlər"
+  "discountsSection": "Endirimlər",
+  "sectionAddress": "Ünvan",
+  "sectionContact": "Əlaqə",
+  "sectionAbout": "Məkan haqqında",
+  "discountOffer": "Hesabdan {percent}% endirim"
 }

@@ -322,5 +322,9 @@
   "navDiscover": "Обзор",
   "navFavorites": "Избранное",
   "navMore": "Ещё",
-  "discountsSection": "Скидки"
+  "discountsSection": "Скидки",
+  "sectionAddress": "Адрес",
+  "sectionContact": "Контакты",
+  "sectionAbout": "О заведении",
+  "discountOffer": "Скидка {percent}% на счёт"
 }

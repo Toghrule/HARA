@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/feature_flags.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../discounts/data/discounts_repository.dart';
 import '../../../discounts/presentation/discount_flow.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
@@ -126,7 +127,7 @@ class _Details extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(restaurant.name, style: theme.textTheme.headlineSmall),
+              Text(restaurant.name, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
               if (restaurant.cuisines.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Wrap(
@@ -140,23 +141,36 @@ class _Details extends ConsumerWidget {
                 Row(
                   key: const Key('rating'),
                   children: [
-                    const Icon(Icons.star_rounded, size: 20, color: Color(0xFFE4B744)),
-                    const SizedBox(width: 4),
                     Text(l10n.ratingShort(restaurant.ratingAverage!.toStringAsFixed(1), restaurant.ratingCount), style: theme.textTheme.bodyLarge),
                   ],
                 ),
               ],
               if (restaurant.discountPercent > 0) ...[
-                const SizedBox(height: 12),
-                Chip(
-                  avatar: const Icon(Icons.local_offer_outlined, size: 18),
-                  label: Text(AppLocalizations.of(context).discountWithCode(restaurant.discountPercent)),
+                const SizedBox(height: 14),
+                Container(
+                  key: const Key('discountBanner'),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(color: theme.colorScheme.secondaryContainer, borderRadius: BorderRadius.circular(16)),
+                  child: Row(
+                    children: [
+                      DiscountBadge(percent: restaurant.discountPercent),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          FeatureFlags.reservationsEnabled ? l10n.discountWithCode(restaurant.discountPercent) : l10n.discountOffer(restaurant.discountPercent),
+                          style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.onSecondaryContainer, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ],
           ),
         ),
-        ListTile(
+        _SectionTitle(l10n.sectionAddress),
+        _SectionCard(
+          child: ListTile(
           leading: const Icon(Icons.place_outlined),
           title: Text(restaurant.address),
           subtitle: distance == null ? null : Text(distance, key: const Key('distance')),
@@ -166,8 +180,11 @@ class _Details extends ConsumerWidget {
             unawaited(openInGoogleMaps(restaurant));
           },
         ),
-        if (restaurant.openingHours.isNotEmpty)
-          ExpansionTile(
+        ),
+        if (restaurant.openingHours.isNotEmpty) ...[
+          _SectionTitle(l10n.openingHoursTitle),
+          _SectionCard(
+            child: ExpansionTile(
             key: const Key('hoursTile'),
             leading: const Icon(Icons.schedule),
             title: Text(
@@ -177,20 +194,56 @@ class _Details extends ConsumerWidget {
             childrenPadding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
             children: [OpeningHoursList(hours: restaurant.openingHours)],
           ),
-        if (phone != null && phone.isNotEmpty)
-          ListTile(
-            leading: const Icon(Icons.phone_outlined),
-            title: Text(phone),
-            onTap: () => launchUrl(Uri(scheme: 'tel', path: phone.replaceAll(' ', ''))),
           ),
-        if (description != null && description.isNotEmpty)
+        ],
+        if (phone != null && phone.isNotEmpty) ...[
+          _SectionTitle(l10n.sectionContact),
+          _SectionCard(
+            child: ListTile(
+              leading: const Icon(Icons.phone_outlined),
+              title: Text(phone),
+              onTap: () => launchUrl(Uri(scheme: 'tel', path: phone.replaceAll(' ', ''))),
+            ),
+          ),
+        ],
+        if (description != null && description.isNotEmpty) ...[
+          _SectionTitle(l10n.sectionAbout),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             child: Text(description, style: theme.textTheme.bodyLarge),
           ),
+        ],
+        const SizedBox(height: 16),
       ],
     );
   }
+}
+
+/// A small heading above a part of the restaurant's page.
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+        child: Text(text, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+      );
+}
+
+/// A rounded card around a row of the restaurant's page.
+class _SectionCard extends StatelessWidget {
+  const _SectionCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        clipBehavior: Clip.antiAlias,
+        child: child,
+      );
 }
 
 class _FavoriteButton extends ConsumerWidget {
