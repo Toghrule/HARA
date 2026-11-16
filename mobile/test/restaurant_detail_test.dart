@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/core/feature_flags.dart';
 import 'package:hara/l10n/app_localizations.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
@@ -48,6 +49,10 @@ Future<void> pumpDetail(WidgetTester tester, Future<Restaurant> Function(String 
 }
 
 void main() {
+  // These tests are about the reservation flow, which is switched off in the app for now.
+  setUpAll(() => FeatureFlags.reservationsEnabled = true);
+  tearDownAll(() => FeatureFlags.reservationsEnabled = false);
+
   group('googleMapsUri', () {
     test('uses the exact coordinates when they are set', () {
       expect(googleMapsUri(_full).queryParameters['query'], '40.4,49.8');

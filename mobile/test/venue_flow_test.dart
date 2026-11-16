@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/core/feature_flags.dart';
 import 'package:hara/features/reservations/data/reservation_state.dart';
 import 'package:hara/features/restaurants/data/opening_hours.dart';
 import 'package:hara/features/venue/data/venue_me.dart';
@@ -10,6 +11,10 @@ import 'helpers/app_harness.dart';
 import 'helpers/venue_fakes.dart';
 
 void main() {
+  // These tests are about the reservation flow, which is switched off in the app for now.
+  setUpAll(() => FeatureFlags.reservationsEnabled = true);
+  tearDownAll(() => FeatureFlags.reservationsEnabled = false);
+
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   Future<(AppHarness, FakeVenueRepository)> open(WidgetTester tester, {bool owner = false}) async {

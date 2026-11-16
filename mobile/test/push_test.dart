@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/core/feature_flags.dart';
 import 'package:hara/core/l10n/locale_provider.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/core/push/push_registrar.dart';
@@ -51,6 +52,10 @@ class _FakeReservationsRepository extends ReservationsRepository {
 }
 
 void main() {
+  // These tests are about the reservation flow, which is switched off in the app for now.
+  setUpAll(() => FeatureFlags.reservationsEnabled = true);
+  tearDownAll(() => FeatureFlags.reservationsEnabled = false);
+
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   Future<(AppHarness, FakeVenueRepository, FakePushService)> open(

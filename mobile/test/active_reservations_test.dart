@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hara/core/feature_flags.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/reservations/data/reservation.dart';
 import 'package:hara/features/reservations/data/reservation_state.dart';
@@ -138,6 +139,10 @@ DioException serverTrouble(int status) {
 }
 
 void main() {
+  // These tests are about the reservation flow, which is switched off in the app for now.
+  setUpAll(() => FeatureFlags.reservationsEnabled = true);
+  tearDownAll(() => FeatureFlags.reservationsEnabled = false);
+
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   group('ActiveReservations', () {

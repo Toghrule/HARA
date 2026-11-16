@@ -11,6 +11,7 @@ import '../../../../core/widgets/hara_logo.dart';
 import '../../../../core/widgets/language_menu.dart';
 import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/feature_flags.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../availability_text.dart';
 import '../distance_text.dart';
@@ -97,7 +98,7 @@ class _RestaurantsScreenState extends ConsumerState<RestaurantsScreen> {
       ),
       body: Column(
         children: [
-          const ActiveReservationsBanner(),
+          if (FeatureFlags.reservationsEnabled) const ActiveReservationsBanner(),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: ValueListenableBuilder<TextEditingValue>(
@@ -311,11 +312,12 @@ class _RestaurantTile extends ConsumerWidget {
                         onPressed: () => openInGoogleMaps(restaurant),
                       ),
                       const Spacer(),
-                      FilledButton(
-                        // Closed (or closing so soon it takes no more requests): the server would refuse it anyway.
-                        onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
-                        child: Text(l10n.reserve),
-                      ),
+                      if (FeatureFlags.reservationsEnabled)
+                        FilledButton(
+                          // Closed (or closing so soon it takes no more requests): the server would refuse it anyway.
+                          onPressed: restaurant.availability.acceptingRequests ? () => startReservation(context, restaurant) : null,
+                          child: Text(l10n.reserve),
+                        ),
                     ],
                   ),
                 ],

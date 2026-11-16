@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/core/feature_flags.dart';
 import 'package:hara/core/network/api_client.dart';
 import 'package:hara/features/reservations/data/reservation_state.dart';
 import 'package:hara/features/reservations/data/reservations_repository.dart';
@@ -50,6 +51,10 @@ Restaurant _restaurantFrom(Map<String, dynamic> extra) => Restaurant.fromJson({
     });
 
 void main() {
+  // These tests are about the reservation flow, which is switched off in the app for now.
+  setUpAll(() => FeatureFlags.reservationsEnabled = true);
+  tearDownAll(() => FeatureFlags.reservationsEnabled = false);
+
   group('what the server tells and is told', () {
     test('a restaurant carries its average and how many rated', () {
       final rated = _restaurantFrom({'ratingAverage': 4.5, 'ratingCount': 12});

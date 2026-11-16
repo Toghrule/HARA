@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/auth/auth_controller.dart';
+import '../../../../core/feature_flags.dart';
 import '../../../../core/l10n/locale_provider.dart';
 import '../../../../core/network/api_error.dart';
 import '../../../../core/push/push_registrar.dart';
@@ -145,9 +146,12 @@ class _ApprovedVenueState extends ConsumerState<_ApprovedVenue> {
     super.initState();
     // This phone is told about new requests even when the app is closed.
     unawaited(ref.read(pushRegistrarProvider).registerVenue());
-    _timer = Timer.periodic(_requestsCheck, (_) {
-      ref.invalidate(venueReservationsProvider(ReservationFilter.pending));
-    });
+    // Requests only exist while reservations are on.
+    if (FeatureFlags.reservationsEnabled) {
+      _timer = Timer.periodic(_requestsCheck, (_) {
+        ref.invalidate(venueReservationsProvider(ReservationFilter.pending));
+      });
+    }
   }
 
   @override
@@ -165,20 +169,23 @@ class _ApprovedVenueState extends ConsumerState<_ApprovedVenue> {
     ref.listen(localeProvider, (previous, next) => unawaited(ref.read(pushRegistrarProvider).registerVenue()));
 
     // A new request: a sound and a buzz, since the waiter may be looking elsewhere.
-    ref.listen<AsyncValue<List<VenueReservation>>>(venueReservationsProvider(ReservationFilter.pending), (previous, next) {
-      final before = previous?.valueOrNull?.length;
-      final now = next.valueOrNull?.length;
-      if (before != null && now != null && now > before) {
-        unawaited(SystemSound.play(SystemSoundType.alert));
-        unawaited(HapticFeedback.heavyImpact());
-      }
-    });
-    final waiting = ref.watch(venueReservationsProvider(ReservationFilter.pending)).valueOrNull?.length ?? 0;
+    if (FeatureFlags.reservationsEnabled) {
+      ref.listen<AsyncValue<List<VenueReservation>>>(venueReservationsProvider(ReservationFilter.pending), (previous, next) {
+        final before = previous?.valueOrNull?.length;
+        final now = next.valueOrNull?.length;
+        if (before != null && now != null && now > before) {
+          unawaited(SystemSound.play(SystemSoundType.alert));
+          unawaited(HapticFeedback.heavyImpact());
+        }
+      });
+    }
+    final waiting =
+        FeatureFlags.reservationsEnabled ? ref.watch(venueReservationsProvider(ReservationFilter.pending)).valueOrNull?.length ?? 0 : 0;
 
     final tabs = <({String label, IconData icon, int badge, Widget body})>[
-      (label: l10n.tabRequests, icon: Icons.notifications_active_outlined, badge: waiting, body: const RequestsTab()),
+      if (FeatureFlags.reservationsEnabled) (label: l10n.tabRequests, icon: Icons.notifications_active_outlined, badge: waiting, body: const RequestsTab()),
       (label: l10n.tabConfirmCode, icon: Icons.qr_code_2, badge: 0, body: const CodeConfirmTab()),
-      (label: l10n.tabReservations, icon: Icons.event_seat_outlined, badge: 0, body: const ReservationsTab()),
+      if (FeatureFlags.reservationsEnabled) (label: l10n.tabReservations, icon: Icons.event_seat_outlined, badge: 0, body: const ReservationsTab()),
       (label: l10n.tabStats, icon: Icons.bar_chart, badge: 0, body: const StatsTab()),
       if (me.isOwner) (label: l10n.tabTeam, icon: Icons.groups_outlined, badge: 0, body: const TeamTab()),
       if (me.isOwner) (label: l10n.tabRestaurant, icon: Icons.storefront_outlined, badge: 0, body: RestaurantTab(restaurant: widget.restaurant)),

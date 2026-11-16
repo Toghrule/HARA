@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/network/api_error.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/feature_flags.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
 import '../availability_text.dart';
@@ -45,7 +46,7 @@ class RestaurantDetailScreen extends ConsumerWidget {
           onRetry: () => ref.invalidate(restaurantProvider(restaurantId)),
         ),
       ),
-      bottomNavigationBar: restaurant == null
+      bottomNavigationBar: restaurant == null || !FeatureFlags.reservationsEnabled
           ? null
           : SafeArea(
               child: Padding(

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/core/feature_flags.dart';
 import 'package:hara/core/auth/auth_repository.dart';
 import 'package:hara/features/legal/legal_documents.dart';
 import 'package:hara/features/venue/data/venue_me.dart';
@@ -47,6 +48,10 @@ VenueMe _waiterWith(List<String> pending) => VenueMe(
     );
 
 void main() {
+  // These tests are about the reservation flow, which is switched off in the app for now.
+  setUpAll(() => FeatureFlags.reservationsEnabled = true);
+  tearDownAll(() => FeatureFlags.reservationsEnabled = false);
+
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   group('the texts', () {

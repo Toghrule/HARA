@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/core/feature_flags.dart';
 import 'package:hara/core/auth/auth_repository.dart';
 import 'package:hara/features/venue/data/venue_me.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +39,10 @@ VenueMe _unconfirmed() => VenueMe(
     );
 
 void main() {
+  // These tests are about the reservation flow, which is switched off in the app for now.
+  setUpAll(() => FeatureFlags.reservationsEnabled = true);
+  tearDownAll(() => FeatureFlags.reservationsEnabled = false);
+
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
   test('the language of the email travels with the sign-up', () async {
