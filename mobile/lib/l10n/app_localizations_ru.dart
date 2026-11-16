@@ -1130,4 +1130,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String discountOffer(int percent) {
     return 'Скидка $percent% на счёт';
   }
+
+  @override
+  String get navMap => 'Карта';
 }

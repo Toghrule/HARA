@@ -36,8 +36,9 @@ class ContactScreen extends ConsumerWidget {
 
             return ListView.separated(
               physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
               itemCount: contacts.length,
-              separatorBuilder: (context, index) => const Divider(height: 1),
+              separatorBuilder: (context, index) => const SizedBox(height: 4),
               itemBuilder: (context, index) => _ContactTile(contact: contacts[index]),
             );
           },
@@ -61,17 +62,28 @@ class _ContactTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final uri = contact.uri;
 
-    return ListTile(
-      leading: Icon(
+    final scheme = Theme.of(context).colorScheme;
+
+    return Card(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      child: ListTile(
+      leading: CircleAvatar(
+        backgroundColor: scheme.primaryContainer,
+        child: Icon(
         switch (contact.type) {
           ContactType.phone => Icons.phone_outlined,
           ContactType.email => Icons.email_outlined,
           ContactType.other => Icons.contact_support_outlined,
         },
+          color: scheme.onPrimaryContainer,
+        ),
       ),
-      title: Text(contact.title(AppLocalizations.of(context))),
+      title: Text(contact.title(AppLocalizations.of(context)), style: const TextStyle(fontWeight: FontWeight.w700)),
       subtitle: Text(contact.value),
+      trailing: uri == null ? null : const Icon(Icons.chevron_right),
       onTap: uri == null ? null : () => openLink(context, uri),
+      ),
     );
   }
 }

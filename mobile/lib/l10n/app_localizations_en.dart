@@ -1130,4 +1130,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String discountOffer(int percent) {
     return '$percent% off your bill';
   }
+
+  @override
+  String get navMap => 'Map';
 }

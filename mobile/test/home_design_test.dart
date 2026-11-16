@@ -76,7 +76,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(app.currentPath, '/about');
-      expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 2);
+      expect(tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex, 3);
 
       await tester.tap(find.byKey(const Key('nav-discover')));
       await tester.pumpAndSettle();

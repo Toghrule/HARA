@@ -34,16 +34,21 @@ class FaqScreen extends ConsumerWidget {
 
             return ListView.separated(
               physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
               itemCount: items.length,
-              separatorBuilder: (context, index) => const Divider(height: 1),
+              separatorBuilder: (context, index) => const SizedBox(height: 4),
               itemBuilder: (context, index) {
                 final item = items[index];
 
-                return ExpansionTile(
-                  title: Text(item.question),
-                  expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                  childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  children: [Text(item.answer)],
+                return Card(
+                  margin: EdgeInsets.zero,
+                  clipBehavior: Clip.antiAlias,
+                  child: ExpansionTile(
+                    title: Text(item.question, style: const TextStyle(fontWeight: FontWeight.w700)),
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    children: [Text(item.answer)],
+                  ),
                 );
               },
             );

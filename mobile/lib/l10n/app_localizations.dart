@@ -1989,6 +1989,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{percent}% off your bill'**
   String discountOffer(int percent);
+
+  /// No description provided for @navMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get navMap;
 }
 
 class _AppLocalizationsDelegate

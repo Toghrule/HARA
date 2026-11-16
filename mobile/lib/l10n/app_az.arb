@@ -326,5 +326,6 @@
   "sectionAddress": "Ünvan",
   "sectionContact": "Əlaqə",
   "sectionAbout": "Məkan haqqında",
-  "discountOffer": "Hesabdan {percent}% endirim"
+  "discountOffer": "Hesabdan {percent}% endirim",
+  "navMap": "Xəritə"
 }

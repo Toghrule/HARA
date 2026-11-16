@@ -1129,4 +1129,7 @@ class AppLocalizationsAz extends AppLocalizations {
   String discountOffer(int percent) {
     return 'Hesabdan $percent% endirim';
   }
+
+  @override
+  String get navMap => 'Xəritə';
 }

@@ -372,5 +372,6 @@
   "sectionContact": "Contact",
   "sectionAbout": "About the place",
   "discountOffer": "{percent}% off your bill",
-  "@discountOffer": {"placeholders": {"percent": {"type": "int"}}}
+  "@discountOffer": {"placeholders": {"percent": {"type": "int"}}},
+  "navMap": "Map"
 }

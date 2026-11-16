@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../features/restaurants/presentation/providers/restaurant_filters_provider.dart';
 import '../../l10n/app_localizations.dart';
 
-/// The three places of the customer's app, in the bar at the bottom: discover places, the ones marked with a heart, and "more"
+/// The places of the customer's app, in the bar at the bottom: discover places, the ones marked with a heart, the map, and "more"
 /// (about, contact, appearance, the texts, and the way in for restaurants).
-enum HomeTab { discover, favorites, more }
+enum HomeTab { discover, favorites, map, more }
 
 class HaraBottomNav extends ConsumerWidget {
   const HaraBottomNav({required this.current, super.key});
@@ -29,6 +29,8 @@ class HaraBottomNav extends ConsumerWidget {
         case HomeTab.favorites:
           filters.setFavorites(true);
           context.go('/');
+        case HomeTab.map:
+          context.go('/map');
         case HomeTab.more:
           context.go('/about');
       }
@@ -49,6 +51,12 @@ class HaraBottomNav extends ConsumerWidget {
           icon: const Icon(Icons.favorite_border),
           selectedIcon: const Icon(Icons.favorite),
           label: l10n.navFavorites,
+        ),
+        NavigationDestination(
+          key: const Key('nav-map'),
+          icon: const Icon(Icons.map_outlined),
+          selectedIcon: const Icon(Icons.map),
+          label: l10n.navMap,
         ),
         NavigationDestination(
           key: const Key('nav-more'),
