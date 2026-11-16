@@ -19,8 +19,8 @@ public enum LegalDocument
 /// </summary>
 public static class LegalVersions
 {
-    public const int UserTerms = 1;
-    public const int VenueAgreement = 1;
+    public const int UserTerms = 2;
+    public const int VenueAgreement = 2;
 
     public static int Current(LegalDocument document) => document switch
     {
