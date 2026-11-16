@@ -12,6 +12,7 @@ import { SubmissionsPage } from "./features/submissions/SubmissionsPage";
 import { ChangeRequestsPage } from "./features/change-requests/ChangeRequestsPage";
 import { ReservationsPage } from "./features/reservations/ReservationsPage";
 import { StatisticsPage } from "./features/statistics/StatisticsPage";
+import { VisitsPage } from "./features/visits/VisitsPage";
 import { PasswordResetsPage } from "./features/password-resets/PasswordResetsPage";
 import { AdvertisementsPage } from "./features/advertisements/AdvertisementsPage";
 import { FaqPage } from "./features/faq/FaqPage";
@@ -38,6 +39,7 @@ export default function App() {
                 <Route path="restaurants" element={<RestaurantsPage />} />
                 <Route path="reservations" element={<ReservationsPage />} />
                 <Route path="statistics" element={<StatisticsPage />} />
+                <Route path="visits" element={<VisitsPage />} />
                 <Route path="password-resets" element={<PasswordResetsPage />} />
                 <Route path="submissions" element={<SubmissionsPage />} />
                 <Route path="change-requests" element={<ChangeRequestsPage />} />
