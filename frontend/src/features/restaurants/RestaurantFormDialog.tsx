@@ -36,7 +36,28 @@ const schema = z.object({
   isActive: z.boolean(),
   cuisines: z.array(z.string()).max(maxCuisines),
   galleryUrls: z.array(z.string()).max(maxGalleryPhotos),
+  featuredFrom: z.string(),
+  featuredUntil: z.string(),
+}).superRefine((values, ctx) => {
+  if (!values.featuredFrom !== !values.featuredUntil) {
+    ctx.addIssue({ code: "custom", path: [values.featuredFrom ? "featuredUntil" : "featuredFrom"], message: "Give both dates, or leave both empty" });
+  } else if (values.featuredFrom && values.featuredUntil < values.featuredFrom) {
+    ctx.addIssue({ code: "custom", path: ["featuredUntil"], message: "The last day must not be before the first" });
+  }
 });
+
+/** A date as YYYY-MM-DD in the browser's own calendar, moved by `days`. */
+function isoDay(base: Date, days = 0) {
+  const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** Monday and Sunday of the week that is `weeksAhead` weeks from this one. */
+function weekRange(weeksAhead: number) {
+  const now = new Date();
+  const sinceMonday = (now.getDay() + 6) % 7;
+  return { from: isoDay(now, -sinceMonday + 7 * weeksAhead), until: isoDay(now, -sinceMonday + 6 + 7 * weeksAhead) };
+}
 
 type FormValues = z.infer<typeof schema>;
 
@@ -54,6 +75,8 @@ const emptyValues: FormValues = {
   isActive: true,
   cuisines: [],
   galleryUrls: [],
+  featuredFrom: "",
+  featuredUntil: "",
 };
 
 /** Starting values for a new restaurant, e.g. taken from an approved submission. */
@@ -108,6 +131,8 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
             isActive: restaurant.isActive,
             cuisines: restaurant.cuisines ?? [],
             galleryUrls: restaurant.galleryUrls ?? [],
+            featuredFrom: restaurant.featuredFrom ?? "",
+            featuredUntil: restaurant.featuredUntil ?? "",
           }
         : {
             ...emptyValues,
@@ -151,6 +176,8 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
       discountPercent: values.discountPercent,
       cuisines: values.cuisines,
       galleryUrls: values.galleryUrls,
+      featuredFrom: values.featuredFrom || null,
+      featuredUntil: values.featuredUntil || null,
     };
     try {
       if (isEdit && restaurant) {
@@ -225,7 +252,7 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
           <Input id="phoneNumber" {...register("phoneNumber")} />
         </FormField>
         <FormField
-          label="Discount for reservation-code holders (%)"
+          label="Discount (%): customers get a 6-hour code for it"
           htmlFor="discountPercent"
           error={errors.discountPercent?.message}
         >
@@ -238,6 +265,53 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
             {...register("discountPercent")}
             onFocus={(e) => e.currentTarget.select()}
           />
+        </FormField>
+        <FormField label="Week's pick (shown at the very top of the app for paid places)" error={errors.featuredUntil?.message ?? errors.featuredFrom?.message}>
+          <div className="space-y-2" data-testid="featured">
+            <div className="flex flex-wrap items-center gap-2">
+              <Input type="date" aria-label="First day" {...register("featuredFrom")} className="w-auto" />
+              <span className="text-sm text-slate-500">to</span>
+              <Input type="date" aria-label="Last day" {...register("featuredUntil")} className="w-auto" />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  const { from, until } = weekRange(0);
+                  setValue("featuredFrom", from, { shouldDirty: true, shouldValidate: true });
+                  setValue("featuredUntil", until, { shouldDirty: true, shouldValidate: true });
+                }}
+              >
+                This week (Mon to Sun)
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  const { from, until } = weekRange(1);
+                  setValue("featuredFrom", from, { shouldDirty: true, shouldValidate: true });
+                  setValue("featuredUntil", until, { shouldDirty: true, shouldValidate: true });
+                }}
+              >
+                Next week
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setValue("featuredFrom", "", { shouldDirty: true, shouldValidate: true });
+                  setValue("featuredUntil", "", { shouldDirty: true, shouldValidate: true });
+                }}
+              >
+                Clear
+              </Button>
+            </div>
+            <p className="text-xs text-slate-500">Both days count. Dates are in Azerbaijan time. Leave empty for a place that is not a pick.</p>
+          </div>
         </FormField>
         <FormField label="Description (Azerbaijani)" htmlFor="description" error={errors.description?.message}>
           <Textarea id="description" rows={3} {...register("description")} />

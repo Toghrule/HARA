@@ -87,7 +87,19 @@ export function RestaurantsPage() {
             <tbody className="divide-y divide-slate-100">
               {sorted.map((restaurant) => (
                 <tr key={restaurant.id}>
-                  <td className="px-4 py-3 font-medium text-slate-900">{restaurant.name}</td>
+                  <td className="px-4 py-3 font-medium text-slate-900">
+                    {restaurant.name}
+                    {restaurant.isFeatured && (
+                      <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800" title={`Week's pick: ${restaurant.featuredFrom} to ${restaurant.featuredUntil}`}>
+                        Week's pick
+                      </span>
+                    )}
+                    {!restaurant.isFeatured && restaurant.featuredFrom && (
+                      <span className="ml-2 rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600" title={`${restaurant.featuredFrom} to ${restaurant.featuredUntil}`}>
+                        Pick: {restaurant.featuredFrom}
+                      </span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-slate-600">{restaurant.address}</td>
                   <td className="px-4 py-3 text-slate-600">{restaurant.phoneNumber ?? "—"}</td>
                   <td className="px-4 py-3 text-slate-600">

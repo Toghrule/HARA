@@ -63,6 +63,11 @@ export interface RestaurantDto {
   cuisines?: string[];
   /** Relative URLs of the photos, in display order. */
   galleryUrls?: string[];
+  /** First and last day (YYYY-MM-DD, inclusive) of its turn among the week's picks at the top of the app, if it has one. */
+  featuredFrom?: string | null;
+  featuredUntil?: string | null;
+  /** Whether it is one of the picks today. */
+  isFeatured?: boolean;
 }
 
 export interface CreateRestaurantBody {
@@ -78,6 +83,8 @@ export interface CreateRestaurantBody {
   descriptionEn?: string | null;
   cuisines?: string[];
   galleryUrls?: string[];
+  featuredFrom?: string | null;
+  featuredUntil?: string | null;
   /** Approves this registration and makes its owner the restaurant's owner. */
   fromSubmissionId?: string | null;
 }
