@@ -68,6 +68,15 @@ public class Restaurant : BaseAuditableEntity
     /// <summary>Photos of the restaurant, as the upload endpoint returned them, in the order they are shown. Set by the admin.</summary>
     public List<string> GalleryUrls { get; set; } = [];
 
+    /// <summary>The first day (Azerbaijan time) of the restaurant's turn among "this week's picks" at the top of the app. Set by the admin for places that paid for it.</summary>
+    public DateOnly? FeaturedFrom { get; set; }
+
+    /// <summary>The last day (inclusive) of that turn. Both dates are set together or not at all.</summary>
+    public DateOnly? FeaturedUntil { get; set; }
+
+    /// <summary>Is the restaurant one of the picks on <paramref name="day"/> (an Azerbaijan-time calendar day)?</summary>
+    public bool IsFeaturedOn(DateOnly day) => FeaturedFrom is { } from && FeaturedUntil is { } until && from <= day && day <= until;
+
     /// <summary>How many customers rated this restaurant (see <see cref="Reservations.RestaurantRating"/>).</summary>
     public int RatingCount { get; set; }
 

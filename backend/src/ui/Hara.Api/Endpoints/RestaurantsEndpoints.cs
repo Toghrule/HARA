@@ -2,6 +2,7 @@
 using Hara.Application.Restaurants.Commands.CreateRestaurantOwner;
 using Hara.Application.Restaurants.Commands.DeleteRestaurant;
 using Hara.Application.Restaurants.Commands.UpdateRestaurant;
+using Hara.Application.Restaurants.Queries.GetFeaturedRestaurants;
 using Hara.Application.Restaurants.Queries.GetRestaurantById;
 using Hara.Application.Restaurants.Queries.GetRestaurantOwner;
 using Hara.Application.Restaurants.Queries.GetRestaurants;
@@ -21,6 +22,13 @@ public static class RestaurantsEndpoints
             })
             .WithTags("Restaurants")
             .WithName("GetActiveRestaurants")
+            .AllowAnonymous();
+
+        // This week's picks: the places that took a turn at the top of the app, whatever the customer's position or filters.
+        app.MapGet("/api/restaurants/featured", async (string? lang, ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetFeaturedRestaurantsQuery(lang), cancellationToken)))
+            .WithTags("Restaurants")
+            .WithName("GetFeaturedRestaurants")
             .AllowAnonymous();
 
         app.MapGet("/api/restaurants/{id:guid}", async (Guid id, string? lang, ISender sender, CancellationToken cancellationToken) =>
@@ -50,7 +58,7 @@ public static class RestaurantsEndpoints
 
         admin.MapPut("/{id:guid}", async (Guid id, UpdateRestaurantBody body, ISender sender, CancellationToken cancellationToken) =>
             {
-                var command = new UpdateRestaurantCommand(id, body.Name, body.Description, body.Address, body.Latitude, body.Longitude, body.PhoneNumber, body.ImageUrl, body.DiscountPercent, body.IsActive, body.DescriptionRu, body.DescriptionEn, body.Cuisines, body.GalleryUrls);
+                var command = new UpdateRestaurantCommand(id, body.Name, body.Description, body.Address, body.Latitude, body.Longitude, body.PhoneNumber, body.ImageUrl, body.DiscountPercent, body.IsActive, body.DescriptionRu, body.DescriptionEn, body.Cuisines, body.GalleryUrls, body.FeaturedFrom, body.FeaturedUntil);
                 return Results.Ok(await sender.Send(command, cancellationToken));
             })
             .WithName("AdminUpdateRestaurant");
@@ -82,7 +90,7 @@ public static class RestaurantsEndpoints
 
     private sealed record CreateOwnerBody(string Email, string Password, string FullName, string? PhoneNumber);
 
-    private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive, string? DescriptionRu = null, string? DescriptionEn = null, IReadOnlyList<string>? Cuisines = null, IReadOnlyList<string>? GalleryUrls = null);
+    private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive, string? DescriptionRu = null, string? DescriptionEn = null, IReadOnlyList<string>? Cuisines = null, IReadOnlyList<string>? GalleryUrls = null, DateOnly? FeaturedFrom = null, DateOnly? FeaturedUntil = null);
 
     /// <summary>The <c>ids</c> query string ("id,id,...") as a list; <c>null</c> when it was not given. Anything that is not an id is ignored.</summary>
     private static IReadOnlyList<Guid>? ParseIds(string? ids) =>

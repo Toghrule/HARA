@@ -58,7 +58,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive", "SortOrder");
 
-                    b.ToTable("Advertisements", (string)null);
+                    b.ToTable("Advertisements");
                 });
 
             modelBuilder.Entity("Hara.Domain.CompanyInfo.AboutUsContent", b =>
@@ -97,7 +97,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AboutUsContents", (string)null);
+                    b.ToTable("AboutUsContents");
                 });
 
             modelBuilder.Entity("Hara.Domain.CompanyInfo.ContactInfo", b =>
@@ -136,7 +136,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive", "SortOrder");
 
-                    b.ToTable("ContactInfos", (string)null);
+                    b.ToTable("ContactInfos");
                 });
 
             modelBuilder.Entity("Hara.Domain.CompanyInfo.SocialMediaLink", b =>
@@ -171,7 +171,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive", "SortOrder");
 
-                    b.ToTable("SocialMediaLinks", (string)null);
+                    b.ToTable("SocialMediaLinks");
                 });
 
             modelBuilder.Entity("Hara.Domain.Devices.DeviceToken", b =>
@@ -208,7 +208,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DeviceTokens", (string)null);
+                    b.ToTable("DeviceTokens");
                 });
 
             modelBuilder.Entity("Hara.Domain.Discounts.DiscountCode", b =>
@@ -261,7 +261,7 @@ namespace Hara.Persistence.Migrations
                     b.HasIndex("RestaurantId", "DeviceId", "LocalDay")
                         .IsUnique();
 
-                    b.ToTable("DiscountCodes", (string)null);
+                    b.ToTable("DiscountCodes");
                 });
 
             modelBuilder.Entity("Hara.Domain.Discounts.RestaurantEvent", b =>
@@ -290,7 +290,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("RestaurantId", "CreatedAt");
 
-                    b.ToTable("RestaurantEvents", (string)null);
+                    b.ToTable("RestaurantEvents");
                 });
 
             modelBuilder.Entity("Hara.Domain.Faq.FaqItem", b =>
@@ -341,7 +341,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive", "SortOrder");
 
-                    b.ToTable("FaqItems", (string)null);
+                    b.ToTable("FaqItems");
                 });
 
             modelBuilder.Entity("Hara.Domain.Members.EmailVerification", b =>
@@ -396,7 +396,7 @@ namespace Hara.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("EmailVerifications", (string)null);
+                    b.ToTable("EmailVerifications");
                 });
 
             modelBuilder.Entity("Hara.Domain.Members.PasswordResetRequest", b =>
@@ -442,7 +442,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PasswordResetRequests", (string)null);
+                    b.ToTable("PasswordResetRequests");
                 });
 
             modelBuilder.Entity("Hara.Domain.Members.RestaurantMember", b =>
@@ -494,7 +494,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("RestaurantId", "Status");
 
-                    b.ToTable("RestaurantMembers", (string)null);
+                    b.ToTable("RestaurantMembers");
                 });
 
             modelBuilder.Entity("Hara.Domain.Members.TermsAcceptance", b =>
@@ -525,7 +525,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("UserId", "Document");
 
-                    b.ToTable("TermsAcceptances", (string)null);
+                    b.ToTable("TermsAcceptances");
                 });
 
             modelBuilder.Entity("Hara.Domain.Reservations.Reservation", b =>
@@ -587,7 +587,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("RestaurantId", "Status");
 
-                    b.ToTable("Reservations", (string)null);
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("Hara.Domain.Reservations.RestaurantRating", b =>
@@ -618,7 +618,7 @@ namespace Hara.Persistence.Migrations
                     b.HasIndex("RestaurantId", "PhoneNumber")
                         .IsUnique();
 
-                    b.ToTable("RestaurantRatings", null, t =>
+                    b.ToTable("RestaurantRatings", t =>
                         {
                             t.HasCheckConstraint("CK_RestaurantRatings_Stars", "\"Stars\" BETWEEN 1 AND 5");
                         });
@@ -656,6 +656,12 @@ namespace Hara.Persistence.Migrations
 
                     b.Property<int>("DiscountPercent")
                         .HasColumnType("integer");
+
+                    b.Property<DateOnly?>("FeaturedFrom")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("FeaturedUntil")
+                        .HasColumnType("date");
 
                     b.PrimitiveCollection<List<string>>("GalleryUrls")
                         .IsRequired()
@@ -703,7 +709,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("Restaurants", (string)null);
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("Hara.Domain.Restaurants.RestaurantChangeRequest", b =>
@@ -775,7 +781,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("RestaurantId", "Status");
 
-                    b.ToTable("RestaurantChangeRequests", (string)null);
+                    b.ToTable("RestaurantChangeRequests");
                 });
 
             modelBuilder.Entity("Hara.Domain.Restaurants.RestaurantSubmission", b =>
@@ -846,7 +852,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("RestaurantSubmissions", (string)null);
+                    b.ToTable("RestaurantSubmissions");
                 });
 
             modelBuilder.Entity("Hara.Persistence.Identity.ApplicationUser", b =>
@@ -944,7 +950,7 @@ namespace Hara.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -1220,7 +1226,7 @@ namespace Hara.Persistence.Migrations
 
                             b1.HasKey("RestaurantId", "__synthesizedOrdinal");
 
-                            b1.ToTable("Restaurants", (string)null);
+                            b1.ToTable("Restaurants");
 
                             b1.ToJson("OpeningHours");
 

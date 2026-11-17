@@ -14,6 +14,8 @@ namespace Hara.Application.Restaurants.Commands.CreateRestaurant;
 /// <param name="FromSubmissionId">The registration this restaurant is created from, if any. The submission is marked approved and, if an owner registered it, that account becomes the restaurant's owner.</param>
 /// <param name="Cuisines">Optional kinds of cuisine, from the fixed list.</param>
 /// <param name="GalleryUrls">Optional photo URLs, from prior uploads.</param>
+/// <param name="FeaturedFrom">Optional: the first day of its turn among the week's picks (with <paramref name="FeaturedUntil"/>).</param>
+/// <param name="FeaturedUntil">Optional: the last day (inclusive) of that turn.</param>
 public sealed record CreateRestaurantCommand(
     string Name,
     string? Description,
@@ -27,4 +29,6 @@ public sealed record CreateRestaurantCommand(
     string? DescriptionEn = null,
     Guid? FromSubmissionId = null,
     IReadOnlyList<string>? Cuisines = null,
-    IReadOnlyList<string>? GalleryUrls = null) : IRequest<RestaurantDto>;
+    IReadOnlyList<string>? GalleryUrls = null,
+    DateOnly? FeaturedFrom = null,
+    DateOnly? FeaturedUntil = null) : IRequest<RestaurantDto>;

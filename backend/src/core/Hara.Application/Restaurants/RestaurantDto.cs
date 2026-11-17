@@ -23,6 +23,9 @@ namespace Hara.Application.Restaurants;
 /// <param name="GalleryUrls">Relative URLs of the restaurant's photos, in display order.</param>
 /// <param name="RatingAverage">Average stars (one decimal), or <c>null</c> while nobody has rated.</param>
 /// <param name="RatingCount">How many customers rated.</param>
+/// <param name="FeaturedFrom">First day of its turn among the week's picks, if it has one.</param>
+/// <param name="FeaturedUntil">Last day (inclusive) of that turn.</param>
+/// <param name="IsFeatured">Whether it is one of the picks today.</param>
 public sealed record RestaurantDto(
     Guid Id,
     string Name,
@@ -43,7 +46,10 @@ public sealed record RestaurantDto(
     IReadOnlyList<string>? Cuisines = null,
     IReadOnlyList<string>? GalleryUrls = null,
     double? RatingAverage = null,
-    int RatingCount = 0)
+    int RatingCount = 0,
+    DateOnly? FeaturedFrom = null,
+    DateOnly? FeaturedUntil = null,
+    bool IsFeatured = false)
 {
     /// <param name="restaurant">The restaurant.</param>
     /// <param name="now">The moment to work out whether it is open; the current time when <c>null</c>.</param>
@@ -67,7 +73,10 @@ public sealed record RestaurantDto(
         restaurant.Cuisines.ToList(),
         restaurant.GalleryUrls.ToList(),
         restaurant.RatingAverage,
-        restaurant.RatingCount);
+        restaurant.RatingCount,
+        restaurant.FeaturedFrom,
+        restaurant.FeaturedUntil,
+        restaurant.IsFeaturedOn(Statistics.BakuTime.DayOf(now ?? DateTimeOffset.UtcNow)));
 
     /// <summary>Returns a copy whose <see cref="Description"/> is the text in <paramref name="language"/> (falling back to Azerbaijani).</summary>
     public RestaurantDto Localize(string? language) =>

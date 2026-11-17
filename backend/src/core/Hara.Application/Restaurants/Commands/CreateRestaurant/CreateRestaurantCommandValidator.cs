@@ -19,6 +19,14 @@ public class CreateRestaurantCommandValidator : AbstractValidator<CreateRestaura
         RuleFor(c => c.DescriptionEn).MaximumLength(4000);
         RuleFor(c => c.ImageUrl).MaximumLength(1000);
         RuleFor(c => c.DiscountPercent).InclusiveBetween(0, 100);
+        RuleFor(c => c)
+            .Must(c => (c.FeaturedFrom is null) == (c.FeaturedUntil is null))
+            .WithMessage("Give both featured dates, or none.")
+            .WithName("Featured");
+        RuleFor(c => c)
+            .Must(c => c.FeaturedFrom is null || c.FeaturedUntil is null || (c.FeaturedFrom <= c.FeaturedUntil && c.FeaturedUntil.Value.DayNumber - c.FeaturedFrom.Value.DayNumber <= 366))
+            .WithMessage("The last featured day must not be before the first, and the turn is at most a year.")
+            .WithName("Featured");
         RuleFor(c => c.Cuisines)
             .Must(cuisines => cuisines!.Distinct().Count() <= Domain.Restaurants.Cuisines.MaxPerRestaurant)
             .WithMessage($"At most {Domain.Restaurants.Cuisines.MaxPerRestaurant} cuisines.")

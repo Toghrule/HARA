@@ -33,6 +33,11 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         {
             await WriteProblemAsync(context, StatusCodes.Status404NotFound, ex.Message);
         }
+        catch (BadHttpRequestException ex)
+        {
+            // A body that cannot be read (a date that is not a date, a number that is text): the sender's mistake, not the server's.
+            await WriteProblemAsync(context, ex.StatusCode is >= 400 and < 500 ? ex.StatusCode : StatusCodes.Status400BadRequest, "The request could not be read. Check the values that were sent.");
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "Unhandled exception while processing {Method} {Path}", context.Request.Method, context.Request.Path);

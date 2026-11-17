@@ -24,6 +24,8 @@ public class UpdateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         restaurant.ImageUrl = request.ImageUrl;
         restaurant.DiscountPercent = request.DiscountPercent;
         restaurant.IsActive = request.IsActive;
+        restaurant.FeaturedFrom = request.FeaturedFrom;
+        restaurant.FeaturedUntil = request.FeaturedUntil;
         if (request.Cuisines is not null)
         {
             restaurant.Cuisines = request.Cuisines.Distinct().ToList();
