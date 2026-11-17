@@ -1,5 +1,9 @@
+import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:google_sign_in/google_sign_in.dart' show GoogleSignInException;
 
 import '../../../core/customer/customer_controller.dart';
 import '../../../l10n/app_localizations.dart';
@@ -11,10 +15,19 @@ Future<bool> signInCustomer(BuildContext context, WidgetRef ref) async {
 
   try {
     return await ref.read(customerControllerProvider.notifier).signIn();
-  } catch (_) {
-    messenger.showSnackBar(SnackBar(content: Text(l10n.signInFailed)));
+  } catch (error) {
+    messenger.showSnackBar(SnackBar(content: Text('${l10n.signInFailed}\n(${_reason(error)})')));
     return false;
   }
+}
+
+/// A short technical reason shown under the message, so a failed sign-in can be told apart (Google, Firebase or HARA's server).
+String _reason(Object error) {
+  if (error is GoogleSignInException) return 'Google: ${error.code.name}';
+  if (error is FirebaseAuthException) return 'Firebase: ${error.code}';
+  if (error is DioException) return 'HARA: ${error.response?.statusCode ?? error.type.name}';
+
+  return error.runtimeType.toString();
 }
 
 class CustomerAccountCard extends ConsumerWidget {

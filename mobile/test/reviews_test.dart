@@ -74,7 +74,8 @@ void main() {
       await tester.tap(find.byKey(const Key('signInWithGoogle')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Could not sign in. Please try again in a moment.'), findsOneWidget);
+      expect(find.textContaining('Could not sign in. Please try again in a moment.'), findsOneWidget);
+      expect(find.textContaining('_Exception'), findsOneWidget);
     });
 
     testWidgets('nothing is offered where Google is not available', (tester) async {
