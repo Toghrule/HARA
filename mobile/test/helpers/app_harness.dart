@@ -222,8 +222,14 @@ class FakeRestaurantsRepository extends RestaurantsRepository {
 
   final List<Restaurant> all;
 
+  /// This week's picks, as the server would list them.
+  List<Restaurant> featured = [];
+
   /// Every list request the app made: how it was sorted, searched and filtered.
   final List<({RestaurantSort sort, String search, RestaurantListQuery query})> queries = [];
+
+  @override
+  Future<List<Restaurant>> getFeatured() async => featured;
 
   @override
   Future<Restaurant> getRestaurant(String id) async => all.firstWhere((restaurant) => restaurant.id == id);

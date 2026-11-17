@@ -327,5 +327,7 @@
   "sectionContact": "Əlaqə",
   "sectionAbout": "Məkan haqqında",
   "discountOffer": "Hesabdan {percent}% endirim",
-  "navMap": "Xəritə"
+  "navMap": "Xəritə",
+  "featuredSection": "Həftənin seçilmişləri",
+  "featuredBadge": "Həftənin seçimi"
 }

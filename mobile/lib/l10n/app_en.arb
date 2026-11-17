@@ -373,5 +373,7 @@
   "sectionAbout": "About the place",
   "discountOffer": "{percent}% off your bill",
   "@discountOffer": {"placeholders": {"percent": {"type": "int"}}},
-  "navMap": "Map"
+  "navMap": "Map",
+  "featuredSection": "This week's picks",
+  "featuredBadge": "Pick of the week"
 }

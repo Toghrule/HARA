@@ -38,6 +38,13 @@ class RestaurantsRepository {
         .toList();
   }
 
+  /// This week's picks: the places that took a turn at the top of the app, whatever the position or the filters.
+  Future<List<Restaurant>> getFeatured() async {
+    final response = await _apiClient.dio.get<List<dynamic>>('/api/restaurants/featured');
+
+    return (response.data ?? []).map((json) => Restaurant.fromJson(json as Map<String, dynamic>)).toList();
+  }
+
   Future<Restaurant> getRestaurant(String id) async {
     final response = await _apiClient.dio.get<Map<String, dynamic>>('/api/restaurants/$id');
 

@@ -1995,6 +1995,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Map'**
   String get navMap;
+
+  /// No description provided for @featuredSection.
+  ///
+  /// In en, this message translates to:
+  /// **'This week\'s picks'**
+  String get featuredSection;
+
+  /// No description provided for @featuredBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick of the week'**
+  String get featuredBadge;
 }
 
 class _AppLocalizationsDelegate

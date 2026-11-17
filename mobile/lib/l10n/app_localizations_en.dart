@@ -1133,4 +1133,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navMap => 'Map';
+
+  @override
+  String get featuredSection => 'This week\'s picks';
+
+  @override
+  String get featuredBadge => 'Pick of the week';
 }

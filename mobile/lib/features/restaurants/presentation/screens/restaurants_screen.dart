@@ -20,6 +20,7 @@ import '../availability_text.dart';
 import '../location_prompt.dart';
 import '../widgets/restaurant_filter_bar.dart';
 import '../providers/favorites_provider.dart';
+import '../providers/featured_provider.dart';
 import '../providers/restaurant_filters_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../reservations/presentation/widgets/active_reservations_banner.dart';
@@ -198,17 +199,24 @@ class _RestaurantList extends ConsumerWidget {
       );
     }
 
-    // At the top, when there are enough of them and nothing narrows the list: the places that give a discount, in a row to swipe through.
+    // At the very top, when nothing narrows the list: this week's picks (paid places, wherever the customer is), then the places that
+    // give a discount, each in a row to swipe through.
+    final browsing = search.isEmpty && !filters.narrows;
+    final featured = browsing ? ref.watch(featuredRestaurantsProvider).valueOrNull ?? const <Restaurant>[] : const <Restaurant>[];
     final discounted = state.items.where((restaurant) => restaurant.discountPercent > 0).take(10).toList();
-    final showStrip = discounted.length >= 3 && search.isEmpty && !filters.narrows;
-    final offset = showStrip ? 1 : 0;
+    final showStrip = discounted.length >= 3 && browsing;
+    final headers = [
+      if (featured.isNotEmpty) _FeaturedStrip(restaurants: featured),
+      if (showStrip) _DiscountStrip(restaurants: discounted),
+    ];
+    final offset = headers.length;
 
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
       itemCount: state.items.length + 1 + offset,
       itemBuilder: (context, index) {
-        if (showStrip && index == 0) return _DiscountStrip(restaurants: discounted);
+        if (index < offset) return headers[index];
         if (index == state.items.length + offset) return _ListFooter(state: state);
 
         return _RestaurantTile(restaurant: state.items[index - offset]);
@@ -372,6 +380,135 @@ class _RestaurantTile extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// "This week's picks": the places that took a turn at the top, as big cards in a row.
+class _FeaturedStrip extends StatelessWidget {
+  const _FeaturedStrip({required this.restaurants});
+
+  final List<Restaurant> restaurants;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Column(
+      key: const Key('featuredStrip'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+          child: Row(
+            children: [
+              Icon(Icons.workspace_premium, color: AppTheme.gold, size: 24),
+              const SizedBox(width: 6),
+              Expanded(child: Text(l10n.featuredSection, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800))),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 208,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: restaurants.length,
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final restaurant = restaurants[index];
+              final cover = restaurant.photoUris.isEmpty ? null : restaurant.photoUris.first;
+              final placeholder = ColoredBox(color: scheme.surfaceContainerHigh, child: Icon(Icons.restaurant, size: 36, color: scheme.onSurfaceVariant));
+              final cuisines = restaurant.cuisines.take(2).map(l10n.cuisineName).join(', ');
+
+              return SizedBox(
+                width: 270,
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: AppTheme.gold, width: 1.5),
+                  ),
+                  child: InkWell(
+                    key: Key('featured-${restaurant.id}'),
+                    onTap: () => context.push('/restaurants/${restaurant.id}'),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 140,
+                          width: double.infinity,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              if (cover == null)
+                                placeholder
+                              else
+                                Image.network(cover.toString(), fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => placeholder),
+                              Positioned(
+                                left: 10,
+                                top: 10,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(color: AppTheme.gold, borderRadius: BorderRadius.circular(12)),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.workspace_premium, size: 16, color: Color(0xFF2A1B00)),
+                                      const SizedBox(width: 4),
+                                      Text(l10n.featuredBadge, style: const TextStyle(color: Color(0xFF2A1B00), fontWeight: FontWeight.w800, fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              if (restaurant.discountPercent > 0)
+                                Positioned(
+                                  right: 10,
+                                  bottom: 10,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                    decoration: BoxDecoration(color: scheme.secondary, borderRadius: BorderRadius.circular(12)),
+                                    child: Text('-${restaurant.discountPercent}%', style: TextStyle(color: scheme.onSecondary, fontWeight: FontWeight.w800)),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 10, 14, 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(child: Text(restaurant.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800))),
+                                  if (restaurant.ratingAverage != null) ...[
+                                    Icon(Icons.star_rounded, size: 18, color: AppTheme.gold),
+                                    Text(restaurant.ratingAverage!.toStringAsFixed(1), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
+                                  ],
+                                ],
+                              ),
+                              Text(
+                                [if (cuisines.isNotEmpty) cuisines, restaurant.address].join(' • '),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+      ],
     );
   }
 }

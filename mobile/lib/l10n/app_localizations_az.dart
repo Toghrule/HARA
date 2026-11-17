@@ -1132,4 +1132,10 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get navMap => 'Xəritə';
+
+  @override
+  String get featuredSection => 'Həftənin seçilmişləri';
+
+  @override
+  String get featuredBadge => 'Həftənin seçimi';
 }

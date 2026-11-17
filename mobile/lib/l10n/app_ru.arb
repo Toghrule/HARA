@@ -327,5 +327,7 @@
   "sectionContact": "Контакты",
   "sectionAbout": "О заведении",
   "discountOffer": "Скидка {percent}% на счёт",
-  "navMap": "Карта"
+  "navMap": "Карта",
+  "featuredSection": "Выбор недели",
+  "featuredBadge": "Выбор недели"
 }

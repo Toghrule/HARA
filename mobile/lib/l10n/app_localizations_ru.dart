@@ -1133,4 +1133,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get navMap => 'Карта';
+
+  @override
+  String get featuredSection => 'Выбор недели';
+
+  @override
+  String get featuredBadge => 'Выбор недели';
 }

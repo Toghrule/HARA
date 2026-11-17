@@ -5,6 +5,10 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Həftənin seçilmişləri (2026-11-17)
+- Ödəniş etmiş kafelər ən üstdə "Həftənin seçilmişləri" zolağında göstərilir (məsafədən və sıralamadan asılı olmayaraq; axtarış və ya süzgəc olanda göstərilmir). Admin paneldə restoran formasında "Week pick" bölməsi: ilk və son gün (hər ikisi daxil, Azərbaycan vaxtı), "This week (Mon to Sun)", "Next week", "Clear" düymələri; cədvəldə "Week's pick" nişanı. Bitmə tarixindən sonra özü çıxır, əl ilə silmək lazım deyil.
+- Server: `Restaurant.FeaturedFrom/FeaturedUntil` (DateOnly), `GET /api/restaurants/featured` (aktiv + bu gün dövrəsi olanlar, ən çox 12, əvvəl başlayan birinci), migration `AddRestaurantFeaturedWeek` — **real bazaya (hara_pilot) HƏLƏ tətbiq olunmayıb**. Yoxlama: server 25, mobil +8. Pozulmuş JSON (məs. tarix əvəzinə mətn) artıq 500 yox 400 verir.
+
 ## Məsafə yazısı çıxarıldı (2026-11-17)
 - Kartda və restoran səhifəsində "3.2 km" artıq YOXDUR: düz xətt məsafəsi Google-un yol məsafəsindən fərqlənirdi (həm də yer yalnız təxminidir). "Ən yaxın" sıralaması qalır (düz xətt orada doğrudur), yer yalnız sıralama üçündür; izahat mətni və məxfilik siyasəti buna görə yeniləndi (versiya artırılmadı). Real yol məsafəsi gələcəkdə öz OSRM serverimizlə (VPS-dən sonra) qaytarıla bilər; `distance_text.dart` və hesablama kodu saxlanılıb.
 
