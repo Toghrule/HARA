@@ -43,6 +43,12 @@ public class GetRestaurantsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandle
             restaurants = restaurants.Where(r => r.Cuisines.Contains(cuisine)).ToList();
         }
 
+        if (!string.IsNullOrWhiteSpace(request.District))
+        {
+            var district = request.District.Trim().ToLowerInvariant();
+            restaurants = restaurants.Where(r => r.District == district).ToList();
+        }
+
         // Taken at one moment for the whole list, so every restaurant is judged by the same clock.
         var now = DateTimeOffset.UtcNow;
         if (request.OpenNow)

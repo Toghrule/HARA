@@ -20,6 +20,10 @@ public class UpdateRestaurantCommandValidator : AbstractValidator<UpdateRestaura
         RuleFor(c => c.DescriptionEn).MaximumLength(4000);
         RuleFor(c => c.ImageUrl).MaximumLength(1000);
         RuleFor(c => c.DiscountPercent).InclusiveBetween(0, 100);
+        RuleFor(c => c.District)
+            .Must(Domain.Restaurants.Districts.IsKnown)
+            .WithMessage("Unknown area.")
+            .When(c => !string.IsNullOrWhiteSpace(c.District));
         RuleFor(c => c)
             .Must(c => (c.FeaturedFrom is null) == (c.FeaturedUntil is null))
             .WithMessage("Give both featured dates, or none.")

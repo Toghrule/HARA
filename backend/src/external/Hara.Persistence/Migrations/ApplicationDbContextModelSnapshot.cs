@@ -657,6 +657,10 @@ namespace Hara.Persistence.Migrations
                     b.Property<int>("DiscountPercent")
                         .HasColumnType("integer");
 
+                    b.Property<string>("District")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
                     b.Property<DateOnly?>("FeaturedFrom")
                         .HasColumnType("date");
 

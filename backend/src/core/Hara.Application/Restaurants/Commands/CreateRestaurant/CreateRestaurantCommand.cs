@@ -16,6 +16,7 @@ namespace Hara.Application.Restaurants.Commands.CreateRestaurant;
 /// <param name="GalleryUrls">Optional photo URLs, from prior uploads.</param>
 /// <param name="FeaturedFrom">Optional: the first day of its turn among the week's picks (with <paramref name="FeaturedUntil"/>).</param>
 /// <param name="FeaturedUntil">Optional: the last day (inclusive) of that turn.</param>
+/// <param name="District">Optional: the area of Baku, from the fixed list.</param>
 public sealed record CreateRestaurantCommand(
     string Name,
     string? Description,
@@ -31,4 +32,5 @@ public sealed record CreateRestaurantCommand(
     IReadOnlyList<string>? Cuisines = null,
     IReadOnlyList<string>? GalleryUrls = null,
     DateOnly? FeaturedFrom = null,
-    DateOnly? FeaturedUntil = null) : IRequest<RestaurantDto>;
+    DateOnly? FeaturedUntil = null,
+    string? District = null) : IRequest<RestaurantDto>;

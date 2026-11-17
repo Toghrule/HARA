@@ -26,7 +26,8 @@ public class CreateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
             Cuisines = request.Cuisines?.Distinct().ToList() ?? [],
             GalleryUrls = request.GalleryUrls?.ToList() ?? [],
             FeaturedFrom = request.FeaturedFrom,
-            FeaturedUntil = request.FeaturedUntil
+            FeaturedUntil = request.FeaturedUntil,
+            District = string.IsNullOrWhiteSpace(request.District) ? null : request.District
         };
 
         await unitOfWork.Repository<Restaurant>().AddAsync(restaurant, cancellationToken);

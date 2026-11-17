@@ -26,6 +26,7 @@ namespace Hara.Application.Restaurants;
 /// <param name="FeaturedFrom">First day of its turn among the week's picks, if it has one.</param>
 /// <param name="FeaturedUntil">Last day (inclusive) of that turn.</param>
 /// <param name="IsFeatured">Whether it is one of the picks today.</param>
+/// <param name="District">The area of Baku (a code such as <c>nasimi</c>), if one was set.</param>
 public sealed record RestaurantDto(
     Guid Id,
     string Name,
@@ -49,7 +50,8 @@ public sealed record RestaurantDto(
     int RatingCount = 0,
     DateOnly? FeaturedFrom = null,
     DateOnly? FeaturedUntil = null,
-    bool IsFeatured = false)
+    bool IsFeatured = false,
+    string? District = null)
 {
     /// <param name="restaurant">The restaurant.</param>
     /// <param name="now">The moment to work out whether it is open; the current time when <c>null</c>.</param>
@@ -76,7 +78,8 @@ public sealed record RestaurantDto(
         restaurant.RatingCount,
         restaurant.FeaturedFrom,
         restaurant.FeaturedUntil,
-        restaurant.IsFeaturedOn(Statistics.BakuTime.DayOf(now ?? DateTimeOffset.UtcNow)));
+        restaurant.IsFeaturedOn(Statistics.BakuTime.DayOf(now ?? DateTimeOffset.UtcNow)),
+        restaurant.District);
 
     /// <summary>Returns a copy whose <see cref="Description"/> is the text in <paramref name="language"/> (falling back to Azerbaijani).</summary>
     public RestaurantDto Localize(string? language) =>

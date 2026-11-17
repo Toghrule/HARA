@@ -15,6 +15,7 @@ namespace Hara.Application.Restaurants.Queries.GetRestaurants;
 /// <param name="PageSize">When set, returns just one page of this many restaurants; when null, returns them all.</param>
 /// <param name="OpenNow">Only restaurants that can be asked for a table right now (open, and not about to close).</param>
 /// <param name="Cuisine">Only restaurants filed under this kind of cuisine (a code such as <c>kebab</c>).</param>
+/// <param name="District">Only restaurants in this area of Baku (a code such as <c>nasimi</c>).</param>
 /// <param name="Ids">Only these restaurants (the app's favourites). Ones that no longer exist or are hidden are simply left out.</param>
 /// <param name="Page">1-based page to return when <paramref name="PageSize"/> is set. Defaults to the first page.</param>
 public sealed record GetRestaurantsQuery(
@@ -28,4 +29,5 @@ public sealed record GetRestaurantsQuery(
     string? Language = null,
     bool OpenNow = false,
     string? Cuisine = null,
-    IReadOnlyList<Guid>? Ids = null) : IRequest<IReadOnlyList<RestaurantDto>>;
+    IReadOnlyList<Guid>? Ids = null,
+    string? District = null) : IRequest<IReadOnlyList<RestaurantDto>>;

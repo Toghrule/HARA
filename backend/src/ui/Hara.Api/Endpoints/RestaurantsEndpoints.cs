@@ -2,6 +2,7 @@
 using Hara.Application.Restaurants.Commands.CreateRestaurantOwner;
 using Hara.Application.Restaurants.Commands.DeleteRestaurant;
 using Hara.Application.Restaurants.Commands.UpdateRestaurant;
+using Hara.Application.Restaurants.Queries.GetAreas;
 using Hara.Application.Restaurants.Queries.GetFeaturedRestaurants;
 using Hara.Application.Restaurants.Queries.GetRestaurantById;
 using Hara.Application.Restaurants.Queries.GetRestaurantOwner;
@@ -14,14 +15,21 @@ public static class RestaurantsEndpoints
 {
     public static IEndpointRouteBuilder MapRestaurantsEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, string? search, int? pageSize, int? page, string? lang, bool? openNow, string? cuisine, string? ids, ISender sender, CancellationToken cancellationToken) =>
+        app.MapGet("/api/restaurants", async (string? sort, double? lat, double? lng, string? search, int? pageSize, int? page, string? lang, bool? openNow, string? cuisine, string? ids, string? district, ISender sender, CancellationToken cancellationToken) =>
             {
                 var sortBy = ParseSortBy(sort);
-                var query = new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng, search, pageSize, page, lang, openNow ?? false, cuisine, ParseIds(ids));
+                var query = new GetRestaurantsQuery(OnlyActive: true, sortBy, lat, lng, search, pageSize, page, lang, openNow ?? false, cuisine, ParseIds(ids), district);
                 return Results.Ok(await sender.Send(query, cancellationToken));
             })
             .WithTags("Restaurants")
             .WithName("GetActiveRestaurants")
+            .AllowAnonymous();
+
+        // The areas of Baku that have restaurants, for the filter chips.
+        app.MapGet("/api/restaurants/areas", async (ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetAreasQuery(), cancellationToken)))
+            .WithTags("Restaurants")
+            .WithName("GetAreas")
             .AllowAnonymous();
 
         // This week's picks: the places that took a turn at the top of the app, whatever the customer's position or filters.
@@ -58,7 +66,7 @@ public static class RestaurantsEndpoints
 
         admin.MapPut("/{id:guid}", async (Guid id, UpdateRestaurantBody body, ISender sender, CancellationToken cancellationToken) =>
             {
-                var command = new UpdateRestaurantCommand(id, body.Name, body.Description, body.Address, body.Latitude, body.Longitude, body.PhoneNumber, body.ImageUrl, body.DiscountPercent, body.IsActive, body.DescriptionRu, body.DescriptionEn, body.Cuisines, body.GalleryUrls, body.FeaturedFrom, body.FeaturedUntil);
+                var command = new UpdateRestaurantCommand(id, body.Name, body.Description, body.Address, body.Latitude, body.Longitude, body.PhoneNumber, body.ImageUrl, body.DiscountPercent, body.IsActive, body.DescriptionRu, body.DescriptionEn, body.Cuisines, body.GalleryUrls, body.FeaturedFrom, body.FeaturedUntil, body.District);
                 return Results.Ok(await sender.Send(command, cancellationToken));
             })
             .WithName("AdminUpdateRestaurant");
@@ -90,7 +98,7 @@ public static class RestaurantsEndpoints
 
     private sealed record CreateOwnerBody(string Email, string Password, string FullName, string? PhoneNumber);
 
-    private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive, string? DescriptionRu = null, string? DescriptionEn = null, IReadOnlyList<string>? Cuisines = null, IReadOnlyList<string>? GalleryUrls = null, DateOnly? FeaturedFrom = null, DateOnly? FeaturedUntil = null);
+    private sealed record UpdateRestaurantBody(string Name, string? Description, string Address, double Latitude, double Longitude, string? PhoneNumber, string? ImageUrl, int DiscountPercent, bool IsActive, string? DescriptionRu = null, string? DescriptionEn = null, IReadOnlyList<string>? Cuisines = null, IReadOnlyList<string>? GalleryUrls = null, DateOnly? FeaturedFrom = null, DateOnly? FeaturedUntil = null, string? District = null);
 
     /// <summary>The <c>ids</c> query string ("id,id,...") as a list; <c>null</c> when it was not given. Anything that is not an id is ignored.</summary>
     private static IReadOnlyList<Guid>? ParseIds(string? ids) =>

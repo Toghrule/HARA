@@ -26,6 +26,7 @@ public class UpdateRestaurantCommandHandler(IUnitOfWork unitOfWork) : IRequestHa
         restaurant.IsActive = request.IsActive;
         restaurant.FeaturedFrom = request.FeaturedFrom;
         restaurant.FeaturedUntil = request.FeaturedUntil;
+        restaurant.District = string.IsNullOrWhiteSpace(request.District) ? null : request.District;
         if (request.Cuisines is not null)
         {
             restaurant.Cuisines = request.Cuisines.Distinct().ToList();

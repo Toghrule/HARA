@@ -68,6 +68,9 @@ public class Restaurant : BaseAuditableEntity
     /// <summary>Photos of the restaurant, as the upload endpoint returned them, in the order they are shown. Set by the admin.</summary>
     public List<string> GalleryUrls { get; set; } = [];
 
+    /// <summary>The area of Baku the restaurant is in (a code from <see cref="Districts.All"/>), or <c>null</c> when none was set. Set by the admin.</summary>
+    public string? District { get; set; }
+
     /// <summary>The first day (Azerbaijan time) of the restaurant's turn among "this week's picks" at the top of the app. Set by the admin for places that paid for it.</summary>
     public DateOnly? FeaturedFrom { get; set; }
 
