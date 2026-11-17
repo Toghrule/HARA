@@ -5,6 +5,9 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Xəritə: foto kartlar (2026-11-17)
+- Xəritə tabında hər restoran düzbucaqlı FOTO KART kimi (restoranın birinci şəkli; şəkil yoxdursa adın baş hərfi), altında kiçik sivri ucu, endirim varsa kartın altında rəngli zolaq; seçilmiş kart qızılı çərçivədə. Bir-birinə yaxın (ekranda 70 pikseldən az) yerlər bir kart olur, altında "+N daha"; toxunanda onlara yaxınlaşır (tam eyni koordinatda olanlarda birincisi seçilir). Zoom dəyişdikcə qruplar yenidən hesablanır.
+
 ## Ərazi bölməsi (2026-11-17)
 - Vilka-dakı "Bölgələrə görə" kimi, adı **"Ərazi"**: ana ekranda (reklamdan sonra, endirimlərdən əvvəl) Bakı ərazilərinin çip sırası; çipə basanda siyahı həmin ərazinin restoranları ilə süzülür, yenə basanda ləğv olur. Yalnız restoranı olan ərazilər göstərilir (ən çoxdan az olana). Restoran səhifəsində ərazi adı da yazılır. Axtarış/mətbəx/sevimli/açıq süzgəci olanda sıra gizlənir.
 - Server: `Restaurant.District` (12 sabit kod: binagadi, narimanov, nasimi, nizami, pirallahi, garadagh, sabunchu, sabail, surakhani, khatai, khazar, yasamal), `GET /api/restaurants?district=`, `GET /api/restaurants/areas`; migration `AddRestaurantDistrict` — **real bazaya (hara_pilot) HƏLƏ tətbiq olunmayıb**. Admin paneldə restoran formasında "Area of Baku" seçimi. Yoxlama: server 22, mobil +10.

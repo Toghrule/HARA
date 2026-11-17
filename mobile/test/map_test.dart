@@ -75,7 +75,7 @@ void main() {
   }
 
   testWidgets('shows a pin for every place that has a position', (tester) async {
-    await open(tester, [_r('a', 'Alpha', discount: 15), _r('b', 'Bravo', lat: 40.41, lng: 49.81), _r('c', 'Nowhere', lat: 0, lng: 0)]);
+    await open(tester, [_r('a', 'Alpha', discount: 15), _r('b', 'Bravo', lat: 40.45, lng: 49.9), _r('c', 'Nowhere', lat: 0, lng: 0)]);
 
     expect(find.byType(FlutterMap), findsOneWidget);
     expect(find.byKey(const Key('pin-a')), findsOneWidget);
@@ -91,7 +91,7 @@ void main() {
   });
 
   testWidgets('tapping a pin shows the place, and the card opens its page', (tester) async {
-    final (_, router) = await open(tester, [_r('a', 'Alpha', discount: 15), _r('b', 'Bravo', lat: 40.41, lng: 49.81)]);
+    final (_, router) = await open(tester, [_r('a', 'Alpha', discount: 15), _r('b', 'Bravo', lat: 40.45, lng: 49.9)]);
     expect(find.byKey(const Key('placeCard')), findsNothing);
 
     await tester.tap(find.byKey(const Key('pin-b')));
@@ -114,6 +114,40 @@ void main() {
     await tester.tap(find.byKey(const Key('nav-more')));
     await tester.pumpAndSettle();
     expect(router.routerDelegate.currentConfiguration.last.matchedLocation, '/about');
+  });
+
+  group('places that are too close to tell apart', () {
+    testWidgets('become one card with "+N more" under it', (tester) async {
+      await open(tester, [_r('a', 'Alpha'), _r('b', 'Bravo', lat: 40.4005, lng: 49.8005), _r('c', 'Charlie', lat: 40.401, lng: 49.801), _r('z', 'Far away', lat: 40.45, lng: 49.9)]);
+
+      expect(find.byKey(const Key('group-a')), findsOneWidget);
+      expect(find.text('+2 more'), findsOneWidget);
+      expect(find.byKey(const Key('pin-b')), findsNothing);
+      expect(find.byKey(const Key('pin-c')), findsNothing);
+      expect(find.byKey(const Key('pin-z')), findsOneWidget, reason: 'a far place stands alone');
+    });
+
+    testWidgets('a tap on the group zooms in until they stand apart', (tester) async {
+      await open(tester, [_r('a', 'Alpha'), _r('b', 'Bravo', lat: 40.402, lng: 49.802)]);
+      expect(find.byKey(const Key('group-a')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('group-a')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('group-a')), findsNothing);
+      expect(find.byKey(const Key('pin-a')), findsOneWidget);
+      expect(find.byKey(const Key('pin-b')), findsOneWidget);
+    });
+
+    testWidgets('places on exactly the same spot cannot be pulled apart: the first is shown', (tester) async {
+      await open(tester, [_r('a', 'Alpha'), _r('b', 'Bravo')]);
+
+      await tester.tap(find.byKey(const Key('group-a')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('placeCard')), findsOneWidget);
+      expect(find.text('Alpha'), findsWidgets);
+    });
   });
 
   testWidgets('credits OpenStreetMap', (tester) async {

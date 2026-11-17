@@ -332,5 +332,6 @@
   "featuredBadge": "Выбор недели",
   "adLabel": "Реклама",
   "areaSection": "Район",
-  "areaName": "{code, select, binagadi{Бинагади} narimanov{Наримановский} nasimi{Насими} nizami{Низами} pirallahi{Пираллахи} garadagh{Гарадаг} sabunchu{Сабунчи} sabail{Сабаильский} surakhani{Сураханский} khatai{Хатаи} khazar{Хазарский} yasamal{Ясамал} other{}}"
+  "areaName": "{code, select, binagadi{Бинагади} narimanov{Наримановский} nasimi{Насими} nizami{Низами} pirallahi{Пираллахи} garadagh{Гарадаг} sabunchu{Сабунчи} sabail{Сабаильский} surakhani{Сураханский} khatai{Хатаи} khazar{Хазарский} yasamal{Ясамал} other{}}",
+  "mapMore": "ещё +{count}"
 }

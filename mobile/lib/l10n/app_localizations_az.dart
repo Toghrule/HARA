@@ -1167,4 +1167,9 @@ class AppLocalizationsAz extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String mapMore(int count) {
+    return '+$count daha';
+  }
 }

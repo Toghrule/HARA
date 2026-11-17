@@ -2025,6 +2025,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{code, select, binagadi{Binagadi} narimanov{Narimanov} nasimi{Nasimi} nizami{Nizami} pirallahi{Pirallahi} garadagh{Garadagh} sabunchu{Sabunchu} sabail{Sabail} surakhani{Surakhani} khatai{Khatai} khazar{Khazar} yasamal{Yasamal} other{}}'**
   String areaName(String code);
+
+  /// No description provided for @mapMore.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String mapMore(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -332,5 +332,6 @@
   "featuredBadge": "Həftənin seçimi",
   "adLabel": "Reklam",
   "areaSection": "Ərazi",
-  "areaName": "{code, select, binagadi{Binəqədi} narimanov{Nərimanov} nasimi{Nəsimi} nizami{Nizami} pirallahi{Pirallahı} garadagh{Qaradağ} sabunchu{Sabunçu} sabail{Səbail} surakhani{Suraxanı} khatai{Xətai} khazar{Xəzər} yasamal{Yasamal} other{}}"
+  "areaName": "{code, select, binagadi{Binəqədi} narimanov{Nərimanov} nasimi{Nəsimi} nizami{Nizami} pirallahi{Pirallahı} garadagh{Qaradağ} sabunchu{Sabunçu} sabail{Səbail} surakhani{Suraxanı} khatai{Xətai} khazar{Xəzər} yasamal{Yasamal} other{}}",
+  "mapMore": "+{count} daha"
 }
