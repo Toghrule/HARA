@@ -17,6 +17,7 @@ public static class DependencyInjection
 
         services.Configure<FirebaseOptions>(configuration.GetSection(FirebaseOptions.SectionName));
         services.AddSingleton<IPushSender, FirebasePushSender>();
+        services.AddSingleton<IGoogleTokenVerifier, GoogleTokenVerifier>();
 
         // Email: through an SMTP service when one is set up; in development the messages go to the log; otherwise sending fails.
         services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));

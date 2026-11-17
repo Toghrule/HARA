@@ -30,8 +30,7 @@ public sealed class FirebasePushSender : IPushSender
     {
         _logger = logger;
 
-        var path = Resolve(options.Value.CredentialsPath);
-        if (path is null)
+        if (FirebaseAppFactory.Resolve(options.Value.CredentialsPath) is null)
         {
             _logger.LogWarning("Push notifications are off: no Firebase key file found (Firebase:CredentialsPath).");
             return;
@@ -39,8 +38,8 @@ public sealed class FirebasePushSender : IPushSender
 
         try
         {
-            var app = FirebaseApp.DefaultInstance ?? FirebaseApp.Create(new AppOptions { Credential = CredentialFactory.FromFile<ServiceAccountCredential>(path).ToGoogleCredential() });
-            _messaging = FirebaseMessaging.GetMessaging(app);
+            var app = FirebaseAppFactory.GetOrCreate(options.Value.CredentialsPath);
+            _messaging = app is null ? null : FirebaseMessaging.GetMessaging(app);
         }
         catch (Exception exception)
         {

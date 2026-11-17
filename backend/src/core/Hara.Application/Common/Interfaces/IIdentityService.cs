@@ -26,6 +26,12 @@ public interface IIdentityService
     /// <summary>Creates an account with the given role (creating the role first if it doesn't exist yet).</summary>
     Task<RegistrationResult> RegisterAsync(string email, string password, string role, CancellationToken cancellationToken = default);
 
+    /// <summary>Creates an account that has no password (a Google sign-in) with the given sign-in name and role.</summary>
+    Task<RegistrationResult> RegisterExternalAsync(string userName, string role, CancellationToken cancellationToken = default);
+
+    /// <summary>Starts a session (access and refresh tokens) for an account whose person was already verified some other way, such as by Google.</summary>
+    Task<AuthenticationResult> IssueSessionAsync(Guid userId, CancellationToken cancellationToken = default);
+
     /// <summary>Deletes an account — used to undo a registration whose follow-up step failed.</summary>
     Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken = default);
 

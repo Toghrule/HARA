@@ -12,7 +12,20 @@
           "package_name": "com.hara.hara"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "464617544539-2fft6e7j0bs6ai3vgqo55bvl7l16tgo5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hara.hara",
+            "certificate_hash": "a3f77e8aac3f624d2741ddb4be2370fda5518add"
+          }
+        },
+        {
+          "client_id": "464617544539-j5nh8avmmps7n8tbhn91a0dccq9sk22l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCvUAEgYLaKrd_C-Ahu_kmVLGRE2fneyW0"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464617544539-j5nh8avmmps7n8tbhn91a0dccq9sk22l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

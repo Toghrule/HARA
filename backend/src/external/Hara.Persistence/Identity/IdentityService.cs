@@ -120,6 +120,37 @@ public class IdentityService(
         return new RegistrationResult(true, user.Id, new Dictionary<string, string[]>());
     }
 
+    public async Task<RegistrationResult> RegisterExternalAsync(string userName, string role, CancellationToken cancellationToken = default)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+        }
+
+        var user = new ApplicationUser { UserName = userName, Email = userName, EmailConfirmed = true };
+        var created = await userManager.CreateAsync(user);
+        if (!created.Succeeded)
+        {
+            return new RegistrationResult(false, null, ToErrors(created));
+        }
+
+        var inRole = await userManager.AddToRoleAsync(user, role);
+        if (!inRole.Succeeded)
+        {
+            await userManager.DeleteAsync(user);
+            return new RegistrationResult(false, null, ToErrors(inRole));
+        }
+
+        return new RegistrationResult(true, user.Id, new Dictionary<string, string[]>());
+    }
+
+    public async Task<AuthenticationResult> IssueSessionAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+
+        return user is null ? Failed : await IssueTokensAsync(user, cancellationToken);
+    }
+
     public async Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());

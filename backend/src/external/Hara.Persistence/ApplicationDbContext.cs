@@ -5,6 +5,7 @@ using Hara.Domain.Common;
 using Hara.Domain.Devices;
 using Hara.Domain.Faq;
 using Hara.Domain.Members;
+using Hara.Domain.Customers;
 using Hara.Domain.Discounts;
 using Hara.Domain.Reservations;
 using Hara.Domain.Restaurants;
@@ -57,6 +58,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<RestaurantRating> RestaurantRatings => Set<RestaurantRating>();
 
     public DbSet<DiscountCode> DiscountCodes => Set<DiscountCode>();
+
+    public DbSet<CustomerProfile> CustomerProfiles => Set<CustomerProfile>();
+
+    public DbSet<Review> Reviews => Set<Review>();
 
     public DbSet<RestaurantEvent> RestaurantEvents => Set<RestaurantEvent>();
 

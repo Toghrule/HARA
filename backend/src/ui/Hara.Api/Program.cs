@@ -66,6 +66,7 @@ builder.Services.AddAuthorization(options =>
     // checked against the database on each request, not trusted from the token.
     options.AddPolicy("VenueMember", policy => policy.RequireRole(IdentitySeeder.OwnerRole, IdentitySeeder.StaffRole));
     options.AddPolicy("Owner", policy => policy.RequireRole(IdentitySeeder.OwnerRole));
+    options.AddPolicy("Customer", policy => policy.RequireRole(Hara.Application.Auth.Roles.Customer));
 });
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
@@ -173,6 +174,7 @@ app.MapRestaurantsEndpoints();
 app.MapSubmissionsEndpoints();
 app.MapReservationsEndpoints();
 app.MapDiscountEndpoints();
+app.MapCustomerEndpoints();
 app.MapVenueEndpoints();
 app.MapChangeRequestsEndpoints();
 app.MapAdvertisementsEndpoints();

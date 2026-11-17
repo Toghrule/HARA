@@ -18,6 +18,7 @@ public static class RateLimitPolicies
     public const string PasswordResetChecks = "PasswordResetChecks";
     public const string DiscountCodes = "DiscountCodes";
     public const string RestaurantEvents = "RestaurantEvents";
+    public const string Reviews = "Reviews";
 }
 
 public sealed class RateLimitPolicyOptions
@@ -60,6 +61,8 @@ public static class RateLimitingExtensions
             AddPerIpPolicy(options, configuration, RateLimitPolicies.DiscountCodes, defaultPermitLimit: 60);
             // Taps on restaurants: every page open and every tap on the map counts.
             AddPerIpPolicy(options, configuration, RateLimitPolicies.RestaurantEvents, defaultPermitLimit: 600);
+            // Writing or changing a review.
+            AddPerIpPolicy(options, configuration, RateLimitPolicies.Reviews, defaultPermitLimit: 60);
         });
 
         return services;

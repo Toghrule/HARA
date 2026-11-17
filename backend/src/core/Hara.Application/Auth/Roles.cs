@@ -6,4 +6,7 @@ public static class Roles
     public const string Admin = "Admin";
     public const string Owner = "Owner";
     public const string Staff = "Staff";
+
+    /// <summary>A customer who signed in with Google, to write reviews.</summary>
+    public const string Customer = "Customer";
 }
