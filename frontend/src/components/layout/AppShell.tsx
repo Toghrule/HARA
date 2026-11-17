@@ -13,6 +13,7 @@ import {
   Phone,
   Share2,
   UtensilsCrossed,
+  Star,
   Users,
 } from "lucide-react";
 import { useAuth } from "../../lib/auth-context";
@@ -26,6 +27,7 @@ const navItems = [
   { to: "/reservations", label: "Reservations", icon: CalendarCheck, end: false },
   { to: "/statistics", label: "Statistics", icon: BarChart3, end: false },
   { to: "/visits", label: "Visits", icon: Users, end: false },
+  { to: "/reviews", label: "Reviews", icon: Star, end: false },
   { to: "/password-resets", label: "Password resets", icon: KeyRound, end: false },
   { to: "/submissions", label: "Submissions", icon: Inbox, end: false },
   { to: "/change-requests", label: "Change requests", icon: FilePenLine, end: false },

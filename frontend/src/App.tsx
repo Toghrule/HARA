@@ -13,6 +13,7 @@ import { ChangeRequestsPage } from "./features/change-requests/ChangeRequestsPag
 import { ReservationsPage } from "./features/reservations/ReservationsPage";
 import { StatisticsPage } from "./features/statistics/StatisticsPage";
 import { VisitsPage } from "./features/visits/VisitsPage";
+import { ReviewsPage } from "./features/reviews/ReviewsPage";
 import { PasswordResetsPage } from "./features/password-resets/PasswordResetsPage";
 import { AdvertisementsPage } from "./features/advertisements/AdvertisementsPage";
 import { FaqPage } from "./features/faq/FaqPage";
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="reservations" element={<ReservationsPage />} />
                 <Route path="statistics" element={<StatisticsPage />} />
                 <Route path="visits" element={<VisitsPage />} />
+                <Route path="reviews" element={<ReviewsPage />} />
                 <Route path="password-resets" element={<PasswordResetsPage />} />
                 <Route path="submissions" element={<SubmissionsPage />} />
                 <Route path="change-requests" element={<ChangeRequestsPage />} />
