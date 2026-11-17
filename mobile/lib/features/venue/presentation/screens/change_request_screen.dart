@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/language_menu.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/form_validators.dart';
 import '../../data/venue_me.dart';
@@ -105,7 +106,20 @@ class _ChangeRequestScreenState extends ConsumerState<ChangeRequestScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  Text(l10n.changeRequestIntro, style: theme.textTheme.bodyMedium),
+                  const Center(child: IconBadge(icon: Icons.edit_note_outlined, size: 80)),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(14)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.info_outline, size: 20, color: theme.colorScheme.onSecondaryContainer),
+                        const SizedBox(width: 10),
+                        Expanded(child: Text(l10n.changeRequestIntro, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSecondaryContainer))),
+                      ],
+                    ),
+                  ),
                   gap,
                   TextFormField(
                     key: const Key('name'),
@@ -199,6 +213,7 @@ class _ChangeRequestScreenState extends ConsumerState<ChangeRequestScreen> {
                   ],
                   const SizedBox(height: 24),
                   FilledButton(
+                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
                     key: const Key('submit'),
                     onPressed: _submitting ? null : _submit,
                     child: _submitting

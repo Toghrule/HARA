@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error.dart';
 import '../../../../core/widgets/language_menu.dart';
+import '../../../../core/widgets/hara_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../restaurants/data/opening_hours.dart';
 import '../../../restaurants/presentation/availability_text.dart';
@@ -142,10 +143,17 @@ class _OpeningHoursScreenState extends ConsumerState<OpeningHoursScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(l10n.hoursHint, style: theme.textTheme.bodySmall),
-          const SizedBox(height: 8),
+          const Center(child: IconBadge(icon: Icons.schedule, size: 80)),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(14)),
+            child: Text(l10n.hoursHint, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSecondaryContainer)),
+          ),
+          const SizedBox(height: 12),
           for (final day in weekFromMonday)
             Card(
+              color: _rows[day]!.open ? null : theme.colorScheme.surfaceContainerHigh,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                 child: Column(
@@ -153,7 +161,7 @@ class _OpeningHoursScreenState extends ConsumerState<OpeningHoursScreen> {
                   children: [
                     Row(
                       children: [
-                        Expanded(child: Text(l10n.weekdayName('$day'), style: theme.textTheme.titleSmall)),
+                        Expanded(child: Text(l10n.weekdayName('$day'), style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700))),
                         Text(_rows[day]!.open ? l10n.hoursOpenSwitch : l10n.hoursClosedDay),
                         Switch(
                           key: Key('open-$day'),
@@ -166,7 +174,7 @@ class _OpeningHoursScreenState extends ConsumerState<OpeningHoursScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: OutlinedButton(
+                            child: FilledButton.tonal(
                               key: Key('opens-$day'),
                               onPressed: _saving ? null : () => _pick(day, opening: true),
                               child: Text('${l10n.hoursOpens} ${_format(_rows[day]!.opens)}'),
@@ -174,7 +182,7 @@ class _OpeningHoursScreenState extends ConsumerState<OpeningHoursScreen> {
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: OutlinedButton(
+                            child: FilledButton.tonal(
                               key: Key('closes-$day'),
                               onPressed: _saving ? null : () => _pick(day, opening: false),
                               child: Text('${l10n.hoursCloses} ${_format(_rows[day]!.closes)}'),
@@ -212,6 +220,7 @@ class _OpeningHoursScreenState extends ConsumerState<OpeningHoursScreen> {
           ],
           const SizedBox(height: 16),
           FilledButton(
+            style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
             key: const Key('saveHours'),
             onPressed: _saving ? null : () => _save(remove: false),
             child: _saving
