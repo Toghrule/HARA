@@ -37,6 +37,7 @@ public sealed class GoogleTokenVerifier(IOptions<FirebaseOptions> options, IConf
             // The sign-in has to be Google's.
             if (!decoded.Claims.TryGetValue("firebase", out var firebase) || !IsGoogle(firebase))
             {
+                logger.LogWarning("Google sign-in refused: the Firebase token is not from a Google sign-in.");
                 return null;
             }
 
@@ -44,12 +45,27 @@ public sealed class GoogleTokenVerifier(IOptions<FirebaseOptions> options, IConf
 
             return new GoogleIdentity(decoded.Uid, Claim("name"), Claim("email"), Claim("picture"));
         }
-        catch (FirebaseAuthException)
+        catch (FirebaseAuthException exception)
         {
+            logger.LogWarning(exception, "Google sign-in refused: Firebase did not accept the token ({Reason}).", exception.AuthErrorCode);
             return null;
         }
     }
 
-    private static bool IsGoogle(object firebaseClaim) =>
-        firebaseClaim is IDictionary<string, object> map && map.TryGetValue("sign_in_provider", out var provider) && provider is "google.com";
+    /// <summary>The claim comes back as a JSON object (whatever its .NET type), so it is read as JSON.</summary>
+    private static bool IsGoogle(object firebaseClaim)
+    {
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(firebaseClaim));
+
+            return document.RootElement.ValueKind == System.Text.Json.JsonValueKind.Object
+                && document.RootElement.TryGetProperty("sign_in_provider", out var provider)
+                && provider.GetString() == "google.com";
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
 }
