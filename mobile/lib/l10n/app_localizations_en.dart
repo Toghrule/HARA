@@ -1139,4 +1139,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featuredBadge => 'Pick of the week';
+
+  @override
+  String get adLabel => 'Ad';
 }

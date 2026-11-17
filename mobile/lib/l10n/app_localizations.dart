@@ -2007,6 +2007,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pick of the week'**
   String get featuredBadge;
+
+  /// No description provided for @adLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad'**
+  String get adLabel;
 }
 
 class _AppLocalizationsDelegate

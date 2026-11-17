@@ -1138,4 +1138,7 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get featuredBadge => 'Həftənin seçimi';
+
+  @override
+  String get adLabel => 'Reklam';
 }

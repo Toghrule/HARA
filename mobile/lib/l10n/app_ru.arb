@@ -329,5 +329,6 @@
   "discountOffer": "Скидка {percent}% на счёт",
   "navMap": "Карта",
   "featuredSection": "Выбор недели",
-  "featuredBadge": "Выбор недели"
+  "featuredBadge": "Выбор недели",
+  "adLabel": "Реклама"
 }

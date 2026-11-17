@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hara/features/advertisements/data/advertisement.dart';
 import 'package:hara/core/auth/auth_controller.dart';
 import 'package:hara/core/auth/auth_repository.dart';
 import 'package:hara/core/auth/auth_session.dart';
@@ -288,6 +289,8 @@ class AppHarness {
     this.venueRepository,
     this.pushService,
     this.locationService,
+    this.advertisements = const [],
+    this.adLinkOpener,
   })  : auth = FakeAuthRepository(),
         storage = MemorySessionStorage(session),
         passwordReset = FakePasswordResetRepository(),
@@ -299,6 +302,10 @@ class AppHarness {
   final VenueRepository? venueRepository;
   final PushService? pushService;
   final LocationService? locationService;
+
+  /// The banners the admin panel would hand out, and what to do with a tapped banner's address.
+  final List<Advertisement> advertisements;
+  final Future<void> Function(BuildContext, Uri)? adLinkOpener;
   final FakeAuthRepository auth;
   final MemorySessionStorage storage;
   final FakePasswordResetRepository passwordReset;
@@ -322,6 +329,8 @@ class AppHarness {
           if (venueRepository != null) venueRepositoryProvider.overrideWithValue(venueRepository!),
           if (pushService != null) pushServiceProvider.overrideWithValue(pushService!),
           if (locationService != null) locationServiceProvider.overrideWithValue(locationService!),
+          advertisementsProvider.overrideWith((ref) async => advertisements),
+          if (adLinkOpener != null) adLinkOpenerProvider.overrideWithValue(adLinkOpener!),
         ],
         child: const HaraApp(),
       ),

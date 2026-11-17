@@ -329,5 +329,6 @@
   "discountOffer": "Hesabdan {percent}% endirim",
   "navMap": "Xəritə",
   "featuredSection": "Həftənin seçilmişləri",
-  "featuredBadge": "Həftənin seçimi"
+  "featuredBadge": "Həftənin seçimi",
+  "adLabel": "Reklam"
 }

@@ -19,6 +19,8 @@ import '../../../reservations/presentation/reserve_flow.dart';
 import '../availability_text.dart';
 import '../location_prompt.dart';
 import '../widgets/restaurant_filter_bar.dart';
+import '../../../advertisements/data/advertisement.dart';
+import '../../../advertisements/presentation/ad_banner.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/featured_provider.dart';
 import '../providers/restaurant_filters_provider.dart';
@@ -203,10 +205,12 @@ class _RestaurantList extends ConsumerWidget {
     // give a discount, each in a row to swipe through.
     final browsing = search.isEmpty && !filters.narrows;
     final featured = browsing ? ref.watch(featuredRestaurantsProvider).valueOrNull ?? const <Restaurant>[] : const <Restaurant>[];
+    final ads = browsing ? ref.watch(advertisementsProvider).valueOrNull ?? const <Advertisement>[] : const <Advertisement>[];
     final discounted = state.items.where((restaurant) => restaurant.discountPercent > 0).take(10).toList();
     final showStrip = discounted.length >= 3 && browsing;
     final headers = [
       if (featured.isNotEmpty) _FeaturedStrip(restaurants: featured),
+      if (ads.isNotEmpty) AdBanner(ads: ads),
       if (showStrip) _DiscountStrip(restaurants: discounted),
     ];
     final offset = headers.length;

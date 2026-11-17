@@ -5,6 +5,9 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Reklam bannerləri tətbiqdə (2026-11-17)
+- Admin paneldəki "Advertisements" (şəkil + link + sıra + aktiv/passiv) artıq tətbiqin ana ekranında görünür: seçilmişlər zolağından sonra, endirimlərdən əvvəl, 16:6 banner (bir neçə olanda sürüşdürülür və 6 saniyədən bir özü dönür, nöqtələr), küncdə "Reklam" yazısı. Toxunanda link açılır (yalnız http/https; sxemsiz yazılsa https əlavə olunur; link yoxdursa heç nə olmur). Axtarış/süzgəc olanda göstərilmir; yüklənməsə sakitcə yoxdur. Müvəqqəti ləğv etmək üçün admin paneldə reklamı passiv et (Active söndür) və ya sil, kod dəyişmir.
+
 ## Həftənin seçilmişləri (2026-11-17)
 - Ödəniş etmiş kafelər ən üstdə "Həftənin seçilmişləri" zolağında göstərilir (məsafədən və sıralamadan asılı olmayaraq; axtarış və ya süzgəc olanda göstərilmir). Admin paneldə restoran formasında "Week pick" bölməsi: ilk və son gün (hər ikisi daxil, Azərbaycan vaxtı), "This week (Mon to Sun)", "Next week", "Clear" düymələri; cədvəldə "Week's pick" nişanı. Bitmə tarixindən sonra özü çıxır, əl ilə silmək lazım deyil.
 - Server: `Restaurant.FeaturedFrom/FeaturedUntil` (DateOnly), `GET /api/restaurants/featured` (aktiv + bu gün dövrəsi olanlar, ən çox 12, əvvəl başlayan birinci), migration `AddRestaurantFeaturedWeek` — **real bazaya (hara_pilot) HƏLƏ tətbiq olunmayıb**. Yoxlama: server 25, mobil +8. Pozulmuş JSON (məs. tarix əvəzinə mətn) artıq 500 yox 400 verir.

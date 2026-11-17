@@ -375,5 +375,6 @@
   "@discountOffer": {"placeholders": {"percent": {"type": "int"}}},
   "navMap": "Map",
   "featuredSection": "This week's picks",
-  "featuredBadge": "Pick of the week"
+  "featuredBadge": "Pick of the week",
+  "adLabel": "Ad"
 }

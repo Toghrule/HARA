@@ -1139,4 +1139,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get featuredBadge => 'Выбор недели';
+
+  @override
+  String get adLabel => 'Реклама';
 }
