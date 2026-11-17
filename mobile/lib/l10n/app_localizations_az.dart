@@ -918,7 +918,7 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get locationExplainBody =>
-      'HARA restoranları məsafəyə görə sıralaya bilər. Bunun üçün təxmini yerinizdən istifadə edir, yalnız sıralama və məsafə üçün. HARA onu saxlamır. İmtina etsəniz də bütün restoranları görə bilərsiniz.';
+      'HARA restoranları yaxınlığa görə sıralaya bilər. Bunun üçün təxmini yerinizdən istifadə edir, yalnız sıralama üçün. HARA onu saxlamır. İmtina etsəniz də bütün restoranları görə bilərsiniz.';
 
   @override
   String get locationAllow => 'İcazə ver';

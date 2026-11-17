@@ -323,7 +323,7 @@ void main() {
       expect(find.byKey(const Key('chip-nearest')), findsNothing);
     });
 
-    testWidgets('the first launch explains, and "Allow" asks the phone and shows distances', (tester) async {
+    testWidgets('the first launch explains, and "Allow" asks the phone', (tester) async {
       final location = FakeLocationService(at: _here);
       await open(tester, location: location);
 
@@ -336,8 +336,8 @@ void main() {
 
       expect(location.requests, 1);
       expect(find.byKey(const Key('locationExplain')), findsNothing);
-      expect(find.textContaining('Baku, Alpha Grill street · 10 m'), findsOneWidget);
-      expect(find.textContaining('Baku, Bravo Pizza street · 4.'), findsOneWidget);
+      // The position is only for ordering: no distance is written anywhere.
+      expect(find.textContaining(' · '), findsNothing);
       expect((await SharedPreferences.getInstance()).getBool('location_asked'), isTrue);
     });
 
@@ -360,14 +360,13 @@ void main() {
       expect(find.byKey(const Key('locationExplain')), findsNothing);
     });
 
-    testWidgets('permission given earlier: distances show at once, with no question', (tester) async {
+    testWidgets('permission given earlier: no question is asked', (tester) async {
       SharedPreferences.setMockInitialValues({'location_asked': true});
       final location = FakeLocationService(currentAccess: LocationAccess.granted, at: _here);
       await open(tester, location: location);
 
       expect(find.byKey(const Key('locationExplain')), findsNothing);
       expect(location.requests, 0);
-      expect(find.textContaining('Baku, Alpha Grill street · 10 m'), findsOneWidget);
     });
 
     testWidgets('"Nearest" sorts by distance, sending the position', (tester) async {
@@ -504,12 +503,11 @@ void main() {
       expect(find.byIcon(Icons.restaurant), findsWidgets);
     });
 
-    testWidgets('how far it is, once the phone\'s position is known', (tester) async {
+    testWidgets('no distance is written, even when the phone\'s position is known', (tester) async {
       SharedPreferences.setMockInitialValues({'location_asked': true});
       await openDetail(tester, _bravo, location: FakeLocationService(currentAccess: LocationAccess.granted, at: _here));
 
-      expect(find.byKey(const Key('distance')), findsOneWidget);
-      expect(tester.widget<Text>(find.byKey(const Key('distance'))).data, startsWith('4.'));
+      expect(find.byKey(const Key('distance')), findsNothing);
     });
   });
 }

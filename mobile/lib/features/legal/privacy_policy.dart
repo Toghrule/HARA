@@ -23,7 +23,7 @@ const _az = [
     'Məkanın səhifəsini və ya ora yolu açanda: məkan və anonim nömrə sayılır ki, məkana neçə nəfərin baxdığını göstərək.',
     'Restoran sahibi və ya ofisiant qeydiyyatdan keçəndə: adı, e-poçtu, telefon nömrəsini (məcburi deyil), parolu (yalnız çevrilmiş, oxunmaz şəkildə) və sahibkar üçün restoranın məlumatlarını.',
     'Telefonunuzda: dil və tema seçiminizi, sevimli məkanlarınızı, anonim nömrənizi və hesaba daxil olubsunuzsa girişinizi. Bunlar yalnız sizin cihazınızda qalır.',
-    'İcazə versəniz, telefonunuzun təxmini məkanını: yalnız məkanları məsafəyə görə sıralamaq və məsafəni göstərmək üçün. Məkan serverdə saxlanılmır. İcazə vermək məcburi deyil: imtina etsəniz, bütün məkanları yenə görürsünüz.',
+    'İcazə versəniz, telefonunuzun təxmini məkanını: yalnız məkanları yaxınlığa görə sıralamaq üçün. Məkan serverdə saxlanılmır. İcazə vermək məcburi deyil: imtina etsəniz, bütün məkanları yenə görürsünüz.',
     'Ödəniş məlumatınızı və əlaqələrinizi toplamırıq, reklam izləyiciləri istifadə etmirik.',
   ]),
   PolicySection('Nə üçün istifadə edirik', [
@@ -55,7 +55,7 @@ const _ru = [
     'Когда вы открываете страницу заведения или путь к нему: заведение и анонимный номер учитываются, чтобы показать заведению, сколько людей на него смотрят.',
     'Когда регистрируется владелец или официант: имя, email, необязательный номер телефона, пароль (хранится только в зашифрованном виде, который нельзя прочитать) и, для владельцев, данные ресторана.',
     'На вашем телефоне: выбор языка и темы, избранные заведения, ваш анонимный номер и, если вы вошли, ваш вход. Это остаётся на вашем устройстве.',
-    'Если вы разрешите, примерное местоположение телефона: только чтобы сортировать заведения по расстоянию и показывать его. На сервере оно не хранится. Разрешение необязательно: если откажетесь, вы всё равно видите все заведения.',
+    'Если вы разрешите, примерное местоположение телефона: только чтобы сортировать заведения по близости. На сервере оно не хранится. Разрешение необязательно: если откажетесь, вы всё равно видите все заведения.',
     'Мы не собираем ваши платёжные данные и контакты и не используем рекламные трекеры.',
   ]),
   PolicySection('Зачем мы это используем', [
@@ -87,7 +87,7 @@ const _en = [
     'When you open a place\'s page or the way to it: the place and the anonymous number are counted, so we can show the place how many people look at it.',
     'When a restaurant owner or waiter registers: name, email, an optional phone number, a password (stored only in scrambled form that cannot be read back) and, for owners, the restaurant\'s details.',
     'On your phone: your language and theme choice, your favorite places, your anonymous number and, if you are signed in, your sign-in. These stay on your device.',
-    'If you allow it, your phone\'s approximate location: only to sort places by distance and show how far they are. It is not stored on the server. Allowing it is optional: if you say no you still see every place.',
+    'If you allow it, your phone\'s approximate location: only to sort places by how close they are. It is not stored on the server. Allowing it is optional: if you say no you still see every place.',
     'We do not collect your payment details or contacts, and we do not use advertising trackers.',
   ]),
   PolicySection('Why we use it', [

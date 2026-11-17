@@ -14,11 +14,8 @@ import '../../../discounts/presentation/discount_flow.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
 import '../availability_text.dart';
-import '../distance_text.dart';
 import '../providers/favorites_provider.dart';
 import '../widgets/restaurant_gallery.dart';
-import '../../data/restaurant_filters.dart';
-import '../../../../core/location/user_location_provider.dart';
 import '../widgets/opening_hours_list.dart';
 import '../maps_launcher.dart';
 import '../providers/restaurant_provider.dart';
@@ -112,10 +109,6 @@ class _Details extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final position = ref.watch(userLocationProvider.select((location) => location.position));
-    final distance = position != null && restaurant.hasCoordinates
-        ? distanceText(l10n, distanceKm(position, restaurant.latitude, restaurant.longitude))
-        : null;
     final description = restaurant.description?.trim();
     final phone = restaurant.phoneNumber?.trim();
 
@@ -173,7 +166,6 @@ class _Details extends ConsumerWidget {
           child: ListTile(
           leading: const Icon(Icons.place_outlined),
           title: Text(restaurant.address),
-          subtitle: distance == null ? null : Text(distance, key: const Key('distance')),
           trailing: const Icon(Icons.map_outlined),
           onTap: () {
             unawaited(ref.read(discountsRepositoryProvider).recordEvent(restaurant.id, RestaurantEvent.directions));

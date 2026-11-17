@@ -5,6 +5,9 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Məsafə yazısı çıxarıldı (2026-11-17)
+- Kartda və restoran səhifəsində "3.2 km" artıq YOXDUR: düz xətt məsafəsi Google-un yol məsafəsindən fərqlənirdi (həm də yer yalnız təxminidir). "Ən yaxın" sıralaması qalır (düz xətt orada doğrudur), yer yalnız sıralama üçündür; izahat mətni və məxfilik siyasəti buna görə yeniləndi (versiya artırılmadı). Real yol məsafəsi gələcəkdə öz OSRM serverimizlə (VPS-dən sonra) qaytarıla bilər; `distance_text.dart` və hesablama kodu saxlanılıb.
+
 ## Endirim kodu modeli, rezerv gizli (2026-11-16)
 - **Rezerv söndürülüb** (`FeatureFlags.reservationsEnabled=false`, mobil; kod silinməyib, `true` etsən hamısı qayıdır). Yeni məntiq: endirim verən restoranda müştəri "Endirimi əldə et" basır, kod alır (**6 saat** etibarlı, bir cihaz bir restorandan **gündə 1 kod**; vaxtı bitsə həmin gün yenisi verilmir). Restoran sahibi/ofisiant "Kod təsdiqlə" tabında təsdiqləyir: endirim verilir + HARA ilə gələn müştəri sayılır. "HARA ilə gəldim" düyməsi YOXDUR.
 - **Server:** cədvəllər `DiscountCodes`, `RestaurantEvents` (migration `AddDiscountCodesAndRestaurantEvents`, **real bazaya HƏLƏ tətbiq olunmayıb**); endpointlər `POST /api/restaurants/{id}/discount-code`, `GET /api/discount-codes/{code}`, `POST /api/restaurants/{id}/events` (view | directions), restoran tərəfi `/api/venue/discount-codes/{code}[/redeem]`, admin `/api/admin/visits[/monthly]`. Müştəri anonim cihaz nömrəsi ilə tanınır (tətbiq özü yaradır, telefonda saxlanır). Yoxlama: 55 serverdə, mobil +16.

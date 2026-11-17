@@ -1615,7 +1615,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationExplainBody.
   ///
   /// In en, this message translates to:
-  /// **'HARA can sort restaurants by distance. For that it uses your approximate location, only for sorting and distances. HARA does not save it. You can say no and still see every restaurant.'**
+  /// **'HARA can sort restaurants by how close they are. For that it uses your approximate location, only for sorting. HARA does not save it. You can say no and still see every restaurant.'**
   String get locationExplainBody;
 
   /// No description provided for @locationAllow.

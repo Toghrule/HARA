@@ -918,7 +918,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationExplainBody =>
-      'HARA can sort restaurants by distance. For that it uses your approximate location, only for sorting and distances. HARA does not save it. You can say no and still see every restaurant.';
+      'HARA can sort restaurants by how close they are. For that it uses your approximate location, only for sorting. HARA does not save it. You can say no and still see every restaurant.';
 
   @override
   String get locationAllow => 'Allow';

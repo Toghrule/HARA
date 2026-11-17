@@ -17,13 +17,10 @@ import '../../../discounts/data/discounts_repository.dart';
 import '../../../discounts/presentation/discount_flow.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../availability_text.dart';
-import '../distance_text.dart';
 import '../location_prompt.dart';
 import '../widgets/restaurant_filter_bar.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/restaurant_filters_provider.dart';
-import '../../data/restaurant_filters.dart';
-import '../../../../core/location/user_location_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../reservations/presentation/widgets/active_reservations_banner.dart';
 import '../../data/restaurant.dart';
@@ -228,16 +225,11 @@ class _RestaurantTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final position = ref.watch(userLocationProvider.select((location) => location.position));
     final isFavorite = ref.watch(favoritesProvider.select((favorites) => favorites.contains(restaurant.id)));
-    final distance = position != null && restaurant.hasCoordinates
-        ? distanceText(l10n, distanceKm(position, restaurant.latitude, restaurant.longitude))
-        : null;
-
     final cuisines = restaurant.cuisines.take(2).map(l10n.cuisineName).join(', ');
     final lines = [
       if (cuisines.isNotEmpty) cuisines,
-      distance == null ? restaurant.address : '${restaurant.address} · $distance',
+      restaurant.address,
       if (restaurant.discountPercent > 0) FeatureFlags.reservationsEnabled ? l10n.discountWithCode(restaurant.discountPercent) : l10n.discountOffer(restaurant.discountPercent),
       // Only when it matters: a restaurant that is open needs no extra line here.
       if (!restaurant.availability.acceptingRequests) availabilityText(l10n, restaurant.availability),
