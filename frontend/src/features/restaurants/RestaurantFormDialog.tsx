@@ -12,6 +12,8 @@ import { FormField } from "../../components/ui/FormField";
 import { ImageUploader } from "../../components/ui/ImageUploader";
 import { GalleryUploader } from "../../components/ui/GalleryUploader";
 import { cuisineOptions, maxCuisines, maxGalleryPhotos } from "../../lib/cuisines";
+import { districtOptions } from "../../lib/districts";
+import { Select } from "../../components/ui/Select";
 import { useToast } from "../../components/ui/Toast";
 import { ApiError } from "../../lib/api";
 import { parseCoordinatePair } from "../../lib/coordinates";
@@ -38,6 +40,7 @@ const schema = z.object({
   galleryUrls: z.array(z.string()).max(maxGalleryPhotos),
   featuredFrom: z.string(),
   featuredUntil: z.string(),
+  district: z.string(),
 }).superRefine((values, ctx) => {
   if (!values.featuredFrom !== !values.featuredUntil) {
     ctx.addIssue({ code: "custom", path: [values.featuredFrom ? "featuredUntil" : "featuredFrom"], message: "Give both dates, or leave both empty" });
@@ -77,6 +80,7 @@ const emptyValues: FormValues = {
   galleryUrls: [],
   featuredFrom: "",
   featuredUntil: "",
+  district: "",
 };
 
 /** Starting values for a new restaurant, e.g. taken from an approved submission. */
@@ -133,6 +137,7 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
             galleryUrls: restaurant.galleryUrls ?? [],
             featuredFrom: restaurant.featuredFrom ?? "",
             featuredUntil: restaurant.featuredUntil ?? "",
+            district: restaurant.district ?? "",
           }
         : {
             ...emptyValues,
@@ -178,6 +183,7 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
       galleryUrls: values.galleryUrls,
       featuredFrom: values.featuredFrom || null,
       featuredUntil: values.featuredUntil || null,
+      district: values.district || null,
     };
     try {
       if (isEdit && restaurant) {
@@ -312,6 +318,16 @@ export function RestaurantFormDialog({ open, onClose, restaurant, prefill, fromS
             </div>
             <p className="text-xs text-slate-500">Both days count. Dates are in Azerbaijan time. Leave empty for a place that is not a pick.</p>
           </div>
+        </FormField>
+        <FormField label="Area of Baku (Ərazi)" htmlFor="district">
+          <Select id="district" {...register("district")}>
+            <option value="">Not set</option>
+            {districtOptions.map(({ code, label }) => (
+              <option key={code} value={code}>
+                {label}
+              </option>
+            ))}
+          </Select>
         </FormField>
         <FormField label="Description (Azerbaijani)" htmlFor="description" error={errors.description?.message}>
           <Textarea id="description" rows={3} {...register("description")} />

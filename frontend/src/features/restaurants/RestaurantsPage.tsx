@@ -11,6 +11,7 @@ import { ApiError } from "../../lib/api";
 import { useDeleteRestaurant, useRestaurants } from "./api";
 import { RestaurantFormDialog } from "./RestaurantFormDialog";
 import { OwnerDialog } from "./OwnerDialog";
+import { districtOptions } from "../../lib/districts";
 import type { RestaurantDto } from "../../types";
 
 export function RestaurantsPage() {
@@ -100,7 +101,12 @@ export function RestaurantsPage() {
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">{restaurant.address}</td>
+                  <td className="px-4 py-3 text-slate-600">
+                    {restaurant.address}
+                    {restaurant.district && (
+                      <span className="ml-2 rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600">{districtOptions.find((d) => d.code === restaurant.district)?.label ?? restaurant.district}</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-slate-600">{restaurant.phoneNumber ?? "—"}</td>
                   <td className="px-4 py-3 text-slate-600">
                     {restaurant.discountPercent > 0 ? `${restaurant.discountPercent}%` : "—"}
