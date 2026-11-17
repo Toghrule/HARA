@@ -2031,6 +2031,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'+{count} more'**
   String mapMore(int count);
+
+  /// No description provided for @signInWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get signInWithGoogle;
+
+  /// No description provided for @customerSignInHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate restaurants and write reviews.'**
+  String get customerSignInHint;
+
+  /// No description provided for @signedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'You are signed in'**
+  String get signedInAs;
+
+  /// No description provided for @customerDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account and all the reviews you wrote will be deleted. This cannot be undone.'**
+  String get customerDeleteBody;
+
+  /// No description provided for @signInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sign in. Please try again in a moment.'**
+  String get signInFailed;
+
+  /// No description provided for @reviewsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get reviewsTitle;
+
+  /// No description provided for @noReviewsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews yet. Be the first to write one!'**
+  String get noReviewsYet;
+
+  /// No description provided for @writeReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a review'**
+  String get writeReview;
+
+  /// No description provided for @editReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Change my review'**
+  String get editReview;
+
+  /// No description provided for @reviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your visit (optional)'**
+  String get reviewHint;
+
+  /// No description provided for @reviewPickStars.
+  ///
+  /// In en, this message translates to:
+  /// **'How many stars?'**
+  String get reviewPickStars;
+
+  /// No description provided for @saveReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveReview;
+
+  /// No description provided for @deleteReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove review'**
+  String get deleteReview;
+
+  /// No description provided for @reviewSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Your review was saved'**
+  String get reviewSaved;
+
+  /// No description provided for @reviewRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Your review was removed'**
+  String get reviewRemoved;
+
+  /// No description provided for @reviewStarsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the stars'**
+  String get reviewStarsRequired;
+
+  /// No description provided for @reviewsShowMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more reviews'**
+  String get reviewsShowMore;
+
+  /// No description provided for @anonymousReviewer.
+  ///
+  /// In en, this message translates to:
+  /// **'A guest'**
+  String get anonymousReviewer;
 }
 
 class _AppLocalizationsDelegate

@@ -9,6 +9,9 @@ import 'package:hara/core/auth/auth_repository.dart';
 import 'package:hara/core/auth/auth_session.dart';
 import 'package:hara/core/auth/password_reset_storage.dart';
 import 'package:hara/core/auth/session_storage.dart';
+import 'package:hara/core/customer/customer_controller.dart';
+import 'package:hara/core/customer/customer_session.dart';
+import 'package:hara/core/customer/google_sign_in_service.dart';
 import 'package:hara/core/l10n/locale_provider.dart';
 import 'package:hara/core/location/location_service.dart';
 import 'package:hara/core/network/api_client.dart';
@@ -17,6 +20,7 @@ import 'package:hara/core/router/app_router.dart';
 import 'package:hara/features/auth/data/customer_choice.dart';
 import 'package:hara/features/auth/data/password_reset_repository.dart';
 import 'package:hara/features/restaurants/data/restaurant.dart';
+import 'package:hara/features/reviews/data/review.dart';
 import 'package:hara/features/restaurants/data/restaurant_filters.dart';
 import 'package:hara/features/restaurants/data/restaurant_sort.dart';
 import 'package:hara/features/restaurants/data/restaurants_repository.dart';
@@ -218,6 +222,109 @@ class FakeAuthRepository extends AuthRepository {
   Future<void> logout(String refreshToken) async => logoutCalls.add(refreshToken);
 }
 
+class MemoryCustomerStorage implements CustomerSessionStorage {
+  MemoryCustomerStorage([this.saved]);
+
+  CustomerSession? saved;
+
+  @override
+  Future<CustomerSession?> read() async => saved;
+
+  @override
+  Future<void> write(CustomerSession session) async => saved = session;
+
+  @override
+  Future<void> clear() async => saved = null;
+}
+
+/// A fake Google window: the token is what it hands out (null = the person closed it).
+class FakeGoogleSignIn implements GoogleSignInService {
+  FakeGoogleSignIn({this.available = true, this.token = 'google-token'});
+
+  bool available;
+  String? token;
+  Object? error;
+  int signIns = 0;
+  int signOuts = 0;
+
+  @override
+  bool get isAvailable => available;
+
+  @override
+  Future<String?> signIn() async {
+    signIns++;
+    if (error != null) throw error!;
+
+    return token;
+  }
+
+  @override
+  Future<void> signOut() async => signOuts++;
+}
+
+CustomerSession testCustomer({String name = 'Anna K.'}) =>
+    CustomerSession(auth: testSession(roles: const ['Customer']), name: name);
+
+/// A fake HARA server for customer accounts.
+class FakeCustomerRepository extends CustomerRepository {
+  FakeCustomerRepository() : super();
+
+  final List<String> idTokens = [];
+  int deletes = 0;
+  Object? deleteError;
+
+  @override
+  Future<CustomerSession> signInWithGoogle(String idToken) async {
+    idTokens.add(idToken);
+
+    return testCustomer();
+  }
+
+  @override
+  Future<void> deleteAccount(String accessToken) async {
+    if (deleteError != null) throw deleteError!;
+    deletes++;
+  }
+}
+
+/// A fake server for reviews: what every restaurant has been given, and what the signed-in customer wrote.
+class FakeReviewsRepository extends ReviewsRepository {
+  FakeReviewsRepository(this.reviews) : super(ApiClient());
+
+  final List<Review> reviews;
+  Review? mine;
+  final List<({String restaurantId, int stars, String? text})> saved = [];
+  final List<String> deleted = [];
+  final List<int> pagesAsked = [];
+  int pageSize = 10;
+
+  @override
+  Future<ReviewsPage> getReviews(String restaurantId, {int page = 1, int pageSize = 10}) async {
+    pagesAsked.add(page);
+    final from = (page - 1) * this.pageSize;
+    final items = reviews.skip(from).take(this.pageSize).toList();
+
+    return ReviewsPage(items: items, hasMore: from + this.pageSize < reviews.length, average: null, count: reviews.length);
+  }
+
+  @override
+  Future<Review?> getMine(String restaurantId) async => mine;
+
+  @override
+  Future<Review> save(String restaurantId, {required int stars, String? text}) async {
+    saved.add((restaurantId: restaurantId, stars: stars, text: text));
+    mine = Review(id: 'mine', stars: stars, text: text, createdAt: DateTime(2026, 11, 1), authorName: 'Anna K.');
+
+    return mine!;
+  }
+
+  @override
+  Future<void> delete(String restaurantId) async {
+    deleted.add(restaurantId);
+    mine = null;
+  }
+}
+
 class FakeRestaurantsRepository extends RestaurantsRepository {
   FakeRestaurantsRepository(this.all) : super(ApiClient());
 
@@ -303,10 +410,17 @@ class AppHarness {
     this.locationService,
     this.advertisements = const [],
     this.adLinkOpener,
+    this.customer,
+    List<Review> reviews = const [],
+    bool googleAvailable = false,
   })  : auth = FakeAuthRepository(),
         storage = MemorySessionStorage(session),
         passwordReset = FakePasswordResetRepository(),
         resetStorage = MemoryPasswordResetStorage(),
+        customerStorage = MemoryCustomerStorage(customer),
+        google = FakeGoogleSignIn(available: googleAvailable),
+        customerServer = FakeCustomerRepository(),
+        reviewsServer = FakeReviewsRepository(reviews),
         restaurants = FakeRestaurantsRepository(restaurants ?? const [cafeOne, cafeTwo]);
 
   final AuthSession? session;
@@ -318,6 +432,12 @@ class AppHarness {
   /// The banners the admin panel would hand out, and what to do with a tapped banner's address.
   final List<Advertisement> advertisements;
   final Future<void> Function(BuildContext, Uri)? adLinkOpener;
+  /// A customer already signed in with Google when the app starts (null = nobody).
+  final CustomerSession? customer;
+  final MemoryCustomerStorage customerStorage;
+  final FakeGoogleSignIn google;
+  final FakeCustomerRepository customerServer;
+  final FakeReviewsRepository reviewsServer;
   final FakeAuthRepository auth;
   final MemorySessionStorage storage;
   final FakePasswordResetRepository passwordReset;
@@ -335,6 +455,8 @@ class AppHarness {
           localeProvider.overrideWith((ref) => LocaleController(const Locale('en'))),
           customerChoiceProvider.overrideWith((ref) => CustomerChoice(continuedAsCustomer)),
           authControllerProvider.overrideWith((ref) => AuthController(auth, storage, session)),
+          customerControllerProvider.overrideWith((ref) => CustomerController(customerServer, auth, customerStorage, google, customer)),
+          reviewsRepositoryProvider.overrideWithValue(reviewsServer),
           restaurantsRepositoryProvider.overrideWithValue(restaurants),
           passwordResetRepositoryProvider.overrideWithValue(passwordReset),
           passwordResetStorageProvider.overrideWithValue(resetStorage),

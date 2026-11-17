@@ -9,6 +9,7 @@ import '../../../../core/utils/open_link.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/hara_bottom_nav.dart';
 import '../../../../core/widgets/language_menu.dart';
+import '../../../reviews/presentation/customer_account_card.dart';
 import '../../data/about_us.dart';
 import '../../data/social_link.dart';
 import '../providers/company_info_providers.dart';
@@ -36,6 +37,7 @@ class AboutScreen extends ConsumerWidget {
             const _AboutSection(),
             const _SocialLinksSection(),
             const SizedBox(height: 16),
+            const CustomerAccountCard(),
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               clipBehavior: Clip.antiAlias,

@@ -11,6 +11,7 @@ import '../../../../core/feature_flags.dart';
 import '../../../../core/widgets/hara_ui.dart';
 import '../../../discounts/data/discounts_repository.dart';
 import '../../../discounts/presentation/discount_flow.dart';
+import '../../../reviews/presentation/reviews_section.dart';
 import '../../../reservations/presentation/reserve_flow.dart';
 import '../../data/restaurant.dart';
 import '../availability_text.dart';
@@ -216,6 +217,7 @@ class _Details extends ConsumerWidget {
             child: Text(description, style: theme.textTheme.bodyLarge),
           ),
         ],
+        ReviewsSection(restaurantId: restaurant.id),
         const SizedBox(height: 16),
       ],
     );

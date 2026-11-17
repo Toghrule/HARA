@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/auth/auth_controller.dart';
 import 'core/auth/session_storage.dart';
+import 'core/customer/customer_controller.dart';
+import 'core/customer/google_sign_in_service.dart';
 import 'core/l10n/locale_provider.dart';
 import 'core/location/geolocator_location_service.dart';
 import 'core/location/location_service.dart';
@@ -21,6 +23,8 @@ Future<void> main() async {
   final initialLocale = await loadInitialLocale();
   const sessionStorage = SecureSessionStorage();
   final initialSession = await sessionStorage.read();
+  const customerStorage = SecureCustomerSessionStorage();
+  final initialCustomer = await customerStorage.read();
   final continuedAsCustomer = await loadContinuedAsCustomer();
   final pushService = await FirebasePushService.start();
 
@@ -31,6 +35,15 @@ Future<void> main() async {
         locationServiceProvider.overrideWithValue(const GeolocatorLocationService()),
         localeProvider.overrideWith((ref) => LocaleController(initialLocale)),
         customerChoiceProvider.overrideWith((ref) => CustomerChoice(continuedAsCustomer)),
+        customerControllerProvider.overrideWith(
+          (ref) => CustomerController(
+            ref.watch(customerRepositoryProvider),
+            ref.watch(authRepositoryProvider),
+            customerStorage,
+            ref.watch(googleSignInServiceProvider),
+            initialCustomer,
+          ),
+        ),
         authControllerProvider.overrideWith(
           (ref) => AuthController(ref.watch(authRepositoryProvider), sessionStorage, initialSession),
         ),

@@ -1172,4 +1172,60 @@ class AppLocalizationsAz extends AppLocalizations {
   String mapMore(int count) {
     return '+$count daha';
   }
+
+  @override
+  String get signInWithGoogle => 'Google ilə daxil ol';
+
+  @override
+  String get customerSignInHint => 'Restoranlara ulduz verin və rəy yazın.';
+
+  @override
+  String get signedInAs => 'Daxil olmusunuz';
+
+  @override
+  String get customerDeleteBody =>
+      'Hesabınız və yazdığınız bütün rəylər silinəcək. Bunu geri qaytarmaq olmaz.';
+
+  @override
+  String get signInFailed =>
+      'Daxil olmaq alınmadı. Bir az sonra yenidən yoxlayın.';
+
+  @override
+  String get reviewsTitle => 'Rəylər';
+
+  @override
+  String get noReviewsYet => 'Hələ rəy yoxdur. İlk rəyi siz yazın!';
+
+  @override
+  String get writeReview => 'Rəy yaz';
+
+  @override
+  String get editReview => 'Rəyimi dəyiş';
+
+  @override
+  String get reviewHint => 'Təcrübənizi qısaca yazın (istəyə bağlı)';
+
+  @override
+  String get reviewPickStars => 'Neçə ulduz verirsiniz?';
+
+  @override
+  String get saveReview => 'Yadda saxla';
+
+  @override
+  String get deleteReview => 'Rəyi sil';
+
+  @override
+  String get reviewSaved => 'Rəyiniz yadda saxlanıldı';
+
+  @override
+  String get reviewRemoved => 'Rəyiniz silindi';
+
+  @override
+  String get reviewStarsRequired => 'Ulduz seçin';
+
+  @override
+  String get reviewsShowMore => 'Daha çox rəy';
+
+  @override
+  String get anonymousReviewer => 'İstifadəçi';
 }

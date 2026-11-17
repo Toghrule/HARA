@@ -1173,4 +1173,59 @@ class AppLocalizationsRu extends AppLocalizations {
   String mapMore(int count) {
     return 'ещё +$count';
   }
+
+  @override
+  String get signInWithGoogle => 'Войти через Google';
+
+  @override
+  String get customerSignInHint => 'Оценивайте рестораны и пишите отзывы.';
+
+  @override
+  String get signedInAs => 'Вы вошли';
+
+  @override
+  String get customerDeleteBody =>
+      'Ваш аккаунт и все ваши отзывы будут удалены. Это нельзя отменить.';
+
+  @override
+  String get signInFailed => 'Не удалось войти. Попробуйте ещё раз чуть позже.';
+
+  @override
+  String get reviewsTitle => 'Отзывы';
+
+  @override
+  String get noReviewsYet => 'Отзывов пока нет. Напишите первый!';
+
+  @override
+  String get writeReview => 'Написать отзыв';
+
+  @override
+  String get editReview => 'Изменить мой отзыв';
+
+  @override
+  String get reviewHint => 'Расскажите о визите (по желанию)';
+
+  @override
+  String get reviewPickStars => 'Сколько звёзд?';
+
+  @override
+  String get saveReview => 'Сохранить';
+
+  @override
+  String get deleteReview => 'Удалить отзыв';
+
+  @override
+  String get reviewSaved => 'Ваш отзыв сохранён';
+
+  @override
+  String get reviewRemoved => 'Ваш отзыв удалён';
+
+  @override
+  String get reviewStarsRequired => 'Выберите звёзды';
+
+  @override
+  String get reviewsShowMore => 'Показать ещё';
+
+  @override
+  String get anonymousReviewer => 'Гость';
 }

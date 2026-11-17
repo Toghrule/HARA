@@ -1173,4 +1173,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String mapMore(int count) {
     return '+$count more';
   }
+
+  @override
+  String get signInWithGoogle => 'Sign in with Google';
+
+  @override
+  String get customerSignInHint => 'Rate restaurants and write reviews.';
+
+  @override
+  String get signedInAs => 'You are signed in';
+
+  @override
+  String get customerDeleteBody =>
+      'Your account and all the reviews you wrote will be deleted. This cannot be undone.';
+
+  @override
+  String get signInFailed => 'Could not sign in. Please try again in a moment.';
+
+  @override
+  String get reviewsTitle => 'Reviews';
+
+  @override
+  String get noReviewsYet => 'No reviews yet. Be the first to write one!';
+
+  @override
+  String get writeReview => 'Write a review';
+
+  @override
+  String get editReview => 'Change my review';
+
+  @override
+  String get reviewHint => 'Describe your visit (optional)';
+
+  @override
+  String get reviewPickStars => 'How many stars?';
+
+  @override
+  String get saveReview => 'Save';
+
+  @override
+  String get deleteReview => 'Remove review';
+
+  @override
+  String get reviewSaved => 'Your review was saved';
+
+  @override
+  String get reviewRemoved => 'Your review was removed';
+
+  @override
+  String get reviewStarsRequired => 'Pick the stars';
+
+  @override
+  String get reviewsShowMore => 'Show more reviews';
+
+  @override
+  String get anonymousReviewer => 'A guest';
 }
