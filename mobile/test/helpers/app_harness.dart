@@ -233,6 +233,17 @@ class FakeRestaurantsRepository extends RestaurantsRepository {
   Future<List<Restaurant>> getFeatured() async => featured;
 
   @override
+  Future<List<AreaCount>> getAreas() async {
+    final counts = <String, int>{};
+    for (final restaurant in all) {
+      if (restaurant.district != null) counts[restaurant.district!] = (counts[restaurant.district!] ?? 0) + 1;
+    }
+    final codes = counts.keys.toList()..sort((a, b) => counts[b]!.compareTo(counts[a]!));
+
+    return [for (final code in codes) AreaCount(code: code, count: counts[code]!)];
+  }
+
+  @override
   Future<Restaurant> getRestaurant(String id) async => all.firstWhere((restaurant) => restaurant.id == id);
 
   @override
@@ -250,6 +261,7 @@ class FakeRestaurantsRepository extends RestaurantsRepository {
         .where((restaurant) => term.isEmpty || restaurant.name.toLowerCase().contains(term))
         .where((restaurant) => !query.openNow || restaurant.availability.acceptingRequests)
         .where((restaurant) => query.cuisine == null || restaurant.cuisines.contains(query.cuisine))
+        .where((restaurant) => query.district == null || restaurant.district == query.district)
         .where((restaurant) => query.ids == null || query.ids!.contains(restaurant.id))
         .toList();
 

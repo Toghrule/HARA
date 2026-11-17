@@ -2013,6 +2013,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ad'**
   String get adLabel;
+
+  /// No description provided for @areaSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get areaSection;
+
+  /// No description provided for @areaName.
+  ///
+  /// In en, this message translates to:
+  /// **'{code, select, binagadi{Binagadi} narimanov{Narimanov} nasimi{Nasimi} nizami{Nizami} pirallahi{Pirallahi} garadagh{Garadagh} sabunchu{Sabunchu} sabail{Sabail} surakhani{Surakhani} khatai{Khatai} khazar{Khazar} yasamal{Yasamal} other{}}'**
+  String areaName(String code);
 }
 
 class _AppLocalizationsDelegate

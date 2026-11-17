@@ -121,6 +121,17 @@ class _Details extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(restaurant.name, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+              if (restaurant.district != null) ...[
+                const SizedBox(height: 6),
+                Row(
+                  key: const Key('area'),
+                  children: [
+                    Icon(Icons.place_outlined, size: 18, color: theme.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 4),
+                    Text(l10n.areaName(restaurant.district!), style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                  ],
+                ),
+              ],
               if (restaurant.cuisines.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Wrap(

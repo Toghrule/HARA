@@ -18,9 +18,35 @@ const cuisineCodes = [
   'dessert',
 ];
 
+/// The areas of Baku ("Ərazi"), the codes the server knows. Names come from the translations (`areaName`).
+const districtCodes = [
+  'binagadi',
+  'narimanov',
+  'nasimi',
+  'nizami',
+  'pirallahi',
+  'garadagh',
+  'sabunchu',
+  'sabail',
+  'surakhani',
+  'khatai',
+  'khazar',
+  'yasamal',
+];
+
+/// An area and how many restaurants are in it.
+class AreaCount {
+  const AreaCount({required this.code, required this.count});
+
+  factory AreaCount.fromJson(Map<String, dynamic> json) => AreaCount(code: json['code'] as String, count: (json['count'] as num).toInt());
+
+  final String code;
+  final int count;
+}
+
 /// What the customer narrowed the list down to. Only what the server is asked about is here; sorting by distance is part of it.
 class RestaurantFilters {
-  const RestaurantFilters({this.openNow = false, this.nearest = false, this.favoritesOnly = false, this.cuisine});
+  const RestaurantFilters({this.openNow = false, this.nearest = false, this.favoritesOnly = false, this.cuisine, this.district});
 
   final bool openNow;
 
@@ -33,14 +59,18 @@ class RestaurantFilters {
   /// One of [cuisineCodes], or `null` for any.
   final String? cuisine;
 
-  /// Whether anything is narrowing the list (sorting by distance does not narrow it).
-  bool get narrows => openNow || favoritesOnly || cuisine != null;
+  /// One of the area codes, or `null` for the whole city.
+  final String? district;
 
-  RestaurantFilters copyWith({bool? openNow, bool? nearest, bool? favoritesOnly, Object? cuisine = _keep}) => RestaurantFilters(
+  /// Whether anything is narrowing the list (sorting by distance does not narrow it).
+  bool get narrows => openNow || favoritesOnly || cuisine != null || district != null;
+
+  RestaurantFilters copyWith({bool? openNow, bool? nearest, bool? favoritesOnly, Object? cuisine = _keep, Object? district = _keep}) => RestaurantFilters(
         openNow: openNow ?? this.openNow,
         nearest: nearest ?? this.nearest,
         favoritesOnly: favoritesOnly ?? this.favoritesOnly,
         cuisine: identical(cuisine, _keep) ? this.cuisine : cuisine as String?,
+        district: identical(district, _keep) ? this.district : district as String?,
       );
 
   static const _keep = Object();
@@ -48,10 +78,11 @@ class RestaurantFilters {
 
 /// What is sent to the server with a list request besides the sort and the search.
 class RestaurantListQuery {
-  const RestaurantListQuery({this.openNow = false, this.cuisine, this.latitude, this.longitude, this.ids});
+  const RestaurantListQuery({this.openNow = false, this.cuisine, this.district, this.latitude, this.longitude, this.ids});
 
   final bool openNow;
   final String? cuisine;
+  final String? district;
 
   /// The phone's position, sent only when sorting by distance.
   final double? latitude;

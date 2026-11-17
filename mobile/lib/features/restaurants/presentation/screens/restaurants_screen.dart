@@ -21,6 +21,8 @@ import '../location_prompt.dart';
 import '../widgets/restaurant_filter_bar.dart';
 import '../../../advertisements/data/advertisement.dart';
 import '../../../advertisements/presentation/ad_banner.dart';
+import '../../data/restaurant_filters.dart';
+import '../providers/areas_provider.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/featured_provider.dart';
 import '../providers/restaurant_filters_provider.dart';
@@ -208,9 +210,13 @@ class _RestaurantList extends ConsumerWidget {
     final ads = browsing ? ref.watch(advertisementsProvider).valueOrNull ?? const <Advertisement>[] : const <Advertisement>[];
     final discounted = state.items.where((restaurant) => restaurant.discountPercent > 0).take(10).toList();
     final showStrip = discounted.length >= 3 && browsing;
+    // The area chips stay while an area is chosen (so it can be unchosen), but not while anything else narrows the list.
+    final onlyArea = search.isEmpty && !filters.openNow && !filters.favoritesOnly && filters.cuisine == null;
+    final areas = onlyArea ? ref.watch(areasProvider).valueOrNull ?? const <AreaCount>[] : const <AreaCount>[];
     final headers = [
       if (featured.isNotEmpty) _FeaturedStrip(restaurants: featured),
       if (ads.isNotEmpty) AdBanner(ads: ads),
+      if (areas.isNotEmpty) _AreaSection(areas: areas, selected: filters.district),
       if (showStrip) _DiscountStrip(restaurants: discounted),
     ];
     final offset = headers.length;
@@ -384,6 +390,51 @@ class _RestaurantTile extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// "Ərazi": the areas of Baku that have restaurants, as chips to pick one from.
+class _AreaSection extends ConsumerWidget {
+  const _AreaSection({required this.areas, required this.selected});
+
+  final List<AreaCount> areas;
+  final String? selected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return Column(
+      key: const Key('areaSection'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+          child: Text(l10n.areaSection, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+        ),
+        SizedBox(
+          height: 44,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: areas.length,
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final area = areas[index];
+
+              return FilterChip(
+                key: Key('area-${area.code}'),
+                label: Text(l10n.areaName(area.code)),
+                selected: selected == area.code,
+                showCheckmark: false,
+                onSelected: (_) => ref.read(restaurantFiltersProvider.notifier).toggleDistrict(area.code),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+      ],
     );
   }
 }

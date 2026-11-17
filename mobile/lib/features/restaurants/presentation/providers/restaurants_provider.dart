@@ -119,6 +119,7 @@ class RestaurantsController extends AutoDisposeAsyncNotifier<RestaurantsState> {
   RestaurantListQuery _queryFor(RestaurantFilters filters, UserPosition? position, Set<String>? favorites) => RestaurantListQuery(
         openNow: filters.openNow,
         cuisine: filters.cuisine,
+        district: filters.district,
         latitude: filters.nearest ? position?.latitude : null,
         longitude: filters.nearest ? position?.longitude : null,
         ids: favorites?.toList(),

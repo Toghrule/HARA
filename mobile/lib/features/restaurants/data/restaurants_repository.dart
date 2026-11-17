@@ -28,6 +28,7 @@ class RestaurantsRepository {
         'pageSize': pageSize,
         if (query.openNow) 'openNow': true,
         if (query.cuisine != null) 'cuisine': query.cuisine,
+        if (query.district != null) 'district': query.district,
         if (query.latitude != null && query.longitude != null) ...{'lat': query.latitude, 'lng': query.longitude},
         if (query.ids != null) 'ids': query.ids!.join(','),
       },
@@ -36,6 +37,13 @@ class RestaurantsRepository {
     return (response.data ?? [])
         .map((json) => Restaurant.fromJson(json as Map<String, dynamic>))
         .toList();
+  }
+
+  /// The areas of Baku that have restaurants, the busiest first (for the area chips).
+  Future<List<AreaCount>> getAreas() async {
+    final response = await _apiClient.dio.get<List<dynamic>>('/api/restaurants/areas');
+
+    return (response.data ?? []).map((json) => AreaCount.fromJson(json as Map<String, dynamic>)).toList();
   }
 
   /// This week's picks: the places that took a turn at the top of the app, whatever the position or the filters.

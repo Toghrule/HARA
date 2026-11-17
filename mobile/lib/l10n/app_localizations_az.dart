@@ -1141,4 +1141,30 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get adLabel => 'Reklam';
+
+  @override
+  String get areaSection => 'Ərazi';
+
+  @override
+  String areaName(String code) {
+    String _temp0 = intl.Intl.selectLogic(
+      code,
+      {
+        'binagadi': 'Binəqədi',
+        'narimanov': 'Nərimanov',
+        'nasimi': 'Nəsimi',
+        'nizami': 'Nizami',
+        'pirallahi': 'Pirallahı',
+        'garadagh': 'Qaradağ',
+        'sabunchu': 'Sabunçu',
+        'sabail': 'Səbail',
+        'surakhani': 'Suraxanı',
+        'khatai': 'Xətai',
+        'khazar': 'Xəzər',
+        'yasamal': 'Yasamal',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
 }

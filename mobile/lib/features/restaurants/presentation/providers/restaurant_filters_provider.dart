@@ -17,6 +17,9 @@ class RestaurantFiltersNotifier extends Notifier<RestaurantFilters> {
   /// Picks a cuisine; picking the one already chosen clears it.
   void toggleCuisine(String code) => state = state.copyWith(cuisine: state.cuisine == code ? null : code);
 
+  /// Picks an area of Baku; picking the one already chosen clears it.
+  void toggleDistrict(String code) => state = state.copyWith(district: state.district == code ? null : code);
+
   /// Removes everything that narrows the list (sorting by distance stays).
   void clearNarrowing() => state = RestaurantFilters(nearest: state.nearest);
 }

@@ -1142,4 +1142,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adLabel => 'Ad';
+
+  @override
+  String get areaSection => 'Area';
+
+  @override
+  String areaName(String code) {
+    String _temp0 = intl.Intl.selectLogic(
+      code,
+      {
+        'binagadi': 'Binagadi',
+        'narimanov': 'Narimanov',
+        'nasimi': 'Nasimi',
+        'nizami': 'Nizami',
+        'pirallahi': 'Pirallahi',
+        'garadagh': 'Garadagh',
+        'sabunchu': 'Sabunchu',
+        'sabail': 'Sabail',
+        'surakhani': 'Surakhani',
+        'khatai': 'Khatai',
+        'khazar': 'Khazar',
+        'yasamal': 'Yasamal',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
 }

@@ -5,6 +5,10 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ---
 
+## Ərazi bölməsi (2026-11-17)
+- Vilka-dakı "Bölgələrə görə" kimi, adı **"Ərazi"**: ana ekranda (reklamdan sonra, endirimlərdən əvvəl) Bakı ərazilərinin çip sırası; çipə basanda siyahı həmin ərazinin restoranları ilə süzülür, yenə basanda ləğv olur. Yalnız restoranı olan ərazilər göstərilir (ən çoxdan az olana). Restoran səhifəsində ərazi adı da yazılır. Axtarış/mətbəx/sevimli/açıq süzgəci olanda sıra gizlənir.
+- Server: `Restaurant.District` (12 sabit kod: binagadi, narimanov, nasimi, nizami, pirallahi, garadagh, sabunchu, sabail, surakhani, khatai, khazar, yasamal), `GET /api/restaurants?district=`, `GET /api/restaurants/areas`; migration `AddRestaurantDistrict` — **real bazaya (hara_pilot) HƏLƏ tətbiq olunmayıb**. Admin paneldə restoran formasında "Area of Baku" seçimi. Yoxlama: server 22, mobil +10.
+
 ## Reklam bannerləri tətbiqdə (2026-11-17)
 - Admin paneldəki "Advertisements" (şəkil + link + sıra + aktiv/passiv) artıq tətbiqin ana ekranında görünür: seçilmişlər zolağından sonra, endirimlərdən əvvəl, 16:6 banner (bir neçə olanda sürüşdürülür və 6 saniyədən bir özü dönür, nöqtələr), küncdə "Reklam" yazısı. Toxunanda link açılır (yalnız http/https; sxemsiz yazılsa https əlavə olunur; link yoxdursa heç nə olmur). Axtarış/süzgəc olanda göstərilmir; yüklənməsə sakitcə yoxdur. Müvəqqəti ləğv etmək üçün admin paneldə reklamı passiv et (Active söndür) və ya sil, kod dəyişmir.
 

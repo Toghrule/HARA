@@ -18,6 +18,7 @@ class Restaurant {
     this.galleryUrls = const [],
     this.ratingAverage,
     this.ratingCount = 0,
+    this.district,
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
@@ -40,6 +41,7 @@ class Restaurant {
         galleryUrls: [for (final url in (json['galleryUrls'] as List<dynamic>?) ?? const []) url as String],
         ratingAverage: (json['ratingAverage'] as num?)?.toDouble(),
         ratingCount: (json['ratingCount'] as num?)?.toInt() ?? 0,
+        district: json['district'] as String?,
       );
 
   final String id;
@@ -69,6 +71,9 @@ class Restaurant {
 
   /// How many customers rated.
   final int ratingCount;
+
+  /// The area of Baku, as a code (see [districtCodes]), or `null` when none was set.
+  final String? district;
 
   /// Every photo to show, the cover first, without repeats.
   List<Uri> get photoUris => {

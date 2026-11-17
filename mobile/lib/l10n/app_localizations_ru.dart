@@ -1142,4 +1142,30 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get adLabel => 'Реклама';
+
+  @override
+  String get areaSection => 'Район';
+
+  @override
+  String areaName(String code) {
+    String _temp0 = intl.Intl.selectLogic(
+      code,
+      {
+        'binagadi': 'Бинагади',
+        'narimanov': 'Наримановский',
+        'nasimi': 'Насими',
+        'nizami': 'Низами',
+        'pirallahi': 'Пираллахи',
+        'garadagh': 'Гарадаг',
+        'sabunchu': 'Сабунчи',
+        'sabail': 'Сабаильский',
+        'surakhani': 'Сураханский',
+        'khatai': 'Хатаи',
+        'khazar': 'Хазарский',
+        'yasamal': 'Ясамал',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
 }

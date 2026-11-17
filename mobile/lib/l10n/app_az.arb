@@ -330,5 +330,7 @@
   "navMap": "Xəritə",
   "featuredSection": "Həftənin seçilmişləri",
   "featuredBadge": "Həftənin seçimi",
-  "adLabel": "Reklam"
+  "adLabel": "Reklam",
+  "areaSection": "Ərazi",
+  "areaName": "{code, select, binagadi{Binəqədi} narimanov{Nərimanov} nasimi{Nəsimi} nizami{Nizami} pirallahi{Pirallahı} garadagh{Qaradağ} sabunchu{Sabunçu} sabail{Səbail} surakhani{Suraxanı} khatai{Xətai} khazar{Xəzər} yasamal{Yasamal} other{}}"
 }

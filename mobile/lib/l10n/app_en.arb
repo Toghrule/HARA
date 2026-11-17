@@ -376,5 +376,8 @@
   "navMap": "Map",
   "featuredSection": "This week's picks",
   "featuredBadge": "Pick of the week",
-  "adLabel": "Ad"
+  "adLabel": "Ad",
+  "areaSection": "Area",
+  "areaName": "{code, select, binagadi{Binagadi} narimanov{Narimanov} nasimi{Nasimi} nizami{Nizami} pirallahi{Pirallahi} garadagh{Garadagh} sabunchu{Sabunchu} sabail{Sabail} surakhani{Surakhani} khatai{Khatai} khazar{Khazar} yasamal{Yasamal} other{}}",
+  "@areaName": {"placeholders":{"code":{"type":"String"}}}
 }
