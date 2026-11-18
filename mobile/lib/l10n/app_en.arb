@@ -414,5 +414,11 @@
   "accountConsentEnd": ".",
   "restaurantLoginTitle": "Restaurant sign-in",
   "restaurantLoginText": "Own a restaurant? Sign in here",
-  "accountSignedInTitle": "Hello!"
+  "accountSignedInTitle": "Hello!",
+  "myReviewsTitle": "My reviews",
+  "myReviewsEmpty": "You have not written a review yet. You can write one on a restaurant's page.",
+  "myDiscountsTitle": "My discounts",
+  "myDiscountsEmpty": "You have not taken a discount yet. Tap \"Get the discount\" on a restaurant's page.",
+  "discountPercentOff": "{percent}% off",
+  "@discountPercentOff": {"placeholders":{"percent":{"type":"int"}}}
 }

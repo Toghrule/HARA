@@ -41,6 +41,27 @@ class ReviewsPage {
   final int count;
 }
 
+/// One of the signed-in customer's own reviews, with the restaurant it is about.
+class MyReview {
+  const MyReview({required this.id, required this.restaurantId, required this.restaurantName, required this.stars, required this.createdAt, this.text});
+
+  factory MyReview.fromJson(Map<String, dynamic> json) => MyReview(
+        id: json['id'] as String,
+        restaurantId: json['restaurantId'] as String,
+        restaurantName: json['restaurantName'] as String,
+        stars: (json['stars'] as num).toInt(),
+        text: json['text'] as String?,
+        createdAt: DateTime.parse(json['createdAt'] as String),
+      );
+
+  final String id;
+  final String restaurantId;
+  final String restaurantName;
+  final int stars;
+  final String? text;
+  final DateTime createdAt;
+}
+
 class ReviewsRepository {
   ReviewsRepository(this._apiClient);
 
@@ -54,6 +75,13 @@ class ReviewsRepository {
     );
 
     return ReviewsPage.fromJson(response.data!);
+  }
+
+  /// Every review the signed-in customer wrote, newest first.
+  Future<List<MyReview>> getMyReviews() async {
+    final response = await _apiClient.dio.get<List<dynamic>>('/api/customer/reviews');
+
+    return [for (final item in response.data ?? const []) MyReview.fromJson(item as Map<String, dynamic>)];
   }
 
   /// The signed-in customer's own review of the restaurant, or `null` if they have none.
@@ -131,4 +159,11 @@ final myReviewProvider = FutureProvider.autoDispose.family<Review?, String>((ref
   } catch (_) {
     return null;
   }
+});
+
+/// All of the signed-in customer's reviews (empty when nobody is signed in). Shown in My account.
+final myReviewsProvider = FutureProvider.autoDispose<List<MyReview>>((ref) async {
+  if (ref.watch(customerControllerProvider) == null) return const [];
+
+  return ref.watch(reviewsRepositoryProvider).getMyReviews();
 });

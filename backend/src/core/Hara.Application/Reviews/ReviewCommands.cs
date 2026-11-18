@@ -83,6 +83,25 @@ public class GetMyReviewQueryHandler(IUnitOfWork unitOfWork, ICurrentUserService
     }
 }
 
+public sealed record MyReviewDto(Guid Id, Guid RestaurantId, string RestaurantName, int Stars, string? Text, DateTimeOffset CreatedAt);
+
+/// <summary>Every review the signed-in customer wrote (of restaurants still listed), newest first.</summary>
+public sealed record GetMyReviewsQuery : IRequest<IReadOnlyList<MyReviewDto>>;
+
+public class GetMyReviewsQueryHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUser) : IRequestHandler<GetMyReviewsQuery, IReadOnlyList<MyReviewDto>>
+{
+    public async Task<IReadOnlyList<MyReviewDto>> Handle(GetMyReviewsQuery request, CancellationToken cancellationToken)
+    {
+        var userId = currentUser.UserId ?? throw new ForbiddenException();
+
+        return await unitOfWork.Repository<Review>().Query()
+            .Where(r => r.CustomerId == userId && r.Restaurant!.IsActive)
+            .OrderByDescending(r => r.CreatedAt)
+            .Select(r => new MyReviewDto(r.Id, r.RestaurantId, r.Restaurant!.Name, r.Stars, r.Text, r.CreatedAt))
+            .ToListAsync(cancellationToken);
+    }
+}
+
 /// <summary>The signed-in customer gives a restaurant stars and, if they wish, words. A second time it replaces their first review (one per customer per restaurant).</summary>
 public sealed record SaveMyReviewCommand(Guid RestaurantId, int Stars, string? Text) : IRequest<ReviewDto>;
 

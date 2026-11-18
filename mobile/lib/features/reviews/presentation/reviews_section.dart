@@ -206,6 +206,7 @@ class _ReviewSheetState extends ConsumerState<ReviewSheet> {
     ref
       ..invalidate(reviewsProvider(widget.restaurantId))
       ..invalidate(myReviewProvider(widget.restaurantId))
+      ..invalidate(myReviewsProvider)
       ..invalidate(restaurantProvider(widget.restaurantId));
   }
 

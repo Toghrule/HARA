@@ -2229,6 +2229,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hello!'**
   String get accountSignedInTitle;
+
+  /// No description provided for @myReviewsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My reviews'**
+  String get myReviewsTitle;
+
+  /// No description provided for @myReviewsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not written a review yet. You can write one on a restaurant\'s page.'**
+  String get myReviewsEmpty;
+
+  /// No description provided for @myDiscountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My discounts'**
+  String get myDiscountsTitle;
+
+  /// No description provided for @myDiscountsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not taken a discount yet. Tap \"Get the discount\" on a restaurant\'s page.'**
+  String get myDiscountsEmpty;
+
+  /// No description provided for @discountPercentOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% off'**
+  String discountPercentOff(int percent);
 }
 
 class _AppLocalizationsDelegate

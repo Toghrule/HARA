@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/network/api_error.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../restaurants/data/restaurant.dart';
+import '../data/discount_history.dart';
 import '../data/discounts_repository.dart';
 
 /// The customer tapped "Get the discount": asks HARA for their code at [restaurant] (today's, if they already took one) and opens it.
@@ -16,6 +17,7 @@ Future<void> getDiscount(BuildContext context, WidgetRef ref, Restaurant restaur
 
   try {
     final code = await ref.read(discountsRepositoryProvider).getCode(restaurant.id);
+    await ref.read(discountHistoryProvider.notifier).add(code);
     await router.push('/discount', extra: code);
   } catch (error) {
     messenger.showSnackBar(SnackBar(content: Text(apiErrorMessage(error, l10n))));

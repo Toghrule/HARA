@@ -366,5 +366,11 @@
   "accountConsentEnd": ".",
   "restaurantLoginTitle": "Вход для ресторанов",
   "restaurantLoginText": "Вы владелец ресторана? Войдите здесь",
-  "accountSignedInTitle": "Здравствуйте!"
+  "accountSignedInTitle": "Здравствуйте!",
+  "myReviewsTitle": "Мои отзывы",
+  "myReviewsEmpty": "Вы ещё не писали отзывов. Это можно сделать на странице ресторана.",
+  "myDiscountsTitle": "Мои скидки",
+  "myDiscountsEmpty": "Вы ещё не брали скидку. Нажмите «Получить скидку» на странице ресторана.",
+  "discountPercentOff": "Скидка {percent}%",
+  "@discountPercentOff": {"placeholders":{"percent":{"type":"int"}}}
 }

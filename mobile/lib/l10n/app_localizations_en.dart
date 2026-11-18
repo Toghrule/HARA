@@ -1273,4 +1273,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSignedInTitle => 'Hello!';
+
+  @override
+  String get myReviewsTitle => 'My reviews';
+
+  @override
+  String get myReviewsEmpty =>
+      'You have not written a review yet. You can write one on a restaurant\'s page.';
+
+  @override
+  String get myDiscountsTitle => 'My discounts';
+
+  @override
+  String get myDiscountsEmpty =>
+      'You have not taken a discount yet. Tap \"Get the discount\" on a restaurant\'s page.';
+
+  @override
+  String discountPercentOff(int percent) {
+    return '$percent% off';
+  }
 }

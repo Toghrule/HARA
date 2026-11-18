@@ -1273,4 +1273,23 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get accountSignedInTitle => 'Здравствуйте!';
+
+  @override
+  String get myReviewsTitle => 'Мои отзывы';
+
+  @override
+  String get myReviewsEmpty =>
+      'Вы ещё не писали отзывов. Это можно сделать на странице ресторана.';
+
+  @override
+  String get myDiscountsTitle => 'Мои скидки';
+
+  @override
+  String get myDiscountsEmpty =>
+      'Вы ещё не брали скидку. Нажмите «Получить скидку» на странице ресторана.';
+
+  @override
+  String discountPercentOff(int percent) {
+    return 'Скидка $percent%';
+  }
 }

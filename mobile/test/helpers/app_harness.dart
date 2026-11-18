@@ -293,6 +293,9 @@ class FakeReviewsRepository extends ReviewsRepository {
 
   final List<Review> reviews;
   Review? mine;
+
+  /// Every review of the signed-in customer, as the server would list them.
+  List<MyReview> myReviews = [];
   final List<({String restaurantId, int stars, String? text})> saved = [];
   final List<String> deleted = [];
   final List<int> pagesAsked = [];
@@ -306,6 +309,9 @@ class FakeReviewsRepository extends ReviewsRepository {
 
     return ReviewsPage(items: items, hasMore: from + this.pageSize < reviews.length, average: null, count: reviews.length);
   }
+
+  @override
+  Future<List<MyReview>> getMyReviews() async => myReviews;
 
   @override
   Future<Review?> getMine(String restaurantId) async => mine;

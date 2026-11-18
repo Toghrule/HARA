@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hara/features/discounts/data/discount_code.dart';
+import 'package:hara/features/discounts/data/discount_history.dart';
+import 'package:hara/features/reservations/data/reservation_state.dart';
 import 'package:hara/features/reviews/data/review.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helpers/app_harness.dart';
 
@@ -31,7 +35,10 @@ Future<void> openCafe(WidgetTester tester, AppHarness app) async {
 }
 
 void main() {
-  setUp(() => TestWidgetsFlutterBinding.ensureInitialized());
+  setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+  });
 
   group('account card in the More tab', () {
     testWidgets('offers Google sign-in; signing in shows the name', (tester) async {
@@ -147,6 +154,113 @@ void main() {
       expect(app.customerServer.deletes, 1);
       expect(find.byKey(const Key('signInWithGoogle')), findsOneWidget);
       expect(app.customerStorage.saved, isNull);
+    });
+  });
+
+  group('the three cards of My account', () {
+    void bigScreen(WidgetTester tester) {
+      tester.view.physicalSize = const Size(800, 2400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+    }
+
+    testWidgets('reviews: the count shows and the card opens the list, which opens the restaurant', (tester) async {
+      bigScreen(tester);
+      final app = AppHarness(googleAvailable: true, continuedAsCustomer: true, customer: testCustomer());
+      app.reviewsServer.myReviews = [
+        MyReview(id: 'm1', restaurantId: 'rest-1', restaurantName: 'Cafe One', stars: 5, text: 'Great', createdAt: DateTime(2026, 11, 2)),
+        MyReview(id: 'm2', restaurantId: 'rest-2', restaurantName: 'Bistro Two', stars: 3, createdAt: DateTime(2026, 11, 1)),
+      ];
+      await app.pump(tester);
+      await openAccount(tester);
+
+      expect(find.descendant(of: find.byKey(const Key('tileReviews')), matching: find.text('2')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('tileReviews')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('myReview-m1')), findsOneWidget);
+      expect(find.text('Bistro Two'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('myReview-m1')));
+      await tester.pumpAndSettle();
+      expect(app.currentPath, '/restaurants/rest-1');
+    });
+
+    testWidgets('reviews: with no review yet the list explains how to write one', (tester) async {
+      bigScreen(tester);
+      final app = AppHarness(googleAvailable: true, continuedAsCustomer: true, customer: testCustomer());
+      await app.pump(tester);
+      await openAccount(tester);
+
+      await tester.tap(find.byKey(const Key('tileReviews')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('myReviewsEmpty')), findsOneWidget);
+    });
+
+    testWidgets('reviews: signed out, the card asks to sign in first and then opens the list', (tester) async {
+      bigScreen(tester);
+      final app = AppHarness(googleAvailable: true, continuedAsCustomer: true);
+      await app.pump(tester);
+      await openAccount(tester);
+
+      await tester.tap(find.byKey(const Key('tileReviews')));
+      await tester.pumpAndSettle();
+
+      expect(app.google.signIns, 1);
+      expect(find.byKey(const Key('myReviewsEmpty')), findsOneWidget);
+    });
+
+    testWidgets('discounts: places where a code was taken are counted and listed', (tester) async {
+      bigScreen(tester);
+      final app = AppHarness(googleAvailable: true, continuedAsCustomer: true);
+      await app.pump(tester);
+      await app.container.read(discountHistoryProvider.notifier).add(
+            DiscountCode(
+              code: 'ABC123',
+              restaurantId: 'rest-1',
+              restaurantName: 'Cafe One',
+              discountPercent: 10,
+              createdAt: DateTime(2026, 11, 3, 12),
+              expiresAt: DateTime(2026, 11, 3, 18),
+              status: ReservationState.active,
+            ),
+          );
+      await openAccount(tester);
+
+      expect(find.descendant(of: find.byKey(const Key('tileDiscounts')), matching: find.text('1')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('tileDiscounts')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('myDiscount-rest-1')), findsOneWidget);
+      expect(find.textContaining('10% off'), findsOneWidget);
+    });
+
+    testWidgets('discounts: nothing taken yet says how to take one', (tester) async {
+      bigScreen(tester);
+      final app = AppHarness(googleAvailable: true, continuedAsCustomer: true);
+      await app.pump(tester);
+      await openAccount(tester);
+
+      await tester.tap(find.byKey(const Key('tileDiscounts')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('myDiscountsEmpty')), findsOneWidget);
+    });
+
+    testWidgets('favorites: the count shows and the card opens the favorites list', (tester) async {
+      bigScreen(tester);
+      SharedPreferences.setMockInitialValues({'favorite_restaurants': ['rest-1']});
+      final app = AppHarness(googleAvailable: true, continuedAsCustomer: true);
+      await app.pump(tester);
+      await openAccount(tester);
+
+      expect(find.descendant(of: find.byKey(const Key('tileFavorites')), matching: find.text('1')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('tileFavorites')));
+      await tester.pumpAndSettle();
+
+      expect(app.currentPath, '/');
+      expect(find.text('Cafe One'), findsOneWidget);
+      expect(find.text('Bistro Two'), findsNothing);
     });
   });
 

@@ -1273,4 +1273,23 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get accountSignedInTitle => 'Salam!';
+
+  @override
+  String get myReviewsTitle => 'Rəylərim';
+
+  @override
+  String get myReviewsEmpty =>
+      'Hələ rəy yazmamısınız. Restoranın səhifəsindən yaza bilərsiniz.';
+
+  @override
+  String get myDiscountsTitle => 'Endirimlərim';
+
+  @override
+  String get myDiscountsEmpty =>
+      'Hələ endirim kodu almamısınız. Endirimi olan restoranın səhifəsində \"Endirim al\" düyməsini basın.';
+
+  @override
+  String discountPercentOff(int percent) {
+    return '$percent% endirim';
+  }
 }

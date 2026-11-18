@@ -366,5 +366,11 @@
   "accountConsentEnd": "ilə razılaşırsınız.",
   "restaurantLoginTitle": "Restoran girişi",
   "restaurantLoginText": "Restoran sahibisinizsə buradan daxil olun",
-  "accountSignedInTitle": "Salam!"
+  "accountSignedInTitle": "Salam!",
+  "myReviewsTitle": "Rəylərim",
+  "myReviewsEmpty": "Hələ rəy yazmamısınız. Restoranın səhifəsindən yaza bilərsiniz.",
+  "myDiscountsTitle": "Endirimlərim",
+  "myDiscountsEmpty": "Hələ endirim kodu almamısınız. Endirimi olan restoranın səhifəsində \"Endirim al\" düyməsini basın.",
+  "discountPercentOff": "{percent}% endirim",
+  "@discountPercentOff": {"placeholders":{"percent":{"type":"int"}}}
 }

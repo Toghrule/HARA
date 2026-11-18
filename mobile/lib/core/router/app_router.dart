@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/discounts/presentation/my_discounts_screen.dart';
 import '../../features/reviews/presentation/account_screen.dart';
+import '../../features/reviews/presentation/my_reviews_screen.dart';
 
 import '../../features/auth/data/customer_choice.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
@@ -107,6 +109,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/contact',
         builder: (context, state) => const ContactScreen(),
+      ),
+      GoRoute(
+        path: '/my-reviews',
+        builder: (context, state) => const MyReviewsScreen(),
+      ),
+      GoRoute(
+        path: '/my-discounts',
+        builder: (context, state) => const MyDiscountsScreen(),
       ),
       GoRoute(
         path: '/account',

@@ -43,6 +43,10 @@ public static class CustomerEndpoints
             .WithName("GetReviews")
             .AllowAnonymous();
 
+        customer.MapGet("/reviews", async (ISender sender, CancellationToken cancellationToken) =>
+                Results.Ok(await sender.Send(new GetMyReviewsQuery(), cancellationToken)))
+            .WithName("GetMyReviews");
+
         customer.MapGet("/reviews/{restaurantId:guid}", async (Guid restaurantId, ISender sender, CancellationToken cancellationToken) =>
             {
                 var mine = await sender.Send(new GetMyReviewQuery(restaurantId), cancellationToken);

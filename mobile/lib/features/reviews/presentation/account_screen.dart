@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,10 @@ import '../../../core/customer/customer_controller.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/google_logo.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../discounts/data/discount_history.dart';
+import '../../restaurants/presentation/providers/favorites_provider.dart';
+import '../../restaurants/presentation/providers/restaurant_filters_provider.dart';
+import '../data/review.dart';
 import 'customer_account_card.dart';
 
 /// "My account": the customer's own place in the app. Signed out it welcomes with the Google button, three short promises and the
@@ -141,23 +147,63 @@ class _SignedInCard extends ConsumerWidget {
   }
 }
 
-/// Three short cards under the main one: what an account is for.
-class _BenefitTiles extends StatelessWidget {
+/// Three short cards under the main one. Each one opens its own list and shows how many there are: reviews written, discounts taken,
+/// favourite places.
+class _BenefitTiles extends ConsumerWidget {
   const _BenefitTiles();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final signedIn = ref.watch(customerControllerProvider) != null;
+    final reviewCount = signedIn ? ref.watch(myReviewsProvider).valueOrNull?.length ?? 0 : 0;
+    final discountCount = ref.watch(discountHistoryProvider).length;
+    final favoriteCount = ref.watch(favoritesProvider).length;
+
+    Future<void> openReviews() async {
+      if (!signedIn && !await signInCustomer(context, ref)) return;
+      if (context.mounted) unawaited(context.push('/my-reviews'));
+    }
 
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(child: _Tile(icon: Icons.star_rounded, title: l10n.accountTileReviewsTitle, text: l10n.accountTileReviewsText)),
+          Expanded(
+            child: _Tile(
+              key: const Key('tileReviews'),
+              icon: Icons.star_rounded,
+              title: l10n.accountTileReviewsTitle,
+              text: l10n.accountTileReviewsText,
+              count: reviewCount,
+              onTap: openReviews,
+            ),
+          ),
           const SizedBox(width: 10),
-          Expanded(child: _Tile(icon: Icons.local_offer_rounded, title: l10n.accountTileDiscountsTitle, text: l10n.accountTileDiscountsText)),
+          Expanded(
+            child: _Tile(
+              key: const Key('tileDiscounts'),
+              icon: Icons.local_offer_rounded,
+              title: l10n.accountTileDiscountsTitle,
+              text: l10n.accountTileDiscountsText,
+              count: discountCount,
+              onTap: () => context.push('/my-discounts'),
+            ),
+          ),
           const SizedBox(width: 10),
-          Expanded(child: _Tile(icon: Icons.favorite_rounded, title: l10n.accountTileFavoritesTitle, text: l10n.accountTileFavoritesText)),
+          Expanded(
+            child: _Tile(
+              key: const Key('tileFavorites'),
+              icon: Icons.favorite_rounded,
+              title: l10n.accountTileFavoritesTitle,
+              text: l10n.accountTileFavoritesText,
+              count: favoriteCount,
+              onTap: () {
+                ref.read(restaurantFiltersProvider.notifier).setFavorites(true);
+                context.go('/');
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -165,36 +211,46 @@ class _BenefitTiles extends StatelessWidget {
 }
 
 class _Tile extends StatelessWidget {
-  const _Tile({required this.icon, required this.title, required this.text});
+  const _Tile({required this.icon, required this.title, required this.text, required this.count, required this.onTap, super.key});
 
   final IconData icon;
   final String title;
   final String text;
+  final int count;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(8, 14, 8, 14),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 12, offset: const Offset(0, 4))],
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(color: theme.colorScheme.secondaryContainer, borderRadius: BorderRadius.circular(14)),
-            child: Icon(icon, size: 24, color: theme.colorScheme.onSecondaryContainer),
+    return Material(
+      color: theme.colorScheme.surfaceContainerLowest,
+      borderRadius: BorderRadius.circular(20),
+      elevation: 2,
+      shadowColor: Colors.black.withValues(alpha: 0.12),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 14, 8, 14),
+          child: Column(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: theme.colorScheme.secondaryContainer, borderRadius: BorderRadius.circular(14)),
+                child: Icon(icon, size: 24, color: theme.colorScheme.onSecondaryContainer),
+              ),
+              const SizedBox(height: 8),
+              Text(title, textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
+              const SizedBox(height: 2),
+              if (count > 0)
+                Text('$count', key: const Key('tileCount'), style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w900))
+              else
+                Text(text, textAlign: TextAlign.center, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(title, textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800)),
-          const SizedBox(height: 2),
-          Text(text, textAlign: TextAlign.center, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        ],
+        ),
       ),
     );
   }
