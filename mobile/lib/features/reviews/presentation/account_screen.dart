@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/customer/customer_controller.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/google_logo.dart';
 import '../../../l10n/app_localizations.dart';
 import 'customer_account_card.dart';
 
@@ -82,7 +83,7 @@ class _SignedOutCard extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('G', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF4285F4))),
+                const GoogleLogo(size: 24),
                 const SizedBox(width: 12),
                 Flexible(child: Text(l10n.accountContinueGoogle, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
               ],
