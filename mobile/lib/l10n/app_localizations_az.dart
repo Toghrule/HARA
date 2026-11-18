@@ -1231,4 +1231,46 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get myAccount => 'Hesabım';
+
+  @override
+  String get accountWelcomeTitle => 'HARA-ya xoş gəldiniz';
+
+  @override
+  String get accountContinueGoogle => 'Google ilə davam et';
+
+  @override
+  String get accountTileReviewsTitle => 'Rəylər';
+
+  @override
+  String get accountTileReviewsText => 'Ulduz ver, fikrini yaz';
+
+  @override
+  String get accountTileDiscountsTitle => 'Endirimlər';
+
+  @override
+  String get accountTileDiscountsText => 'Kodla qənaət et';
+
+  @override
+  String get accountTileFavoritesTitle => 'Sevimlilər';
+
+  @override
+  String get accountTileFavoritesText => 'Yaxşı məkanları saxla';
+
+  @override
+  String get accountConsentStart => 'Davam etməklə';
+
+  @override
+  String get accountConsentAnd => 'və';
+
+  @override
+  String get accountConsentEnd => 'ilə razılaşırsınız.';
+
+  @override
+  String get restaurantLoginTitle => 'Restoran girişi';
+
+  @override
+  String get restaurantLoginText => 'Restoran sahibisinizsə buradan daxil olun';
+
+  @override
+  String get accountSignedInTitle => 'Salam!';
 }

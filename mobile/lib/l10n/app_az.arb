@@ -352,5 +352,19 @@
   "reviewStarsRequired": "Ulduz seçin",
   "reviewsShowMore": "Daha çox rəy",
   "anonymousReviewer": "İstifadəçi",
-  "myAccount": "Hesabım"
+  "myAccount": "Hesabım",
+  "accountWelcomeTitle": "HARA-ya xoş gəldiniz",
+  "accountContinueGoogle": "Google ilə davam et",
+  "accountTileReviewsTitle": "Rəylər",
+  "accountTileReviewsText": "Ulduz ver, fikrini yaz",
+  "accountTileDiscountsTitle": "Endirimlər",
+  "accountTileDiscountsText": "Kodla qənaət et",
+  "accountTileFavoritesTitle": "Sevimlilər",
+  "accountTileFavoritesText": "Yaxşı məkanları saxla",
+  "accountConsentStart": "Davam etməklə",
+  "accountConsentAnd": "və",
+  "accountConsentEnd": "ilə razılaşırsınız.",
+  "restaurantLoginTitle": "Restoran girişi",
+  "restaurantLoginText": "Restoran sahibisinizsə buradan daxil olun",
+  "accountSignedInTitle": "Salam!"
 }

@@ -1231,4 +1231,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myAccount => 'My account';
+
+  @override
+  String get accountWelcomeTitle => 'Welcome to HARA';
+
+  @override
+  String get accountContinueGoogle => 'Continue with Google';
+
+  @override
+  String get accountTileReviewsTitle => 'Reviews';
+
+  @override
+  String get accountTileReviewsText => 'Rate and write';
+
+  @override
+  String get accountTileDiscountsTitle => 'Discounts';
+
+  @override
+  String get accountTileDiscountsText => 'Save with a code';
+
+  @override
+  String get accountTileFavoritesTitle => 'Favorites';
+
+  @override
+  String get accountTileFavoritesText => 'Keep the good places';
+
+  @override
+  String get accountConsentStart => 'By continuing you agree to the';
+
+  @override
+  String get accountConsentAnd => 'and the';
+
+  @override
+  String get accountConsentEnd => '.';
+
+  @override
+  String get restaurantLoginTitle => 'Restaurant sign-in';
+
+  @override
+  String get restaurantLoginText => 'Own a restaurant? Sign in here';
+
+  @override
+  String get accountSignedInTitle => 'Hello!';
 }

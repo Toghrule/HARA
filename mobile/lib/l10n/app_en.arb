@@ -400,5 +400,19 @@
   "reviewStarsRequired": "Pick the stars",
   "reviewsShowMore": "Show more reviews",
   "anonymousReviewer": "A guest",
-  "myAccount": "My account"
+  "myAccount": "My account",
+  "accountWelcomeTitle": "Welcome to HARA",
+  "accountContinueGoogle": "Continue with Google",
+  "accountTileReviewsTitle": "Reviews",
+  "accountTileReviewsText": "Rate and write",
+  "accountTileDiscountsTitle": "Discounts",
+  "accountTileDiscountsText": "Save with a code",
+  "accountTileFavoritesTitle": "Favorites",
+  "accountTileFavoritesText": "Keep the good places",
+  "accountConsentStart": "By continuing you agree to the",
+  "accountConsentAnd": "and the",
+  "accountConsentEnd": ".",
+  "restaurantLoginTitle": "Restaurant sign-in",
+  "restaurantLoginText": "Own a restaurant? Sign in here",
+  "accountSignedInTitle": "Hello!"
 }

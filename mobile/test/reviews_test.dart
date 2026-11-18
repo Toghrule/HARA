@@ -93,6 +93,22 @@ void main() {
       expect(find.byKey(const Key('aboutAccount')), findsNothing);
     });
 
+    testWidgets('signed out, the account page links the documents and the restaurant sign-in', (tester) async {
+      tester.view.physicalSize = const Size(800, 2400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final app = AppHarness(googleAvailable: true, continuedAsCustomer: true);
+      await app.pump(tester);
+      await openAccount(tester);
+
+      expect(find.byKey(const Key('accountConsent')), findsOneWidget);
+      expect(find.text('Reviews'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('restaurantLogin')));
+      await tester.pumpAndSettle();
+      expect(app.currentPath, '/login');
+    });
+
     testWidgets('signing out forgets the customer', (tester) async {
       tester.view.physicalSize = const Size(800, 2400);
       tester.view.devicePixelRatio = 1;

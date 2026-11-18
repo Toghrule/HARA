@@ -2145,6 +2145,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My account'**
   String get myAccount;
+
+  /// No description provided for @accountWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to HARA'**
+  String get accountWelcomeTitle;
+
+  /// No description provided for @accountContinueGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get accountContinueGoogle;
+
+  /// No description provided for @accountTileReviewsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get accountTileReviewsTitle;
+
+  /// No description provided for @accountTileReviewsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate and write'**
+  String get accountTileReviewsText;
+
+  /// No description provided for @accountTileDiscountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discounts'**
+  String get accountTileDiscountsTitle;
+
+  /// No description provided for @accountTileDiscountsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Save with a code'**
+  String get accountTileDiscountsText;
+
+  /// No description provided for @accountTileFavoritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get accountTileFavoritesTitle;
+
+  /// No description provided for @accountTileFavoritesText.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the good places'**
+  String get accountTileFavoritesText;
+
+  /// No description provided for @accountConsentStart.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing you agree to the'**
+  String get accountConsentStart;
+
+  /// No description provided for @accountConsentAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'and the'**
+  String get accountConsentAnd;
+
+  /// No description provided for @accountConsentEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'.'**
+  String get accountConsentEnd;
+
+  /// No description provided for @restaurantLoginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant sign-in'**
+  String get restaurantLoginTitle;
+
+  /// No description provided for @restaurantLoginText.
+  ///
+  /// In en, this message translates to:
+  /// **'Own a restaurant? Sign in here'**
+  String get restaurantLoginText;
+
+  /// No description provided for @accountSignedInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello!'**
+  String get accountSignedInTitle;
 }
 
 class _AppLocalizationsDelegate

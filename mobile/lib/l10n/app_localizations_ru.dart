@@ -1231,4 +1231,46 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get myAccount => 'Мой аккаунт';
+
+  @override
+  String get accountWelcomeTitle => 'Добро пожаловать в HARA';
+
+  @override
+  String get accountContinueGoogle => 'Продолжить с Google';
+
+  @override
+  String get accountTileReviewsTitle => 'Отзывы';
+
+  @override
+  String get accountTileReviewsText => 'Оценивай и пиши';
+
+  @override
+  String get accountTileDiscountsTitle => 'Скидки';
+
+  @override
+  String get accountTileDiscountsText => 'Экономь по коду';
+
+  @override
+  String get accountTileFavoritesTitle => 'Избранное';
+
+  @override
+  String get accountTileFavoritesText => 'Сохраняй любимые места';
+
+  @override
+  String get accountConsentStart => 'Продолжая, вы принимаете:';
+
+  @override
+  String get accountConsentAnd => 'и';
+
+  @override
+  String get accountConsentEnd => '.';
+
+  @override
+  String get restaurantLoginTitle => 'Вход для ресторанов';
+
+  @override
+  String get restaurantLoginText => 'Вы владелец ресторана? Войдите здесь';
+
+  @override
+  String get accountSignedInTitle => 'Здравствуйте!';
 }

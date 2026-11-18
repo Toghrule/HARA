@@ -7,6 +7,7 @@ Vəziyyət **2026-11-05**-ə görədir. Hər şeydən əvvəl `git log --oneline
 
 ## Google ilə giriş + rəylər (2026-11-17)
 - 2026-11-18: giriş/profil/hesabı sil kartı "Daha çox" tabından ayrıca **"Hesabım"** ekranına (`/account`, `AccountScreen`) köçürüldü; "Daha çox" siyahısında ilk sətir "Hesabım" (yalnız Google girişi mümkündürsə). İstifadəçi sonra bura nə əlavə olunacağını deyəcək.
+- 2026-11-18: Hesabım ekranının dizaynı (istifadəçinin göndərdiyi nümunəyə bənzər, öz rənglərimizlə): böyük ağ kart (Google ilə davam et), 3 balaca kart (Rəylər, Endirimlər, Sevimlilər), razılıq mətni (şərtlər + məxfilik linkləri), ən aşağıda tünd "Restoran girişi" banneri (/login). E-poçt/parol və bonus xal kimi HARA-da olmayan şeylər qoyulmadı.
 - Müştəri "Daha çox" tabında Google ilə daxil olur (Firebase Auth, yalnız Android; google_sign_in 7 + firebase_auth). Mobil token → `POST /api/auth/google` → HARA sessiyası (rol Customer, `CustomerProfile`). Kod: `mobile/lib/core/customer/` (CustomerController, GoogleSignInService, CustomerSession), `ApiClient` ikinci interceptor ilə `/api/customer` sorğularına müştəri tokenini qoşur.
 - Restoran səhifəsində "Rəylər" bölməsi (orta bal, siyahı, "daha çox"), "Rəy yaz" → girişdən sonra ulduz (1–5) + mətn (≤1000) sheet-i; hər hesab hər restorana bir rəy (dəyişdirmək/silmək olar). Adlar qısaldılır ("Anna K."). Admin panelində Reviews səhifəsi. Hesabı silmək: rəylərlə birlikdə.
 - Gizlilik siyasəti yeniləndi (2026-11-17; şərtlər versiyası artırılmadı). Testlər: mobil 406 keçir; server skripti customer_test (61 yoxlama).

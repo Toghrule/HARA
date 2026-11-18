@@ -352,5 +352,19 @@
   "reviewStarsRequired": "Выберите звёзды",
   "reviewsShowMore": "Показать ещё",
   "anonymousReviewer": "Гость",
-  "myAccount": "Мой аккаунт"
+  "myAccount": "Мой аккаунт",
+  "accountWelcomeTitle": "Добро пожаловать в HARA",
+  "accountContinueGoogle": "Продолжить с Google",
+  "accountTileReviewsTitle": "Отзывы",
+  "accountTileReviewsText": "Оценивай и пиши",
+  "accountTileDiscountsTitle": "Скидки",
+  "accountTileDiscountsText": "Экономь по коду",
+  "accountTileFavoritesTitle": "Избранное",
+  "accountTileFavoritesText": "Сохраняй любимые места",
+  "accountConsentStart": "Продолжая, вы принимаете:",
+  "accountConsentAnd": "и",
+  "accountConsentEnd": ".",
+  "restaurantLoginTitle": "Вход для ресторанов",
+  "restaurantLoginText": "Вы владелец ресторана? Войдите здесь",
+  "accountSignedInTitle": "Здравствуйте!"
 }
