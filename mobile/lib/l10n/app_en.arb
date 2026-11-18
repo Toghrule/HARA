@@ -399,5 +399,6 @@
   "reviewRemoved": "Your review was removed",
   "reviewStarsRequired": "Pick the stars",
   "reviewsShowMore": "Show more reviews",
-  "anonymousReviewer": "A guest"
+  "anonymousReviewer": "A guest",
+  "myAccount": "My account"
 }

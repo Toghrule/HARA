@@ -1228,4 +1228,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get anonymousReviewer => 'A guest';
+
+  @override
+  String get myAccount => 'My account';
 }

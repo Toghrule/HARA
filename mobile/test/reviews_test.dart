@@ -17,6 +17,13 @@ Future<void> openMore(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// More tab → My account.
+Future<void> openAccount(WidgetTester tester) async {
+  await openMore(tester);
+  await tester.tap(find.byKey(const Key('aboutAccount')));
+  await tester.pumpAndSettle();
+}
+
 Future<void> openCafe(WidgetTester tester, AppHarness app) async {
   await app.pump(tester);
   await tester.tap(find.text('Cafe One'));
@@ -33,7 +40,7 @@ void main() {
       addTearDown(tester.view.reset);
       final app = AppHarness(googleAvailable: true, continuedAsCustomer: true);
       await app.pump(tester);
-      await openMore(tester);
+      await openAccount(tester);
 
       await tester.ensureVisible(find.byKey(const Key('signInWithGoogle')));
       await tester.tap(find.byKey(const Key('signInWithGoogle')));
@@ -52,7 +59,7 @@ void main() {
       final app = AppHarness(googleAvailable: true, continuedAsCustomer: true);
       app.google.token = null;
       await app.pump(tester);
-      await openMore(tester);
+      await openAccount(tester);
 
       await tester.tap(find.byKey(const Key('signInWithGoogle')));
       await tester.pumpAndSettle();
@@ -69,7 +76,7 @@ void main() {
       final app = AppHarness(googleAvailable: true, continuedAsCustomer: true);
       app.google.error = Exception('no network');
       await app.pump(tester);
-      await openMore(tester);
+      await openAccount(tester);
 
       await tester.tap(find.byKey(const Key('signInWithGoogle')));
       await tester.pumpAndSettle();
@@ -83,7 +90,7 @@ void main() {
       await app.pump(tester);
       await openMore(tester);
 
-      expect(find.byKey(const Key('customerAccountCard')), findsNothing);
+      expect(find.byKey(const Key('aboutAccount')), findsNothing);
     });
 
     testWidgets('signing out forgets the customer', (tester) async {
@@ -92,7 +99,7 @@ void main() {
       addTearDown(tester.view.reset);
       final app = AppHarness(googleAvailable: true, continuedAsCustomer: true, customer: testCustomer());
       await app.pump(tester);
-      await openMore(tester);
+      await openAccount(tester);
 
       await tester.tap(find.byKey(const Key('customerSignOut')));
       await tester.pumpAndSettle();
@@ -108,7 +115,7 @@ void main() {
       addTearDown(tester.view.reset);
       final app = AppHarness(googleAvailable: true, continuedAsCustomer: true, customer: testCustomer());
       await app.pump(tester);
-      await openMore(tester);
+      await openAccount(tester);
 
       await tester.tap(find.byKey(const Key('customerDelete')));
       await tester.pumpAndSettle();

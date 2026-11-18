@@ -351,5 +351,6 @@
   "reviewRemoved": "Ваш отзыв удалён",
   "reviewStarsRequired": "Выберите звёзды",
   "reviewsShowMore": "Показать ещё",
-  "anonymousReviewer": "Гость"
+  "anonymousReviewer": "Гость",
+  "myAccount": "Мой аккаунт"
 }

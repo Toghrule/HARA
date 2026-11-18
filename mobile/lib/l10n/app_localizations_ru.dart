@@ -1228,4 +1228,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get anonymousReviewer => 'Гость';
+
+  @override
+  String get myAccount => 'Мой аккаунт';
 }

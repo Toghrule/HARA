@@ -9,7 +9,7 @@ import '../../../../core/utils/open_link.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/hara_bottom_nav.dart';
 import '../../../../core/widgets/language_menu.dart';
-import '../../../reviews/presentation/customer_account_card.dart';
+import '../../../../core/customer/customer_controller.dart';
 import '../../data/about_us.dart';
 import '../../data/social_link.dart';
 import '../providers/company_info_providers.dart';
@@ -37,12 +37,19 @@ class AboutScreen extends ConsumerWidget {
             const _AboutSection(),
             const _SocialLinksSection(),
             const SizedBox(height: 16),
-            const CustomerAccountCard(),
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               clipBehavior: Clip.antiAlias,
               child: Column(
                 children: [
+            if (ref.watch(customerControllerProvider) != null || ref.read(customerControllerProvider.notifier).canSignIn)
+              ListTile(
+                key: const Key('aboutAccount'),
+                leading: const Icon(Icons.account_circle_outlined),
+                title: Text(l10n.myAccount),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/account'),
+              ),
             ListTile(
               leading: const Icon(Icons.support_agent_outlined),
               title: Text(l10n.contactUs),

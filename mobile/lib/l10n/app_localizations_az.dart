@@ -1228,4 +1228,7 @@ class AppLocalizationsAz extends AppLocalizations {
 
   @override
   String get anonymousReviewer => 'İstifadəçi';
+
+  @override
+  String get myAccount => 'Hesabım';
 }

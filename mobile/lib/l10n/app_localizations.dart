@@ -2139,6 +2139,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A guest'**
   String get anonymousReviewer;
+
+  /// No description provided for @myAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'My account'**
+  String get myAccount;
 }
 
 class _AppLocalizationsDelegate
